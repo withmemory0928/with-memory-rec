@@ -15,7 +15,7 @@ body{margin:0;background:var(--soft);color:var(--ink);font-family:-apple-system,
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 18px;margin-bottom:16px}
 h1{font-size:25px;line-height:1.4;margin:0 0 8px}
 p{margin:10px 0}
-.note{font-size:16px;color:var(--sub)}
+.note{font-size:16px;color:var(--sub);white-space:pre-line}
 .deadline{background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:12px 14px;font-weight:700;font-size:17px;margin:14px 0 0}
 .chk{display:flex;gap:12px;align-items:flex-start;font-size:18px;cursor:pointer}
 .chk input{width:28px;height:28px;flex:none;margin-top:2px;accent-color:var(--accent)}
@@ -28,7 +28,7 @@ p{margin:10px 0}
 .mic.on{background:var(--rec);animation:pulse 1.4s infinite}
 .mic:disabled{opacity:.4}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(176,58,46,.45)}70%{box-shadow:0 0 0 16px rgba(176,58,46,0)}100%{box-shadow:0 0 0 0 rgba(176,58,46,0)}}
-.state{font-size:17px;font-weight:600;margin:8px 0 0}
+.state{font-size:17px;font-weight:600;margin:8px 0 0;white-space:pre-line}
 .state.ok{color:var(--accent)} .state.err{color:var(--rec)}
 .time{font-size:26px;font-variant-numeric:tabular-nums;font-weight:700;color:var(--rec);min-height:0}
 audio{width:100%;margin:10px 0 0}
@@ -103,7 +103,9 @@ audio{width:100%;margin:10px 0 0}
     app.textContent = '';
     var head = el('div', 'card');
     head.appendChild(el('h1', '', (info.name ? info.name + '님이 ' : '') + '신청하신 기록'));
-    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요. 한 질문씩 나누어 녹음하며, 마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요. 녹음하는 동안에는 음악·영상 앱을 꺼 주시고, 이어폰이 연결되어 있다면 빼 주세요.'));
+    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요.
+한 질문씩 나누어 녹음하며, 마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요.
+녹음하는 동안에는 음악·영상 앱을 꺼 주세요.'));
     head.appendChild(el('div', 'deadline', dl(info.deadline) + '까지 제출해 주세요'));
     var inapp = navigator.userAgent;
     if (/KAKAOTALK/i.test(inapp)) {
@@ -163,7 +165,8 @@ audio{width:100%;margin:10px 0 0}
     card.appendChild(box);
     ctl[n] = { mic: mic, state: state, time: time, audio: audio, retry: retry };
     var saved = info.saved && info.saved[n];
-    if (saved) setState(n, '저장되었습니다 (' + fmt(saved.secs) + '). 다시 하시려면 버튼을 눌러 주세요', 'ok');
+    if (saved) setState(n, '저장되었습니다 (' + fmt(saved.secs) + ')
+다시 하시려면 버튼을 눌러 주세요', 'ok');
     else setState(n, '버튼을 눌러 녹음을 시작하세요', '');
     mic.addEventListener('click', function () { toggle(n); });
     retry.addEventListener('click', function () { upload(n); });
@@ -172,8 +175,10 @@ audio{width:100%;margin:10px 0 0}
 
   function setState(n, text, kind) { var s = ctl[n].state; s.textContent = text; s.className = 'state ' + (kind || ''); }
     function setSaved(n, p) {
-    if (p.warn) setState(n, '녹음이 중간에 끊겼습니다. 음악·영상 앱이나 이어폰 연결을 끈 뒤 버튼을 눌러 다시 녹음해 주세요', 'err');
-    else setState(n, '저장되었습니다 (' + fmt(p.secs) + '). 다시 하시려면 버튼을 눌러 주세요', 'ok');
+    if (p.warn) setState(n, '녹음이 끊겼습니다.
+음악·영상 앱을 끄고 다시 녹음해 주세요.', 'err');
+    else setState(n, '저장되었습니다 (' + fmt(p.secs) + ')
+다시 하시려면 버튼을 눌러 주세요', 'ok');
   }
 
   var rec = null, stream = null, chunks = [], t0 = 0, timer = null, interrupted = false, muteTimer = null;
@@ -206,7 +211,9 @@ audio{width:100%;margin:10px 0 0}
       lockOthers(n, true);
       ctl[n].mic.classList.add('on');
       ctl[n].audio.classList.add('hide'); ctl[n].retry.classList.add('hide');
-      setState(n, '녹음 중입니다. 다 말씀하셨으면 버튼을 다시 눌러 주세요. 녹음하는 동안에는 음악이나 영상 앱을 꺼 주시고, 이어폰이 연결되어 있다면 빼 주세요. 앱이나 인터넷 창은 완전히 닫지 마세요.', '');
+      setState(n, '녹음 중입니다.
+다 말씀하셨으면 버튼을 다시 눌러 주세요.
+앱이나 인터넷 창은 완전히 닫지 마세요.', '');
       ctl[n].time.textContent = '0:00';
       timer = setInterval(function () {
         var s2 = Math.floor((Date.now() - t0) / 1000);
