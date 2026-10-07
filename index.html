@@ -249,11 +249,28 @@ audio{width:100%;margin:10px 0 0}
     r.readAsDataURL(p.blob);
   }
 
-  function fail(n, p) {
-    p.status = 'failed';
-    setState(n, '저장하지 못했습니다. 인터넷 연결을 확인한 뒤 아래 버튼을 눌러 주세요', 'err');
-    ctl[n].retry.classList.remove('hide');
-  }
+function fail(n, p) {
+  if (p.status === 'saved') return;
+  p.status = 'failed';
+  setState(n, '저장 여부를 확인하고 있습니다…', '');
+  call({ action: 'info' }).then(function (r) {
+    if (r && r.ok) {
+      info.saved = r.saved || {};
+      var s = info.saved[n];
+      if (s && s.secs === p.secs) {
+        p.status = 'saved';
+        ctl[n].retry.classList.add('hide');
+        setState(n, '저장되었습니다 (' + fmt(p.secs) + '). 다시 하시려면 버튼을 눌러 주세요', 'ok');
+        return;
+      }
+    }
+    showFail(n);
+  }).catch(function () { showFail(n); });
+}
+function showFail(n) {
+  setState(n, '저장하지 못했습니다. 인터넷 연결을 확인한 뒤 아래 버튼을 눌러 주세요', 'err');
+  ctl[n].retry.classList.remove('hide');
+}
 
   function busy() { return active || Object.keys(pending).some(function (k) { return pending[k].status === 'uploading'; }); }
   function failedAny() { return Object.keys(pending).filter(function (k) { return pending[k].status === 'failed'; }); }
