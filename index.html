@@ -172,7 +172,7 @@ audio{width:100%;margin:10px 0 0}
 
   function setState(n, text, kind) { var s = ctl[n].state; s.textContent = text; s.className = 'state ' + (kind || ''); }
     function setSaved(n, p) {
-    if (p.warn) setState(n, '저장은 되었지만 녹음이 중간에 끊긴 것 같습니다. 재생바에서 길이를 확인하시고, 다시 하시려면 버튼을 눌러 주세요', 'err');
+    if (p.warn) setState(n, '녹음이 중간에 끊겼습니다. 음악·영상 앱이나 이어폰 연결을 끈 뒤 버튼을 눌러 다시 녹음해 주세요', 'err');
     else setState(n, '저장되었습니다 (' + fmt(p.secs) + '). 다시 하시려면 버튼을 눌러 주세요', 'ok');
   }
 
