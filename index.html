@@ -195,7 +195,7 @@ audio{width:100%;margin:10px 0 0}
       lockOthers(n, true);
       ctl[n].mic.classList.add('on');
       ctl[n].audio.classList.add('hide'); ctl[n].retry.classList.add('hide');
-      setState(n, '녹음 중입니다. 다 말씀하셨으면 버튼을 다시 눌러 주세요. 녹음하는 동안에는 이 화면을 벗어나거나 화면을 끄지 마세요', '');
+      setState(n, '녹음 중입니다. 다 말씀하셨으면 버튼을 다시 눌러 주세요. 녹음하는 동안에는 앱이나 인터넷 창을 완전히 닫지 마세요', '');
       ctl[n].time.textContent = '0:00';
       timer = setInterval(function () {
         var s2 = Math.floor((Date.now() - t0) / 1000);
