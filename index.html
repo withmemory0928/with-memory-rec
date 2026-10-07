@@ -61,7 +61,7 @@ audio{width:100%;margin:10px 0 0}
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var app = $('#app');
-  var token = (new URLSearchParams(location.search)).get('t') || '';
+  var token = (new URLSearchParams(location.hash.slice(1))).get('t') || (new URLSearchParams(location.search)).get('t') || '';
   var info = null, active = null;
   var pending = {};
   var ctl = {};
