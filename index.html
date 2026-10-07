@@ -103,7 +103,7 @@ audio{width:100%;margin:10px 0 0}
     app.textContent = '';
     var head = el('div', 'card');
     head.appendChild(el('h1', '', (info.name ? info.name + '님이 ' : '') + '신청하신 기록'));
-    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요. 한 질문씩 나누어 녹음하며, 마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요.'));
+    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요. 한 질문씩 나누어 녹음하며, 마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요. 녹음하는 동안에는 음악·영상 앱을 꺼 주시고, 이어폰이 연결되어 있다면 빼 주세요.'));
     head.appendChild(el('div', 'deadline', dl(info.deadline) + '까지 제출해 주세요'));
     var inapp = navigator.userAgent;
     if (/KAKAOTALK/i.test(inapp)) {
