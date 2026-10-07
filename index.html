@@ -171,8 +171,12 @@ audio{width:100%;margin:10px 0 0}
   }
 
   function setState(n, text, kind) { var s = ctl[n].state; s.textContent = text; s.className = 'state ' + (kind || ''); }
+    function setSaved(n, p) {
+    if (p.warn) setState(n, '저장은 되었지만 녹음이 중간에 끊긴 것 같습니다. 재생바에서 길이를 확인하시고, 다시 하시려면 버튼을 눌러 주세요', 'err');
+    else setState(n, '저장되었습니다 (' + fmt(p.secs) + '). 다시 하시려면 버튼을 눌러 주세요', 'ok');
+  }
 
-  var rec = null, stream = null, chunks = [], t0 = 0, timer = null;
+  var rec = null, stream = null, chunks = [], t0 = 0, timer = null, interrupted = false, muteTimer = null;
 
   function toggle(n) {
     if (active === n) return stop();
@@ -190,6 +194,13 @@ audio{width:100%;margin:10px 0 0}
       rec = m ? new MediaRecorder(s, { mimeType: m }) : new MediaRecorder(s);
       rec.ondataavailable = function (ev) { if (ev.data && ev.data.size) chunks.push(ev.data); };
       rec.onstop = function () { finish(n); };
+      interrupted = false;
+      var tr = s.getAudioTracks()[0];
+      if (tr) {
+        tr.addEventListener('ended', function () { if (active === n) { interrupted = true; stop(); } });
+        tr.addEventListener('mute', function () { clearTimeout(muteTimer); muteTimer = setTimeout(function () { if (active === n && tr.muted) { interrupted = true; stop(); } }, 3000); });
+        tr.addEventListener('unmute', function () { clearTimeout(muteTimer); });
+      }
       rec.start(1000);
       active = n; t0 = Date.now();
       lockOthers(n, true);
@@ -212,7 +223,7 @@ audio{width:100%;margin:10px 0 0}
     });
   }
 
-  function stop() { clearInterval(timer); if (rec && rec.state !== 'inactive') rec.stop(); }
+  function stop() { clearInterval(timer); clearTimeout(muteTimer); if (rec && rec.state !== 'inactive') rec.stop(); }
 
   function lockOthers(n, on) { Object.keys(ctl).forEach(function (k) { if (+k !== n) ctl[k].mic.disabled = on; }); }
 
@@ -225,7 +236,7 @@ audio{width:100%;margin:10px 0 0}
     ctl[n].mic.classList.remove('on');
     ctl[n].time.textContent = '';
     ctl[n].audio.src = URL.createObjectURL(blob); ctl[n].audio.classList.remove('hide');
-    pending[n] = { blob: blob, mime: mime, secs: secs, status: 'new' };
+    pending[n] = { blob: blob, mime: mime, secs: secs, status: 'new', warn: interrupted || blob.size < secs * 3000 };
     upload(n);
   }
 
@@ -239,7 +250,7 @@ audio{width:100%;margin:10px 0 0}
       call({ action: 'save', q: n, data: data, mime: p.mime, secs: p.secs, ua: navigator.userAgent.slice(0, 300) }).then(function (res) {
         if (res.ok) {
           p.status = 'saved'; info.saved[n] = { secs: p.secs };
-          setState(n, '저장되었습니다 (' + fmt(p.secs) + '). 다시 하시려면 버튼을 눌러 주세요', 'ok');
+          setSaved(n, p);
         } else if (res.code === 'closed' || res.code === 'submitted') {
           location.reload();
         } else { fail(n, p); }
