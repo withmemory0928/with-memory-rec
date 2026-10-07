@@ -292,7 +292,26 @@ audio{width:100%;margin:10px 0 0}
       }).catch(function () { ov.remove(); say(fm, '제출하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 눌러 주세요.', false); });
     });
   }
-
+  // 화면이 다시 보일 때: 저장 중이던 녹음이 서버에 올라갔는지 확인해서 화면 상태를 맞춘다
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden || !info) return;
+    var waiting = Object.keys(pending).filter(function (k) { return pending[k].status === 'uploading' || pending[k].status === 'failed'; });
+    if (!waiting.length) return;
+    call({ action: 'info' }).then(function (r) {
+      if (!r || !r.ok) return;
+      info.saved = r.saved || {};
+      waiting.forEach(function (k) {
+        var p = pending[k], n = +k, s = info.saved[k];
+        if (s && s.secs === p.secs) {
+          p.status = 'saved';
+          ctl[n].retry.classList.add('hide');
+          setState(n, '저장되었습니다 (' + fmt(p.secs) + '). 다시 하시려면 버튼을 눌러 주세요', 'ok');
+        } else if (p.status === 'uploading') {
+          fail(n, p);
+        }
+      });
+    }).catch(function () {});
+  });
   window.addEventListener('beforeunload', function (e) { if (busy()) { e.preventDefault(); e.returnValue = ''; } });
   start();
 })();
