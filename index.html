@@ -103,9 +103,7 @@ audio{width:100%;margin:10px 0 0}
     app.textContent = '';
     var head = el('div', 'card');
     head.appendChild(el('h1', '', (info.name ? info.name + '님이 ' : '') + '신청하신 기록'));
-    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요.
-한 질문씩 나누어 녹음하며, 마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요.
-녹음하는 동안에는 음악·영상 앱을 꺼 주세요.'));
+    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요.\n한 질문씩 나누어 녹음하며, 마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요.\n녹음하는 동안에는 음악·영상 앱을 꺼 주세요.'));
     head.appendChild(el('div', 'deadline', dl(info.deadline) + '까지 제출해 주세요'));
     var inapp = navigator.userAgent;
     if (/KAKAOTALK/i.test(inapp)) {
@@ -165,8 +163,7 @@ audio{width:100%;margin:10px 0 0}
     card.appendChild(box);
     ctl[n] = { mic: mic, state: state, time: time, audio: audio, retry: retry };
     var saved = info.saved && info.saved[n];
-    if (saved) setState(n, '저장되었습니다 (' + fmt(saved.secs) + ')
-다시 하시려면 버튼을 눌러 주세요', 'ok');
+    if (saved) setState(n, '저장되었습니다 (' + fmt(saved.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
     else setState(n, '버튼을 눌러 녹음을 시작하세요', '');
     mic.addEventListener('click', function () { toggle(n); });
     retry.addEventListener('click', function () { upload(n); });
@@ -175,10 +172,8 @@ audio{width:100%;margin:10px 0 0}
 
   function setState(n, text, kind) { var s = ctl[n].state; s.textContent = text; s.className = 'state ' + (kind || ''); }
     function setSaved(n, p) {
-    if (p.warn) setState(n, '녹음이 끊겼습니다.
-음악·영상 앱을 끄고 다시 녹음해 주세요.', 'err');
-    else setState(n, '저장되었습니다 (' + fmt(p.secs) + ')
-다시 하시려면 버튼을 눌러 주세요', 'ok');
+    if (p.warn) setState(n, '녹음이 끊겼습니다.\n음악·영상 앱을 끄고 다시 녹음해 주세요.', 'err');
+    else setState(n, '저장되었습니다 (' + fmt(p.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
   }
 
   var rec = null, stream = null, chunks = [], t0 = 0, timer = null, interrupted = false, muteTimer = null;
@@ -211,9 +206,7 @@ audio{width:100%;margin:10px 0 0}
       lockOthers(n, true);
       ctl[n].mic.classList.add('on');
       ctl[n].audio.classList.add('hide'); ctl[n].retry.classList.add('hide');
-      setState(n, '녹음 중입니다.
-다 말씀하셨으면 버튼을 다시 눌러 주세요.
-앱이나 인터넷 창은 완전히 닫지 마세요.', '');
+      setState(n, '녹음 중입니다.\n다 말씀하셨으면 버튼을 다시 눌러 주세요.\n앱이나 인터넷 창은 완전히 닫지 마세요.', '');
       ctl[n].time.textContent = '0:00';
       timer = setInterval(function () {
         var s2 = Math.floor((Date.now() - t0) / 1000);
