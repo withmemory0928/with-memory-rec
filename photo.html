@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>위드메모리 · 사진</title>
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<style>
+:root{--ink:#222;--sub:#5a5a5a;--line:#e3e0d8;--soft:#f7f5f0;--accent:#2f5d50;--accent-soft:#e7efea;--rec:#b03a2e;--warn:#8a5a00;--warn-soft:#fbf3e2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:19px;line-height:1.65;word-break:keep-all;-webkit-text-size-adjust:100%}
+.wrap{max-width:560px;margin:0 auto;padding:24px 16px 64px}
+.brand{font-size:15px;color:var(--accent);font-weight:700;letter-spacing:.04em;margin:0 0 10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 18px;margin-bottom:16px}
+h1{font-size:25px;line-height:1.4;margin:0 0 8px}
+p{margin:10px 0}
+.note{font-size:16px;color:var(--sub);white-space:pre-line}
+.who{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:3px 12px;font-size:16px;font-weight:700;margin:0 0 10px}
+.deadline{background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:12px 14px;font-weight:700;font-size:17px;margin:14px 0 0}
+.deadline small{display:block;font-weight:500;font-size:15px;margin-top:4px}
+.tips{margin:14px 0 0;padding:0 0 0 20px;font-size:16px;color:var(--sub)}
+.tips li{margin:4px 0}
+.prog{position:sticky;top:0;z-index:5;background:var(--soft);padding:8px 0 10px;margin:-8px 0 8px}
+.prog-in{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.prog-t{font-size:16px;font-weight:700;color:var(--accent);margin:0}
+.chk{display:flex;gap:12px;align-items:flex-start;font-size:18px;cursor:pointer}
+.chk input{width:28px;height:28px;flex:none;margin-top:2px;accent-color:var(--accent)}
+.locked{opacity:.45;pointer-events:none}
+.ph-t{font-size:21px;font-weight:700;margin:0 0 10px}
+.ph-t b{color:var(--accent);margin-right:6px}
+.pick{display:block;width:100%;font-size:20px;font-weight:700;padding:16px 10px;border-radius:12px;border:2px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-family:inherit;text-align:center}
+.pick.alt{background:#fff;color:var(--accent)}
+.pick.off{opacity:.45;pointer-events:none}
+.pick input{display:none}
+.prev{display:block;width:100%;max-height:340px;object-fit:contain;background:var(--soft);border-radius:12px;margin:12px 0 0}
+.prev-cap{font-size:14px;color:var(--sub);margin:4px 0 0;text-align:center}
+.state{font-size:17px;font-weight:600;margin:10px 0 0;white-space:pre-line}
+.state.ok{color:var(--accent)} .state.err{color:var(--rec)}
+.warnbox{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:12px 14px;font-size:16px;font-weight:600;margin:10px 0 0;white-space:pre-line}
+.story{border-top:1px dashed var(--line);margin-top:18px;padding-top:16px}
+.story-t{font-size:18px;font-weight:700;margin:0 0 2px}
+.recbox{text-align:center;padding:6px 0 0}
+.mic{width:84px;height:84px;border-radius:50%;border:0;background:var(--accent);color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.mic svg{width:38px;height:38px}
+.mic.on{background:var(--rec);animation:pulse 1.4s infinite}
+.mic:disabled{opacity:.4}
+.lbl{font-size:17px;font-weight:700;color:var(--accent);margin:6px 0 0}
+.lbl.on{color:var(--rec)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(176,58,46,.45)}70%{box-shadow:0 0 0 16px rgba(176,58,46,0)}100%{box-shadow:0 0 0 0 rgba(176,58,46,0)}}
+.time{font-size:26px;font-variant-numeric:tabular-nums;font-weight:700;color:var(--rec);min-height:0}
+audio{width:100%;margin:10px 0 0}
+.retry{margin-top:8px;font-size:17px;padding:10px 16px;border-radius:10px;border:2px solid var(--rec);background:#fff;color:var(--rec);font-weight:700;font-family:inherit}
+.hide{display:none}
+.msg{font-weight:600;border-radius:12px;padding:14px;margin:14px 0 0;font-size:17px}
+.msg.info{background:var(--soft);color:var(--sub);border:1px solid var(--line);font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="brand">WITH MEMORY · 위드메모리</p>
+  <div id="app"><div class="card"><p>불러오는 중입니다. 처음 여는 데는 몇 초 걸릴 수 있으니 잠시만 기다려 주세요.</p></div></div>
+</div>
+
+<script>
+(function () {
+  // ▼ 사진용 Apps Script 웹 앱 주소(/exec)를 넣으세요 (녹음용 주소와 다릅니다)
+  var EXEC_URL = 'https://script.google.com/macros/s/[사진용 배포 ID]/exec';
+  var MAX_FILE = 30 * 1024 * 1024;   // 사진 원본 30MB까지
+  var SMALL_PX = 1500;               // 긴 변이 이보다 작으면 화질 안내
+  var CONFIRM_TEXT = '올린 사진과 이야기가 책으로 만들어지는 데 사용되는 것을 확인했습니다.';
+  var MIC_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
+  var STOP_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var app = $('#app');
+  var token = (new URLSearchParams(location.hash.slice(1))).get('t') || (new URLSearchParams(location.search)).get('t') || '';
+  var info = null, active = null, MAX_SECS = 60;
+  var ctl = {};          // 사진 칸별 화면 요소
+  var pp = {};           // 사진 올리기 진행 상태 (칸별)
+  var ps = {};           // 이야기 올리기 진행 상태 (칸별)
+  var prog = null;
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  function dl(ms) { var d = new Date(ms + 9 * 3600 * 1000); return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일 ' + ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); }
+  function slotOf(n) { return info.saved[n] || (info.saved[n] = {}); }
+  function isRec() { return info.mode !== '손글씨'; }
+
+  function call(body) {
+    body.t = token;
+    return fetch(EXEC_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); });
+  }
+  function toB64(blob) {
+    return new Promise(function (ok, no) {
+      var r = new FileReader();
+      r.onload = function () { ok(String(r.result).split(',')[1] || ''); };
+      r.onerror = function () { no(r.error); };
+      r.readAsDataURL(blob);
+    });
+  }
+  function pickMime() {
+    if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) return '';
+    var list = ['audio/mp4;codecs=mp4a.40.2', 'audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg;codecs=opus'];
+    for (var i = 0; i < list.length; i++) if (MediaRecorder.isTypeSupported(list[i])) return list[i];
+    return '';
+  }
+
+  function simple(title, body) {
+    app.textContent = '';
+    var c = el('div', 'card'); c.appendChild(el('h1', '', title)); c.appendChild(el('p', '', body)); app.appendChild(c);
+  }
+
+  function start() {
+    if (!token) return simple('주소를 확인해 주세요', '받으신 링크를 다시 눌러 주세요.');
+    call({ action: 'info' }).then(function (r) {
+      if (!r.ok) return simple('열 수 없는 주소입니다', '받으신 링크가 맞는지 확인해 주세요. 계속 열리지 않으면 신청하신 분께 문의해 주세요.');
+      info = r; info.saved = info.saved || {}; MAX_SECS = r.storySecs || 60;
+      if (r.state !== 'open') return simple('사진을 올리는 기간이 끝났습니다', '올리신 사진과 이야기는 책을 만드는 데 사용됩니다. 문의가 필요하시면 신청하신 분께 말씀해 주세요.');
+      render();
+    }).catch(function () { simple('불러오지 못했습니다', '인터넷 연결을 확인한 뒤 새로고침해 주세요.'); });
+  }
+
+  function render() {
+    app.textContent = '';
+    var head = el('div', 'card');
+    if (info.who) head.appendChild(el('p', 'who', info.who + ' 사진 링크'));
+    head.appendChild(el('h1', '', (info.name ? info.name + '님이 ' : '') + '신청하신 사진'));
+    head.appendChild(el('p', 'note', isRec()
+      ? '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진마다 그 사진에 얽힌 이야기를 ' + (MAX_SECS / 60) + '분 안으로 들려주시면, 사진 아래에 그 이야기가 글로 담깁니다.'
+      : '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진에 얽힌 이야기는 함께 받으신 기록지의 사진 이야기 칸에 적어 주시면, 사진 아래에 그 글씨 그대로 담깁니다.'));
+    var tips = el('ul', 'tips');
+    tips.appendChild(el('li', '', '휴대폰 사진첩에 있는 원본 사진을 골라 주세요. 카카오톡으로 받아 저장한 사진은 화질이 낮아 선명하게 인화되지 않을 수 있습니다.'));
+    tips.appendChild(el('li', '', '종이 사진은 밝은 곳에서 그림자가 지지 않게, 사진이 화면에 꽉 차도록 반듯하게 찍어 올려 주세요.'));
+    head.appendChild(tips);
+    var dbox = el('div', 'deadline', dl(info.deadline) + '까지 올려 주세요');
+    dbox.appendChild(el('small', '', '기간 안에는 다른 사진으로 다시 올려 바꿀 수 있습니다. 올리신 사진과 이야기는 이 화면에서 다시 볼 수 없습니다.'));
+    head.appendChild(dbox);
+    var ua = navigator.userAgent;
+    if (/KAKAOTALK/i.test(ua) && isRec()) {
+      head.appendChild(el('p', 'msg info', /iPhone|iPad|iPod/i.test(ua)
+        ? '녹음이 되지 않으면 화면 아래 공유 버튼에서 "Safari로 열기"를 선택해 주세요.'
+        : '녹음이 되지 않으면 오른쪽 위 ⋮ 버튼에서 "다른 브라우저로 열기"를 선택해 주세요.'));
+    }
+    app.appendChild(head);
+
+    var pg = el('div', 'prog'); var pin = el('div', 'prog-in'); var pt = el('p', 'prog-t');
+    pin.appendChild(pt); pg.appendChild(pin); app.appendChild(pg);
+    prog = pt;
+
+    var gate = el('div', 'card');
+    var lb = el('label', 'chk');
+    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'confirm';
+    lb.appendChild(cb); lb.appendChild(el('span', '', CONFIRM_TEXT));
+    gate.appendChild(lb);
+    app.appendChild(gate);
+
+    var list = el('div', 'locked'); list.id = 'slots';
+    for (var n = 1; n <= info.max; n++) list.appendChild(buildSlot(n));
+    app.appendChild(list);
+
+    var foot = el('div', 'card locked'); foot.id = 'foot';
+    foot.appendChild(el('p', 'note', '따로 제출하실 필요는 없습니다. ' + dl(info.deadline) + '까지 마지막으로 올리신 사진' + (isRec() ? '과 이야기' : '') + '로 책을 만듭니다.\n사진은 1장만 올리셔도 됩니다.'));
+    app.appendChild(foot);
+
+    function open() { list.classList.remove('locked'); foot.classList.remove('locked'); }
+    if (info.confirmed) { cb.checked = true; cb.disabled = true; open(); }
+    cb.addEventListener('change', function () {
+      if (!cb.checked) return;
+      cb.disabled = true;
+      call({ action: 'confirm' }).then(function (r) {
+        if (r.ok) open(); else { cb.checked = false; cb.disabled = false; alert('확인을 저장하지 못했습니다. 다시 눌러 주세요.'); }
+      }).catch(function () { cb.checked = false; cb.disabled = false; alert('인터넷 연결을 확인한 뒤 다시 눌러 주세요.'); });
+    });
+    syncAll();
+  }
+
+  function updateProg() {
+    if (!prog) return;
+    var ph = 0, st = 0;
+    for (var n = 1; n <= info.max; n++) { var s = info.saved[n] || {}; if (s.photo) ph++; if (s.story) st++; }
+    prog.textContent = '사진 ' + info.max + '장 중 ' + ph + '장 올림' + (isRec() ? ' · 이야기 ' + st + '개 녹음' : '');
+  }
+
+  // ───── 사진 칸 ─────
+  function buildSlot(n) {
+    var card = el('div', 'card');
+    var t = el('p', 'ph-t'); t.appendChild(el('b', '', '사진 ' + n + '.')); card.appendChild(t);
+
+    var pick = el('label', 'pick');
+    var pickTxt = el('span', '', '사진 고르기');
+    var input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*';
+    pick.appendChild(pickTxt); pick.appendChild(input);
+    card.appendChild(pick);
+    var img = el('img', 'prev hide'); img.alt = '고르신 사진 ' + n;
+    var cap = el('p', 'prev-cap hide', '방금 고르신 사진입니다. 이 화면을 닫으면 다시 보이지 않습니다.');
+    var pstate = el('p', 'state');
+    var warn = el('p', 'warnbox hide');
+    var pretry = el('button', 'retry hide', '다시 올리기'); pretry.type = 'button';
+    card.appendChild(img); card.appendChild(cap); card.appendChild(pstate); card.appendChild(warn); card.appendChild(pretry);
+
+    var c = { pick: pick, pickTxt: pickTxt, input: input, img: img, cap: cap, pstate: pstate, warn: warn, pretry: pretry };
+
+    var story = el('div', 'story');
+    story.appendChild(el('p', 'story-t', '이 사진에 얽힌 이야기'));
+    if (isRec()) {
+      story.appendChild(el('p', 'note', '언제, 어디서 찍은 사진인지, 왜 이 사진을 고르셨는지 편하게 들려주세요. (' + (MAX_SECS / 60) + '분 안)'));
+      var box = el('div', 'recbox');
+      var mic = document.createElement('button'); mic.type = 'button'; mic.className = 'mic';
+      var lbl = el('p', 'lbl'); var sstate = el('p', 'state'); var time = el('p', 'time');
+      var audio = document.createElement('audio'); audio.controls = true; audio.setAttribute('playsinline', ''); audio.className = 'hide';
+      var sretry = el('button', 'retry hide', '다시 저장하기'); sretry.type = 'button';
+      box.appendChild(mic); box.appendChild(lbl); box.appendChild(sstate); box.appendChild(time); box.appendChild(audio); box.appendChild(sretry);
+      story.appendChild(box);
+      c.mic = mic; c.lbl = lbl; c.sstate = sstate; c.time = time; c.audio = audio; c.sretry = sretry;
+      mic.addEventListener('click', function () { toggle(n); });
+      sretry.addEventListener('click', function () { uploadStory(n); });
+    } else {
+      story.appendChild(el('p', 'note', '함께 받으신 기록지의 사진 이야기 칸에 적어 주세요.'));
+    }
+    card.appendChild(story);
+    ctl[n] = c;
+
+    var s = info.saved[n] || {};
+    if (s.photo) setP(n, '올리신 사진이 있습니다 (' + s.photo.when + ')\n다른 사진으로 바꾸시려면 위 버튼을 눌러 주세요.', 'ok');
+    if (isRec()) {
+      if (s.story) setS(n, '이야기가 녹음되어 있습니다 (' + fmt(s.story.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
+      setMic(n, false);
+    }
+    input.addEventListener('change', function () { var f = input.files && input.files[0]; input.value = ''; if (f) onPick(n, f); });
+    pretry.addEventListener('click', function () { uploadPhoto(n); });
+    return card;
+  }
+
+  function setP(n, text, kind) { var s = ctl[n].pstate; s.textContent = text; s.className = 'state ' + (kind || ''); }
+  function setS(n, text, kind) { var s = ctl[n].sstate; if (!s) return; s.textContent = text; s.className = 'state ' + (kind || ''); }
+  function setMic(n, on) {
+    var c = ctl[n]; if (!c.mic) return;
+    var s = info.saved[n] || {};
+    c.mic.innerHTML = on ? STOP_SVG : MIC_SVG;
+    c.mic.classList.toggle('on', on);
+    c.mic.setAttribute('aria-label', '사진 ' + n + (on ? ' 이야기 녹음 끝내기' : ' 이야기 녹음'));
+    c.lbl.textContent = on ? '녹음 끝내기' : (s.story ? '다시 녹음하기' : '녹음 시작');
+    c.lbl.className = 'lbl' + (on ? ' on' : '');
+    if (!on && !s.photo && !s.story && !(ps[n] && ps[n].status !== 'saved')) setS(n, '사진을 먼저 올리시면 녹음할 수 있습니다', '');
+    else if (!on && s.photo && !s.story && !ps[n]) setS(n, '버튼을 눌러 녹음을 시작하세요', '');
+  }
+  function busyP(n) { return !!pp[n] && (pp[n].status === 'uploading' || pp[n].status === 'checking'); }
+  function busyS(n) { return !!ps[n] && (ps[n].status === 'uploading' || ps[n].status === 'checking'); }
+  // 녹음 중에는 다른 버튼을 잠그고, 올리는 중인 칸은 끝날 때까지 잠근다 (늦게 도착한 이전 것이 덮어쓰지 않게)
+  function syncAll() {
+    for (var n = 1; n <= info.max; n++) {
+      var c = ctl[n], s = info.saved[n] || {};
+      c.pick.classList.toggle('off', active !== null || busyP(n));
+      c.input.disabled = active !== null || busyP(n);
+      c.pickTxt.textContent = s.photo ? '다른 사진으로 바꾸기' : '사진 고르기';
+      c.pick.classList.toggle('alt', !!s.photo);
+      if (c.mic) c.mic.disabled = !s.photo || (active !== null && active !== n) || busyS(n) || busyP(n);
+    }
+    updateProg();
+  }
+
+  function onPick(n, f) {
+    var c = ctl[n];
+    c.warn.classList.add('hide'); c.pretry.classList.add('hide');
+    var ext = (String(f.name || '').match(/\.([a-z0-9]{2,5})$/i) || [])[1] || '';
+    var isImg = /^image\//.test(f.type) || /^(jpe?g|png|heic|heif|webp|gif)$/i.test(ext);
+    if (!isImg) return setP(n, '사진 파일만 올릴 수 있습니다. 사진첩에서 골라 주세요.', 'err');
+    if (f.size > MAX_FILE) return setP(n, '사진이 너무 큽니다(30MB 초과). 다른 사진을 골라 주세요.', 'err');
+    var url = URL.createObjectURL(f);
+    var p = { file: f, mime: f.type || '', ext: ext, w: 0, h: 0, at: Date.now(), status: 'new' };
+    pp[n] = p;
+    var im = new Image();
+    im.onload = function () {
+      p.w = im.naturalWidth; p.h = im.naturalHeight;
+      c.img.src = url; c.img.classList.remove('hide'); c.cap.classList.remove('hide');
+      uploadPhoto(n);
+    };
+    im.onerror = function () {   // 미리보기를 못 하는 형식(일부 HEIC)도 원본 그대로 올림
+      c.img.classList.add('hide'); c.cap.classList.add('hide');
+      uploadPhoto(n);
+    };
+    im.src = url;
+  }
+
+  function uploadPhoto(n) {
+    var p = pp[n]; if (!p || busyP(n)) return;
+    var c = ctl[n];
+    p.status = 'uploading'; c.pretry.classList.add('hide');
+    syncAll();
+    setP(n, '사진을 올리는 중입니다…\n사진이 크면 1분 정도 걸릴 수 있으니 화면을 닫지 말고 기다려 주세요.', '');
+    toB64(p.file).then(function (data) {
+      return call({ action: 'photo', slot: n, data: data, mime: p.mime, ext: p.ext, w: p.w, h: p.h, at: p.at });
+    }).then(function (res) {
+      if (pp[n] !== p) return;
+      if (res.ok) {
+        var s = slotOf(n);
+        if (res.stale) { if (res.photo) s.photo = res.photo; }
+        else s.photo = { when: res.when, at: p.at, w: p.w, h: p.h };
+        p.status = 'saved';
+        photoDone(n, p);
+      } else if (res.code === 'closed') {
+        location.reload();
+      } else if (res.code === 'too_big') {
+        p.status = 'failed'; setP(n, '사진이 너무 큽니다. 다른 사진을 골라 주세요.', 'err'); syncAll();
+      } else if (res.code === 'not_image') {
+        p.status = 'failed'; setP(n, '사진 파일만 올릴 수 있습니다. 사진첩에서 골라 주세요.', 'err'); syncAll();
+      } else failP(n, p);
+    }).catch(function () { failP(n, p); });
+  }
+  function photoDone(n, p) {
+    var c = ctl[n], s = slotOf(n);
+    var text = '사진을 올렸습니다 (' + s.photo.when + ')';
+    if (isRec() && s.story) text += '\n이 사진의 이야기가 이미 녹음되어 있습니다. 다른 사진으로 바꾸셨다면 이야기도 다시 녹음해 주세요.';
+    else if (isRec()) text += '\n아래에서 이 사진에 얽힌 이야기를 들려주세요.';
+    setP(n, text, 'ok');
+    var big = Math.max(p.w || 0, p.h || 0);
+    if (big && big < SMALL_PX) {
+      c.warn.textContent = '이 사진은 크기가 작아(' + p.w + ' × ' + p.h + ') 인화하면 흐릿할 수 있습니다.\n휴대폰 사진첩에 원본 사진이 있으면 그 사진으로 다시 올려 주세요.';
+      c.warn.classList.remove('hide');
+    } else c.warn.classList.add('hide');
+    setMic(n, false); syncAll();
+  }
+  function failP(n, p) {
+    if (p.status === 'saved') return;
+    p.status = 'checking'; syncAll();
+    setP(n, '올라갔는지 확인하고 있습니다…', '');
+    call({ action: 'info' }).then(function (r) {
+      if (pp[n] !== p) return;
+      if (r && r.ok) {
+        info.saved = r.saved || {};
+        var s = info.saved[n];
+        if (s && s.photo && s.photo.at === p.at) { p.status = 'saved'; photoDone(n, p); return; }
+      }
+      showFailP(n, p);
+    }).catch(function () { if (pp[n] === p) showFailP(n, p); });
+  }
+  function showFailP(n, p) {
+    p.status = 'failed';
+    setP(n, '사진을 올리지 못했습니다. 인터넷 연결을 확인한 뒤 아래 버튼을 눌러 주세요', 'err');
+    ctl[n].pretry.classList.remove('hide');
+    syncAll();
+  }
+
+  // ───── 이야기 녹음 (1분) ─────
+  var rec = null, stream = null, chunks = [], t0 = 0, timer = null, interrupted = false, capped = false, warned = false, muteTimer = null, wake = null;
+
+  function keepAwake(on) {
+    try {
+      if (on && navigator.wakeLock && !wake) {
+        navigator.wakeLock.request('screen').then(function (w) {
+          if (active === null) { w.release().catch(function () {}); return; }
+          wake = w; w.addEventListener('release', function () { wake = null; });
+        }).catch(function () {});
+      }
+      if (!on && wake) { wake.release().catch(function () {}); wake = null; }
+    } catch (e) {}
+  }
+
+  function toggle(n) {
+    if (active === n) return stop();
+    if (active !== null || busyS(n) || busyP(n)) return;
+    if (!(info.saved[n] && info.saved[n].photo)) return;
+    startRec(n);
+  }
+
+  function startRec(n) {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+      return setS(n, '이 브라우저에서는 녹음할 수 없습니다. 다른 브라우저로 열어 주세요', 'err');
+    }
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
+      stream = s; chunks = [];
+      var m = pickMime();
+      rec = m ? new MediaRecorder(s, { mimeType: m }) : new MediaRecorder(s);
+      rec.ondataavailable = function (ev) { if (ev.data && ev.data.size) chunks.push(ev.data); };
+      rec.onstop = function () { finish(n); };
+      interrupted = false; capped = false; warned = false;
+      var tr = s.getAudioTracks()[0];
+      if (tr) {
+        tr.addEventListener('ended', function () { if (active === n) { interrupted = true; stop(); } });
+        tr.addEventListener('mute', function () { clearTimeout(muteTimer); muteTimer = setTimeout(function () { if (active === n && tr.muted) { interrupted = true; stop(); } }, 3000); });
+        tr.addEventListener('unmute', function () { clearTimeout(muteTimer); });
+      }
+      rec.start(1000);
+      active = n; t0 = Date.now();
+      syncAll(); keepAwake(true); setMic(n, true);
+      var c = ctl[n];
+      c.audio.classList.add('hide'); c.sretry.classList.add('hide');
+      setS(n, '녹음 중입니다.\n다 말씀하셨으면 버튼을 다시 눌러 주세요.', '');
+      c.time.textContent = '0:00';
+      timer = setInterval(function () {
+        var s2 = Math.floor((Date.now() - t0) / 1000);
+        c.time.textContent = fmt(Math.min(s2, MAX_SECS));
+        if (s2 >= MAX_SECS - 10 && !warned) { warned = true; setS(n, '10초 남았습니다.\n' + (MAX_SECS / 60) + '분이 되면 녹음이 자동으로 멈추고 저장됩니다.', 'err'); }
+        if (s2 >= MAX_SECS) { capped = true; stop(); }
+      }, 250);
+    }).catch(function (e) {
+      var nm = e && e.name;
+      setS(n, (nm === 'NotAllowedError' || nm === 'PermissionDeniedError')
+        ? '마이크 사용이 허용되지 않았습니다. 설정에서 마이크를 허용한 뒤 다시 열어 주세요'
+        : nm === 'NotFoundError' ? '마이크를 찾지 못했습니다'
+        : nm === 'NotReadableError' ? '다른 앱이 마이크를 쓰고 있습니다. 통화나 다른 녹음을 끝낸 뒤 눌러 주세요'
+        : '녹음을 시작하지 못했습니다', 'err');
+    });
+  }
+
+  function stop() { clearInterval(timer); clearTimeout(muteTimer); if (rec && rec.state !== 'inactive') rec.stop(); }
+
+  function finish(n) {
+    if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+    var mime = (rec && rec.mimeType) || (chunks[0] && chunks[0].type) || 'audio/webm';
+    var blob = new Blob(chunks, { type: mime });
+    var secs = Math.min(MAX_SECS, Math.max(1, Math.round((Date.now() - t0) / 1000)));
+    active = null; keepAwake(false);
+    var c = ctl[n];
+    c.time.textContent = '';
+    c.audio.src = URL.createObjectURL(blob); c.audio.classList.remove('hide');
+    ps[n] = { blob: blob, mime: mime, secs: secs, at: Date.now(), status: 'new', capped: capped, warn: interrupted || blob.size < secs * 3000 };
+    setMic(n, false);
+    uploadStory(n);
+  }
+
+  function uploadStory(n) {
+    var p = ps[n]; if (!p || busyS(n)) return;
+    var c = ctl[n];
+    p.status = 'uploading'; c.sretry.classList.add('hide');
+    syncAll();
+    setS(n, '저장하는 중입니다…\n저장이 끝나면 다시 녹음하실 수 있습니다.', '');
+    toB64(p.blob).then(function (data) {
+      return call({ action: 'story', slot: n, data: data, mime: p.mime, secs: p.secs, at: p.at });
+    }).then(function (res) {
+      if (ps[n] !== p) return;
+      if (res.ok) {
+        var s = slotOf(n);
+        s.story = res.stale && res.story ? res.story : { secs: p.secs, at: p.at };
+        p.status = 'saved'; storyDone(n, res.stale ? { secs: s.story.secs } : p);
+      } else if (res.code === 'closed') {
+        location.reload();
+      } else failS(n, p);
+    }).catch(function () { failS(n, p); });
+  }
+  function storyDone(n, p) {
+    if (p.warn) setS(n, '녹음이 끊겼습니다.\n음악·영상 앱을 끄고 다시 녹음해 주세요.', 'err');
+    else if (p.capped) setS(n, (MAX_SECS / 60) + '분이 되어 녹음이 자동으로 멈추고 저장되었습니다 (' + fmt(p.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
+    else setS(n, '저장되었습니다 (' + fmt(p.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
+    ctl[n].sretry.classList.add('hide');
+    setMic(n, false); syncAll();
+  }
+  function failS(n, p) {
+    if (p.status === 'saved') return;
+    p.status = 'checking'; syncAll();
+    setS(n, '저장 여부를 확인하고 있습니다…', '');
+    call({ action: 'info' }).then(function (r) {
+      if (ps[n] !== p) return;
+      if (r && r.ok) {
+        info.saved = r.saved || {};
+        var s = info.saved[n];
+        if (s && s.story && s.story.at === p.at) { p.status = 'saved'; storyDone(n, p); return; }
+      }
+      showFailS(n, p);
+    }).catch(function () { if (ps[n] === p) showFailS(n, p); });
+  }
+  function showFailS(n, p) {
+    p.status = 'failed';
+    setS(n, '저장하지 못했습니다. 인터넷 연결을 확인한 뒤 아래 버튼을 눌러 주세요', 'err');
+    ctl[n].sretry.classList.remove('hide');
+    syncAll();
+  }
+
+  function busy() {
+    if (active !== null) return true;
+    for (var n = 1; info && n <= info.max; n++) if (busyP(n) || busyS(n)) return true;
+    return false;
+  }
+  // 화면이 다시 보일 때: 올리던 사진·이야기가 서버에 들어갔는지 확인해서 화면을 맞춘다
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden || !info || !prog) return;
+    var wait = false;
+    for (var n = 1; n <= info.max; n++) if ((pp[n] && pp[n].status === 'uploading') || (ps[n] && ps[n].status === 'uploading')) wait = true;
+    if (!wait) return;
+    call({ action: 'info' }).then(function (r) {
+      if (!r || !r.ok) return;
+      info.saved = r.saved || {};
+      for (var n = 1; n <= info.max; n++) {
+        var s = info.saved[n] || {};
+        if (pp[n] && pp[n].status === 'uploading' && s.photo && s.photo.at === pp[n].at) { pp[n].status = 'saved'; photoDone(n, pp[n]); }
+        if (ps[n] && ps[n].status === 'uploading' && s.story && s.story.at === ps[n].at) { ps[n].status = 'saved'; storyDone(n, ps[n]); }
+      }
+      syncAll();
+    }).catch(function () {});
+  });
+  window.addEventListener('beforeunload', function (e) { if (busy()) { e.preventDefault(); e.returnValue = ''; } });
+  start();
+})();
+</script>
+</body>
+</html>
