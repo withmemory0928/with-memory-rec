@@ -6,6 +6,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <title>위드메모리 · 녹음</title>
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <style>
 :root{--ink:#222;--sub:#5a5a5a;--line:#e3e0d8;--soft:#f7f5f0;--accent:#2f5d50;--accent-soft:#e7efea;--rec:#b03a2e}
 *{box-sizing:border-box}
@@ -16,7 +18,14 @@ body{margin:0;background:var(--soft);color:var(--ink);font-family:-apple-system,
 h1{font-size:25px;line-height:1.4;margin:0 0 8px}
 p{margin:10px 0}
 .note{font-size:16px;color:var(--sub);white-space:pre-line}
+.who{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:3px 12px;font-size:16px;font-weight:700;margin:0 0 10px}
 .deadline{background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:12px 14px;font-weight:700;font-size:17px;margin:14px 0 0}
+.deadline small{display:block;font-weight:500;font-size:15px;margin-top:4px}
+.prog{position:sticky;top:0;z-index:5;background:var(--soft);padding:8px 0 10px;margin:-8px 0 8px}
+.prog-in{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.prog-t{font-size:16px;font-weight:700;color:var(--accent);margin:0 0 6px}
+.bar{height:8px;background:var(--accent-soft);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
 .chk{display:flex;gap:12px;align-items:flex-start;font-size:18px;cursor:pointer}
 .chk input{width:28px;height:28px;flex:none;margin-top:2px;accent-color:var(--accent)}
 .q{font-size:21px;font-weight:700;margin:0 0 6px}
@@ -27,6 +36,8 @@ p{margin:10px 0}
 .mic svg{width:38px;height:38px}
 .mic.on{background:var(--rec);animation:pulse 1.4s infinite}
 .mic:disabled{opacity:.4}
+.lbl{font-size:17px;font-weight:700;color:var(--accent);margin:6px 0 0}
+.lbl.on{color:var(--rec)}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(176,58,46,.45)}70%{box-shadow:0 0 0 16px rgba(176,58,46,0)}100%{box-shadow:0 0 0 0 rgba(176,58,46,0)}}
 .state{font-size:17px;font-weight:600;margin:8px 0 0;white-space:pre-line}
 .state.ok{color:var(--accent)} .state.err{color:var(--rec)}
@@ -41,6 +52,7 @@ audio{width:100%;margin:10px 0 0}
 .msg{font-weight:600;border-radius:12px;padding:14px;margin:14px 0 0;font-size:17px}
 .msg.ok{background:var(--accent-soft);color:var(--accent)}
 .msg.err{background:#fbeeec;color:var(--rec)}
+.msg.info{background:var(--soft);color:var(--sub);border:1px solid var(--line);font-weight:500}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
 .modal{background:#fff;border-radius:18px;padding:24px 20px;max-width:420px;width:100%}
 .modal h2{font-size:22px;margin:0 0 8px}
@@ -49,7 +61,7 @@ audio{width:100%;margin:10px 0 0}
 <body>
 <div class="wrap">
   <p class="brand">WITH MEMORY · 위드메모리</p>
-  <div id="app"><div class="card"><p>불러오는 중입니다…</p></div></div>
+  <div id="app"><div class="card"><p>불러오는 중입니다. 처음 여는 데는 몇 초 걸릴 수 있으니 잠시만 기다려 주세요.</p></div></div>
 </div>
 
 <script>
@@ -57,7 +69,10 @@ audio{width:100%;margin:10px 0 0}
   // ▼ 새로 배포한 Apps Script 웹 앱 주소(/exec)를 넣으세요
   var EXEC_URL = 'https://script.google.com/macros/s/AKfycbwOYpqH4WHzZRc4PXAws4k59ZnmiQjY0NKpz_I69WaUiE5xr9k5Zy57Jhfjy92jVixadg/exec';
   var MAX_SECS = 600;
+  var WARN_SECS = MAX_SECS - 60;
   var CONFIRM_TEXT = '녹음한 이야기가 책으로 만들어지는 데 사용되는 것을 확인했습니다.';
+  var MIC_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
+  var STOP_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var app = $('#app');
@@ -65,6 +80,7 @@ audio{width:100%;margin:10px 0 0}
   var info = null, active = null;
   var pending = {};
   var ctl = {};
+  var prog = null;
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
@@ -92,7 +108,7 @@ audio{width:100%;margin:10px 0 0}
     if (!token) return simple('주소를 확인해 주세요', '받으신 링크를 다시 눌러 주세요.');
     call({ action: 'info' }).then(function (r) {
       if (!r.ok) return simple('열 수 없는 주소입니다', '받으신 링크가 맞는지 확인해 주세요. 계속 열리지 않으면 신청하신 분께 문의해 주세요.');
-      info = r;
+      info = r; info.saved = info.saved || {};
       if (r.state === 'submitted') return simple('제출이 완료되었습니다', '녹음이 모두 전달되었습니다. 감사합니다.');
       if (r.state === 'closed') return simple('녹음 기간이 끝났습니다', '제출 기간이 지났습니다. 문의가 필요하시면 신청하신 분께 말씀해 주세요.');
       render();
@@ -102,17 +118,27 @@ audio{width:100%;margin:10px 0 0}
   function render() {
     app.textContent = '';
     var head = el('div', 'card');
+    if (info.who) head.appendChild(el('p', 'who', info.who + ' 녹음 링크'));
     head.appendChild(el('h1', '', (info.name ? info.name + '님이 ' : '') + '신청하신 기록'));
-    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요.\n한 질문씩 나누어 녹음하며, 마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요.\n녹음하는 동안에는 음악·영상 앱을 꺼 주세요.'));
-    head.appendChild(el('div', 'deadline', dl(info.deadline) + '까지 제출해 주세요'));
+    head.appendChild(el('p', 'note', '질문을 보시고 편하게 말씀해 주세요.\n한 질문씩 나누어 녹음하며, 질문 하나에 ' + (MAX_SECS / 60) + '분까지 녹음할 수 있습니다.\n마이크 사용을 묻는 창이 뜨면 "허용"을 눌러 주세요.\n녹음하는 동안에는 음악·영상 앱을 꺼 주세요.'));
+    var dbox = el('div', 'deadline', dl(info.deadline) + '까지 제출해 주세요');
+    dbox.appendChild(el('small', '', '제출을 누르지 않으셔도 마감 때 저장된 녹음이 자동으로 전달됩니다.'));
+    head.appendChild(dbox);
     var inapp = navigator.userAgent;
     if (/KAKAOTALK/i.test(inapp)) {
-      var hint = el('p', 'msg err', /iPhone|iPad|iPod/i.test(inapp)
+      var hint = el('p', 'msg info', /iPhone|iPad|iPod/i.test(inapp)
         ? '녹음이 되지 않으면 화면 아래 공유 버튼에서 "Safari로 열기"를 선택해 주세요.'
         : '녹음이 되지 않으면 오른쪽 위 ⋮ 버튼에서 "다른 브라우저로 열기"를 선택해 주세요.');
       head.appendChild(hint);
     }
     app.appendChild(head);
+
+    var pg = el('div', 'prog'); var pin = el('div', 'prog-in');
+    var pt = el('p', 'prog-t'); var bar = el('div', 'bar'); var bi = document.createElement('i');
+    bar.appendChild(bi); pin.appendChild(pt); pin.appendChild(bar); pg.appendChild(pin);
+    app.appendChild(pg);
+    prog = { t: pt, i: bi };
+    updateProg();
 
     var gate = el('div', 'card');
     var lb = el('label', 'chk');
@@ -149,38 +175,80 @@ audio{width:100%;margin:10px 0 0}
     bSub.addEventListener('click', function () { askSubmit(fm); });
   }
 
+  function updateProg() {
+    if (!prog) return;
+    var a = answered(), t = info.questions.length;
+    prog.t.textContent = a >= t
+      ? '질문 ' + t + '개를 모두 녹음하셨습니다. 맨 아래에서 제출해 주세요.'
+      : '질문 ' + t + '개 중 ' + a + '개 녹음';
+    prog.i.style.width = (t ? Math.min(100, a / t * 100) : 0) + '%';
+  }
+
   function buildQ(n, text) {
     var card = el('div', 'card');
     var q = el('p', 'q'); q.appendChild(el('b', '', 'Q ' + n + '.')); q.appendChild(document.createTextNode(text));
     card.appendChild(q);
     var box = el('div', 'recbox');
     var mic = document.createElement('button'); mic.type = 'button'; mic.className = 'mic'; mic.setAttribute('aria-label', 'Q' + n + ' 녹음');
-    mic.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>';
+    mic.innerHTML = MIC_SVG;
+    var lbl = el('p', 'lbl');
     var state = el('p', 'state'); var time = el('p', 'time');
     var audio = document.createElement('audio'); audio.controls = true; audio.setAttribute('playsinline', ''); audio.className = 'hide';
     var retry = el('button', 'retry hide', '다시 저장하기'); retry.type = 'button';
-    box.appendChild(mic); box.appendChild(state); box.appendChild(time); box.appendChild(audio); box.appendChild(retry);
+    box.appendChild(mic); box.appendChild(lbl); box.appendChild(state); box.appendChild(time); box.appendChild(audio); box.appendChild(retry);
     card.appendChild(box);
-    ctl[n] = { mic: mic, state: state, time: time, audio: audio, retry: retry };
+    ctl[n] = { mic: mic, lbl: lbl, state: state, time: time, audio: audio, retry: retry };
     var saved = info.saved && info.saved[n];
     if (saved) setState(n, '저장되었습니다 (' + fmt(saved.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
     else setState(n, '버튼을 눌러 녹음을 시작하세요', '');
+    setMic(n, false);
     mic.addEventListener('click', function () { toggle(n); });
     retry.addEventListener('click', function () { upload(n); });
     return card;
   }
 
   function setState(n, text, kind) { var s = ctl[n].state; s.textContent = text; s.className = 'state ' + (kind || ''); }
-    function setSaved(n, p) {
+  function setMic(n, on) {
+    var c = ctl[n];
+    c.mic.innerHTML = on ? STOP_SVG : MIC_SVG;
+    c.mic.classList.toggle('on', on);
+    c.mic.setAttribute('aria-label', 'Q' + n + (on ? ' 녹음 끝내기' : ' 녹음'));
+    c.lbl.textContent = on ? '녹음 끝내기' : (info.saved[n] ? '다시 녹음하기' : '녹음 시작');
+    c.lbl.className = 'lbl' + (on ? ' on' : '');
+  }
+  function setSaved(n, p) {
     if (p.warn) setState(n, '녹음이 끊겼습니다.\n음악·영상 앱을 끄고 다시 녹음해 주세요.', 'err');
+    else if (p.capped) setState(n, (MAX_SECS / 60) + '분이 되어 녹음이 자동으로 멈추고 저장되었습니다 (' + fmt(p.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
     else setState(n, '저장되었습니다 (' + fmt(p.secs) + ')\n다시 하시려면 버튼을 눌러 주세요', 'ok');
   }
+  // 녹음 중인 질문 말고는 버튼을 잠그고, 저장 중인 질문도 저장이 끝날 때까지 잠근다 (늦게 도착한 이전 녹음이 덮어쓰지 않게)
+  function syncMics() {
+    Object.keys(ctl).forEach(function (k) {
+      var n = +k, p = pending[n];
+      ctl[n].mic.disabled = (active !== null && active !== n) || (!!p && (p.status === 'uploading' || p.status === 'checking'));
+    });
+  }
 
-  var rec = null, stream = null, chunks = [], t0 = 0, timer = null, interrupted = false, muteTimer = null;
+  var rec = null, stream = null, chunks = [], t0 = 0, timer = null, interrupted = false, capped = false, warned = false, muteTimer = null;
+  var wake = null;
+
+  // 녹음하는 동안 화면이 꺼지지 않게 (지원하는 브라우저에서만)
+  function keepAwake(on) {
+    try {
+      if (on && navigator.wakeLock && !wake) {
+        navigator.wakeLock.request('screen').then(function (w) {
+          if (active === null) { w.release().catch(function () {}); return; }
+          wake = w; w.addEventListener('release', function () { wake = null; });
+        }).catch(function () {});
+      }
+      if (!on && wake) { wake.release().catch(function () {}); wake = null; }
+    } catch (e) {}
+  }
 
   function toggle(n) {
     if (active === n) return stop();
-    if (active) return;
+    if (active !== null) return;
+    if (pending[n] && pending[n].status === 'uploading') return;
     startRec(n);
   }
 
@@ -194,7 +262,7 @@ audio{width:100%;margin:10px 0 0}
       rec = m ? new MediaRecorder(s, { mimeType: m }) : new MediaRecorder(s);
       rec.ondataavailable = function (ev) { if (ev.data && ev.data.size) chunks.push(ev.data); };
       rec.onstop = function () { finish(n); };
-      interrupted = false;
+      interrupted = false; capped = false; warned = false;
       var tr = s.getAudioTracks()[0];
       if (tr) {
         tr.addEventListener('ended', function () { if (active === n) { interrupted = true; stop(); } });
@@ -203,15 +271,19 @@ audio{width:100%;margin:10px 0 0}
       }
       rec.start(1000);
       active = n; t0 = Date.now();
-      lockOthers(n, true);
-      ctl[n].mic.classList.add('on');
+      syncMics(); keepAwake(true);
+      setMic(n, true);
       ctl[n].audio.classList.add('hide'); ctl[n].retry.classList.add('hide');
       setState(n, '녹음 중입니다.\n다 말씀하셨으면 버튼을 다시 눌러 주세요.\n앱이나 인터넷 창은 완전히 닫지 마세요.', '');
       ctl[n].time.textContent = '0:00';
       timer = setInterval(function () {
         var s2 = Math.floor((Date.now() - t0) / 1000);
-        ctl[n].time.textContent = fmt(s2);
-        if (s2 >= MAX_SECS) stop();
+        ctl[n].time.textContent = fmt(Math.min(s2, MAX_SECS));
+        if (s2 >= WARN_SECS && !warned) {
+          warned = true;
+          setState(n, '1분 남았습니다.\n' + (MAX_SECS / 60) + '분이 되면 녹음이 자동으로 멈추고 저장됩니다.', 'err');
+        }
+        if (s2 >= MAX_SECS) { capped = true; stop(); }
       }, 250);
     }).catch(function (e) {
       var nm = e && e.name;
@@ -225,32 +297,34 @@ audio{width:100%;margin:10px 0 0}
 
   function stop() { clearInterval(timer); clearTimeout(muteTimer); if (rec && rec.state !== 'inactive') rec.stop(); }
 
-  function lockOthers(n, on) { Object.keys(ctl).forEach(function (k) { if (+k !== n) ctl[k].mic.disabled = on; }); }
-
   function finish(n) {
     if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
     var mime = (rec && rec.mimeType) || (chunks[0] && chunks[0].type) || 'audio/webm';
     var blob = new Blob(chunks, { type: mime });
-    var secs = Math.max(1, Math.round((Date.now() - t0) / 1000));
-    active = null; lockOthers(n, false);
-    ctl[n].mic.classList.remove('on');
+    var secs = Math.min(MAX_SECS, Math.max(1, Math.round((Date.now() - t0) / 1000)));
+    active = null; keepAwake(false);
     ctl[n].time.textContent = '';
     ctl[n].audio.src = URL.createObjectURL(blob); ctl[n].audio.classList.remove('hide');
-    pending[n] = { blob: blob, mime: mime, secs: secs, status: 'new', warn: interrupted || blob.size < secs * 3000 };
+    pending[n] = { blob: blob, mime: mime, secs: secs, at: Date.now(), status: 'new', capped: capped, warn: interrupted || blob.size < secs * 3000 };
+    setMic(n, false);
     upload(n);
   }
 
   function upload(n) {
     var p = pending[n]; if (!p || p.status === 'uploading') return;
     p.status = 'uploading'; ctl[n].retry.classList.add('hide');
-    setState(n, '저장하는 중입니다…', '');
+    syncMics();
+    setState(n, '저장하는 중입니다…\n저장이 끝나면 다시 녹음하실 수 있습니다.', '');
     var r = new FileReader();
     r.onload = function () {
       var data = String(r.result).split(',')[1] || '';
-      call({ action: 'save', q: n, data: data, mime: p.mime, secs: p.secs, ua: navigator.userAgent.slice(0, 300) }).then(function (res) {
+      call({ action: 'save', q: n, data: data, mime: p.mime, secs: p.secs, at: p.at }).then(function (res) {
+        if (pending[n] !== p) return;
         if (res.ok) {
-          p.status = 'saved'; info.saved[n] = { secs: p.secs };
-          setSaved(n, p);
+          var secs = res.secs != null ? res.secs : p.secs;
+          p.status = 'saved'; info.saved[n] = { secs: secs };
+          setSaved(n, res.stale ? { secs: secs } : p);
+          setMic(n, false); syncMics(); updateProg();
         } else if (res.code === 'closed' || res.code === 'submitted') {
           location.reload();
         } else { fail(n, p); }
@@ -260,32 +334,36 @@ audio{width:100%;margin:10px 0 0}
     r.readAsDataURL(p.blob);
   }
 
-function fail(n, p) {
-  if (p.status === 'saved') return;
-  p.status = 'failed';
-  setState(n, '저장 여부를 확인하고 있습니다…', '');
-  call({ action: 'info' }).then(function (r) {
-    if (r && r.ok) {
-      info.saved = r.saved || {};
-      var s = info.saved[n];
-      if (s && s.secs === p.secs) {
-        p.status = 'saved';
-        ctl[n].retry.classList.add('hide');
-        setSaved(n, p);
-        return;
+  function fail(n, p) {
+    if (p.status === 'saved') return;
+    p.status = 'checking';
+    setState(n, '저장 여부를 확인하고 있습니다…', '');
+    syncMics();
+    call({ action: 'info' }).then(function (r) {
+      if (pending[n] !== p) return;
+      if (r && r.ok) {
+        info.saved = r.saved || {};
+        var s = info.saved[n];
+        if (s && s.secs === p.secs) {
+          p.status = 'saved';
+          ctl[n].retry.classList.add('hide');
+          setSaved(n, p); setMic(n, false); syncMics(); updateProg();
+          return;
+        }
       }
-    }
-    showFail(n);
-  }).catch(function () { showFail(n); });
-}
-function showFail(n) {
-  setState(n, '저장하지 못했습니다. 인터넷 연결을 확인한 뒤 아래 버튼을 눌러 주세요', 'err');
-  ctl[n].retry.classList.remove('hide');
-}
+      showFail(n, p);
+    }).catch(function () { if (pending[n] === p) showFail(n, p); });
+  }
+  function showFail(n, p) {
+    p.status = 'failed';
+    setState(n, '저장하지 못했습니다. 인터넷 연결을 확인한 뒤 아래 버튼을 눌러 주세요', 'err');
+    ctl[n].retry.classList.remove('hide');
+    syncMics(); updateProg();
+  }
 
-  function busy() { return active || Object.keys(pending).some(function (k) { return pending[k].status === 'uploading'; }); }
+  function busy() { return active !== null || Object.keys(pending).some(function (k) { return pending[k].status === 'uploading' || pending[k].status === 'checking'; }); }
   function failedAny() { return Object.keys(pending).filter(function (k) { return pending[k].status === 'failed'; }); }
-  function answered() { return Object.keys(info.saved).length; }
+  function answered() { return Object.keys(info.saved || {}).length; }
   function say(fm, text, ok) { fm.textContent = text; fm.className = 'msg ' + (ok ? 'ok' : 'err'); }
 
   function tempSave(fm) {
@@ -333,11 +411,12 @@ function showFail(n) {
         if (s && s.secs === p.secs) {
           p.status = 'saved';
           ctl[n].retry.classList.add('hide');
-          setSaved(n, p);
+          setSaved(n, p); setMic(n, false);
         } else if (p.status === 'uploading') {
           fail(n, p);
         }
       });
+      syncMics(); updateProg();
     }).catch(function () {});
   });
   window.addEventListener('beforeunload', function (e) { if (busy()) { e.preventDefault(); e.returnValue = ''; } });
