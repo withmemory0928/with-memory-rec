@@ -1,14 +1,1048 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <title>위드메모리 · 정보 입력</title>
 <meta property="og:title" content="위드메모리 · 정보 입력">
+<meta property="og:description" content="부모님께 여쭐 질문과 기록일을 정해 주세요.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#221D1A;--sub:#6E655E;--mute:#8A8079;--line:#ECE5DD;--line2:#D9CCC2;--soft:#F7F3EE;--soft2:#FAF8F5;--accent:#9C4A2B;--accent-h:#86401F;--accent-soft:#FBF3EE;--warn:#B03A2E}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--soft);color:var(--ink);font-family:"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.7;word-break:keep-all}
+[hidden]{display:none!important}
+p,h1,h2,h3,ul{margin:0}
+button,input,textarea{font-family:inherit;font-size:inherit}
+button{cursor:pointer;color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 72px}
+.brand{font-size:12.5px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin:0 0 14px;text-align:center}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px 18px;margin:0 0 16px}
+.sec-h{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:700;line-height:1.4;margin:0 0 6px}
+.sec-h .n{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.sec-d{font-size:14px;color:var(--mute);margin:0 0 20px}
+
+/* 상단 카드 */
+.hero{max-width:640px;margin:0 auto 14px;padding:9px;border:1.5px solid var(--accent);border-radius:5px;background:#fff;color:var(--accent)}
+.hero-in{border:1px solid var(--accent);border-radius:2px;padding:24px 16px 22px;text-align:center}
+.arches{display:flex;justify-content:center;gap:8px;margin:0 0 12px}
+.arches svg{width:34px;height:46px;display:block}
+.hero .k{font-size:13.5px;color:#7A6E65;margin:0 0 6px}
+.hero h1{font-family:"Noto Serif KR","Nanum Myeongjo",serif;font-weight:600;font-size:32px;letter-spacing:.08em;line-height:1.3;color:var(--accent)}
+.orn{display:block;width:120px;height:10px;margin:14px auto 12px}
+.hero .s{font-size:14.5px;color:#4A413B}
+.tags{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.tag{font-size:13.5px;font-weight:500;padding:4px 13px;border-radius:999px;border:1.5px solid var(--accent);color:var(--accent)}
+.tag.on{background:var(--accent);color:#fff}
+.bot{max-width:640px;margin:0 auto 18px;text-align:center;font-size:14px;color:#4A413B}
+.bot strong{display:block;color:var(--ink);font-size:15px}
+.bot a{display:inline-block;margin-top:10px;font-weight:700;font-size:14px;text-decoration:none;padding:9px 18px;border-radius:999px;border:1.5px solid var(--ink);color:var(--ink);background:#fff}
+
+/* 입력 칸 */
+.fld{margin:0 0 22px}
+.fld:last-child{margin-bottom:0}
+.lb{display:block;font-size:15px;font-weight:700;margin:0 0 8px}
+.lb i{font-style:normal;color:var(--accent);margin-left:3px}
+.lb small{font-weight:400;color:var(--mute);font-size:13px;margin-left:4px}
+.help{font-size:13px;color:var(--mute);margin:7px 0 0}
+.in{display:block;width:100%;height:50px;padding:0 14px;border:1px solid var(--line2);border-radius:10px;background:#fff;font-size:16px;color:var(--ink);-webkit-appearance:none;appearance:none;margin:0}
+input[type=date].in{line-height:50px}
+.in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(156,74,43,.12)}
+.in::placeholder{color:#B3A89F}
+.in[readonly]{background:var(--soft2)}
+.stack>*+*{margin-top:8px}
+.row2{display:flex;gap:8px}
+.row2 .in{flex:1;min-width:0}
+.btn-s{flex:none;height:50px;padding:0 16px;border:1px solid var(--line2);border-radius:10px;background:#fff;font-size:15px;font-weight:500}
+.btn-s:hover{border-color:var(--accent);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips.col{flex-direction:column;align-items:flex-start}
+.chips.col .chip span{border-radius:14px}
+.chip{position:relative;display:inline-block}
+.chip input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.chip span{display:inline-flex;align-items:center;min-height:44px;padding:6px 16px;border:1px solid var(--line2);border-radius:999px;background:#fff;font-size:15px;line-height:1.4;cursor:pointer}
+.chip input:checked+span{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.chip input:focus-visible+span{box-shadow:0 0 0 3px rgba(156,74,43,.25)}
+.chip input:disabled+span{opacity:.45;cursor:default}
+.chip em{font-style:normal;font-size:12px;margin-left:6px}
+.locked{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--soft);font-weight:700}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--soft2);cursor:pointer;font-size:15px}
+.chk input{width:22px;height:22px;flex:none;margin:3px 0 0;accent-color:var(--accent)}
+.policy{white-space:pre-wrap;font-size:13.5px;line-height:1.75;color:#4A413B;background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:14px;max-height:230px;overflow:auto;margin:0 0 10px}
+.note{font-size:14px;color:var(--sub);background:var(--soft);border-radius:10px;padding:12px 14px;margin:12px 0 0}
+.fe{display:none;color:var(--warn);font-size:13.5px;font-weight:700;margin:7px 0 0}
+.bad>.fe,.bad .fe{display:block}
+.fld.bad .in,.fld.bad .chip span,.fld.bad .chk{border-color:var(--warn)}
+
+/* 신청 전 안내 */
+.before{border-color:#E3C9BC;background:#FFFCF9}
+.before summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.before summary::-webkit-details-marker{display:none}
+.before summary:after{content:"펼치기";flex:none;font-size:13px;color:var(--accent);font-weight:700}
+.before[open] summary:after{content:"접기"}
+.before .k{font-size:11px;letter-spacing:.22em;color:var(--accent);margin:0 0 4px}
+.before h2{font-size:17px;line-height:1.45}
+.before .lead{font-size:14px;color:var(--sub);margin:12px 0 0}
+.before ul{list-style:none;padding:0;margin:14px 0}
+.before li{position:relative;padding:0 0 0 24px;margin:0 0 9px;font-size:14px;line-height:1.65}
+.before li:before{content:"";position:absolute;left:3px;top:7px;width:10px;height:5px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg)}
+.before .foot{border-top:1px dashed var(--line2);padding-top:12px;font-size:13.5px;color:var(--accent)}
+
+/* 질문 고르기 */
+.wmf-pick{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.wmf-pick-l{padding:16px;background:var(--soft);border-radius:10px}
+.wmf-topics{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.wmf-topics button{min-height:32px;padding:0 12px;border:1px solid #E2D8CF;border-radius:999px;background:#fff;color:#6E655E;font-size:13px}
+.wmf-topics button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.wmf-list{list-style:none;margin:0;padding:0}
+.wmf-list li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #E8DFD6;font-size:14.5px;line-height:1.6}
+.wmf-list li span{flex:1}
+.wmf-list button{flex:none;min-height:34px;padding:0 13px;border:1px solid var(--accent);border-radius:999px;background:#fff;color:var(--accent);font-size:13px;font-weight:500}
+.wmf-list button.on{background:var(--accent);color:#fff;cursor:default}
+.wmf-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap}
+.wmf-page{font-size:13px;color:var(--mute)}
+.wmf-own-w{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid #E8DFD6}
+.wmf-own-w .in{height:44px;font-size:15px}
+.wmf-btn-s{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 15px;border:1px solid var(--line2);border-radius:999px;background:#fff;font-size:14px;font-weight:500;white-space:nowrap;flex:none}
+.wmf-btn-s:hover{border-color:var(--accent);color:var(--accent)}
+.wmf-btn-t{background:none;border:0;color:var(--mute);font-size:13.5px;padding:0 4px 0 12px;text-decoration:underline;text-underline-offset:3px}
+.wmf-bar{margin:0 0 10px}
+.wmf-count{font-size:16px;font-weight:700}
+.wmf-all{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 6px;padding:10px 12px;border-radius:8px;background:var(--soft);font-size:13.5px}
+.wmf-legend{font-size:12.5px;color:var(--mute);margin:0 0 10px;line-height:1.6}
+.wmf-board{display:grid;gap:10px}
+.wmf-sheet{border:1px solid var(--line);border-radius:10px;padding:12px}
+.wmf-sheet.need{border-color:var(--warn)}
+.wmf-sheet-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 6px}
+.wmf-sheet-hd b{font-size:14.5px;margin-right:auto}
+.wmf-sheet-m{display:inline-flex;gap:4px}
+.wmf-sheet-m button{min-height:30px;padding:0 11px;border:1px solid var(--line2);border-radius:999px;background:#fff;font-size:12.5px;color:#6E655E}
+.wmf-sheet-m button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.wmf-fill1{background:none;border:0;color:var(--accent);font-size:12.5px;padding:0 2px;text-decoration:underline;text-underline-offset:3px}
+.wmf-slot{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border:1px solid transparent;border-radius:8px;font-size:14.5px;line-height:1.6}
+.wmf-slot+.wmf-slot{margin-top:4px}
+.wmf-slot em{flex:none;width:30px;font-style:normal;font-size:12px;color:var(--mute);padding-top:2px}
+.wmf-slot span{flex:1}
+.wmf-slot.empty{background:var(--soft2);border:1px dashed var(--line2);color:#B3A89F;cursor:pointer}
+.wmf-slot.tg{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.wmf-slot button{flex:none;width:28px;height:28px;border:0;border-radius:50%;background:#F2ECE6;color:#6E655E;font-size:15px;padding:0}
+.wmf-status{font-size:13.5px;color:var(--mute);text-align:center;margin:12px 0 0}
+.wmf-status.ok{color:var(--accent);font-weight:700}
+
+/* 제출 */
+.submit{display:flex;width:100%;max-width:420px;margin:8px auto 0;min-height:58px;align-items:center;justify-content:center;border:0;border-radius:999px;background:var(--accent);color:#fff;font-size:18px;font-weight:700}
+.submit:hover{background:var(--accent-h)}
+.submit:disabled{opacity:.6;cursor:default}
+.err-box{color:var(--warn);font-weight:700;background:#FBEEEC;border-radius:12px;padding:14px;margin:0 0 14px;text-align:center;font-size:15px}
+.loading{text-align:center;color:var(--sub);padding:40px 18px}
+.spin{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;margin:0 auto 14px;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.done{text-align:center;padding:36px 20px}
+.done .ck{width:56px;height:56px;border-radius:50%;background:var(--accent);color:#fff;font-size:28px;line-height:56px;margin:0 auto 14px}
+.done h2{font-size:23px;margin:0 0 10px}
+.sum{text-align:left;background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:18px 0;font-size:14.5px}
+.sum div{display:flex;gap:12px;padding:3px 0}
+.sum b{flex:none;width:76px;color:var(--mute);font-weight:500}
+.nexts{text-align:left;list-style:none;padding:0;margin:0 0 18px;font-size:14.5px}
+.nexts li{position:relative;padding-left:18px;margin:0 0 8px}
+.nexts li:before{content:"";position:absolute;left:4px;top:10px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.btn-line{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:999px;border:1.5px solid var(--accent);color:var(--accent);font-weight:700;text-decoration:none;background:#fff}
+.toast{position:fixed;left:50%;bottom:24px;z-index:99;max-width:90%;transform:translateX(-50%);padding:10px 18px;border-radius:999px;background:var(--ink);color:#fff;font-size:14px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.foot-c{text-align:center;font-size:13px;color:var(--mute);margin-top:22px}
+
+@media (min-width:820px){
+  .wrap{padding-top:32px}
+  .card{padding:32px}
+  .hero h1{font-size:36px}
+  .wmf-pick{grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px}
+  .wmf-pick-l{position:sticky;top:16px;padding:20px}
+}
+</style>
 </head>
-<body style="font-family:sans-serif;max-width:480px;margin:60px auto;padding:0 20px;text-align:center;color:#333">
-<h2>위드메모리 정보 입력</h2>
-<p>정보 입력 페이지를 준비하고 있습니다.<br>문의는 카카오톡 채널로 남겨 주세요.</p>
-<p style="color:#888;font-size:14px">문의 070-5236-0786</p>
+<body>
+<div class="wrap">
+  <p class="brand">WITH MEMORY · 위드메모리</p>
+
+  <div class="card loading" id="loading"><div class="spin"></div>주문 정보를 확인하고 있어요. 잠시만 기다려 주세요.</div>
+
+  <form id="f" novalidate hidden>
+    <!-- 상단 카드 -->
+    <div class="hero" aria-live="polite">
+      <div class="hero-in">
+        <div class="arches" id="hArches"></div>
+        <p class="k">이 기록의 주인공</p>
+        <h1 id="hTitle">부모님</h1>
+        <svg class="orn" viewBox="0 0 120 10" aria-hidden="true"><line x1="0" y1="5" x2="50" y2="5" stroke="#9C4A2B" stroke-width="1"/><rect x="56" y="1" width="8" height="8" transform="rotate(45 60 5)" fill="#9C4A2B"/><line x1="70" y1="5" x2="120" y2="5" stroke="#9C4A2B" stroke-width="1"/></svg>
+        <p class="s" id="hSub">부모님의 이야기를 한 권에 담아요</p>
+        <div class="tags" id="hTags"></div>
+      </div>
+    </div>
+    <p class="bot" id="bot1" hidden><strong>처음 작성하시나요? 인원을 먼저 확인해 주세요.</strong><span id="bot1Text"></span><br><a id="mypage" href="#" target="_blank" rel="noopener">마이페이지에서 주문 취소하기</a></p>
+    <p class="bot" id="bot6" hidden><strong>마지막 편은 질문이 20개예요.</strong>앞 편에서 고른 질문과 겹치지 않게 골라 주세요.</p>
+
+    <!-- 1. 상품 확인 -->
+    <section class="card">
+      <h2 class="sec-h"><span class="n">1</span>상품 확인</h2>
+      <p class="sec-d">구매하신 상품과 이번에 작성하는 편을 확인해 주세요.</p>
+
+      <div class="fld" data-k="o">
+        <span class="lb">주문번호</span>
+        <div id="oShow" class="locked" hidden></div>
+        <div id="oEdit" hidden>
+          <div class="row2"><input class="in" id="oInput" inputmode="numeric" autocomplete="off" placeholder="카카오톡 안내 메시지의 주문번호"><button type="button" class="btn-s" id="oCheck">확인</button></div>
+          <p class="help">카카오톡으로 받으신 안내 메시지에 주문번호가 있어요.</p>
+        </div>
+        <p class="fe"></p>
+      </div>
+
+      <div class="fld" data-k="people">
+        <span class="lb">부모님 인원<i>*</i></span>
+        <div id="peopleShow" class="locked" hidden></div>
+        <div class="chips" id="peopleChips">
+          <label class="chip"><input type="radio" name="people" value="1"><span>부모님 한 분</span></label>
+          <label class="chip"><input type="radio" name="people" value="2"><span>부모님 두 분</span></label>
+        </div>
+        <p class="help" id="peopleHelp">구매하신 상품과 같게 골라 주세요.</p>
+        <p class="fe"></p>
+      </div>
+
+      <div class="fld" data-k="ed">
+        <span class="lb">작성하는 편<i>*</i></span>
+        <div class="chips" id="edChips"></div>
+        <p class="help" id="edHelp"></p>
+        <p class="fe"></p>
+      </div>
+    </section>
+
+    <div id="main" hidden>
+      <!-- 신청 전 안내 -->
+      <details class="card before" id="before">
+        <summary><div><p class="k">BEFORE YOU START</p><h2 id="bTitle">신청 전에 부모님께 먼저 말씀해 주세요</h2></div></summary>
+        <p class="lead" id="bLead"></p>
+        <ul id="bList"></ul>
+        <p class="foot" id="bFoot"></p>
+      </details>
+
+      <!-- 2. 기본 정보 -->
+      <section class="card">
+        <h2 class="sec-h"><span class="n">2</span>기본 정보</h2>
+        <p class="sec-d" id="basicDesc">신청하신 분과 부모님 정보를 입력해 주세요.</p>
+
+        <div class="fld" data-k="applicantName" id="fApplicantName">
+          <label class="lb" for="applicantName">신청자 성함<i>*</i></label>
+          <input class="in" id="applicantName" maxlength="30" autocomplete="name">
+          <p class="fe"></p>
+        </div>
+        <div class="fld" data-k="applicantPhone">
+          <label class="lb" for="applicantPhone">신청자 연락처<i>*</i></label>
+          <input class="in tel" id="applicantPhone" type="tel" inputmode="numeric" maxlength="13" autocomplete="tel" placeholder="010-0000-0000">
+          <p class="help" id="applicantPhoneHelp">진행 안내를 이 번호로 보내 드려요. 구매하실 때 적은 번호와 같게 적어 주세요.</p>
+          <p class="fe"></p>
+        </div>
+        <div class="fld" data-k="recordDate">
+          <label class="lb" for="recordDate">기록일 (부모님 인터뷰 날짜)<i>*</i></label>
+          <input class="in" id="recordDate" type="date">
+          <p class="help" id="dateHelp"></p>
+          <p class="fe"></p>
+        </div>
+
+        <div id="gParents">
+          <div class="fld" data-k="p1Name">
+            <label class="lb" for="p1Name" id="p1NameLb">부모님 성함<i>*</i></label>
+            <input class="in" id="p1Name" maxlength="30">
+            <p class="fe"></p>
+          </div>
+          <div class="fld" data-k="p1Phone">
+            <label class="lb" for="p1Phone" id="p1PhoneLb">부모님 연락처<i>*</i></label>
+            <input class="in tel" id="p1Phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
+            <p class="help">기록일에 이 번호로 전화 또는 문자(링크)를 드려요.</p>
+            <p class="fe"></p>
+          </div>
+          <div id="gP2">
+            <div class="fld" data-k="p2Name">
+              <label class="lb" for="p2Name">두 번째 부모님 성함<i>*</i></label>
+              <input class="in" id="p2Name" maxlength="30">
+              <p class="fe"></p>
+            </div>
+            <div class="fld" data-k="p2Phone">
+              <label class="lb" for="p2Phone">두 번째 부모님 연락처<i>*</i></label>
+              <input class="in tel" id="p2Phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
+              <p class="fe"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fld" data-k="participants" id="fParticipants">
+          <span class="lb">이번 편에 참여하시는 분<i>*</i></span>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="participants" value="두 분 모두"><span>두 분 모두</span></label>
+            <label class="chip"><input type="radio" name="participants" value="첫 번째 분만"><span>첫 번째 분만</span></label>
+            <label class="chip"><input type="radio" name="participants" value="두 번째 분만"><span>두 번째 분만</span></label>
+          </div>
+          <p class="help">처음 신청하실 때 첫 번째로 적으신 분이 '첫 번째 분'이에요.</p>
+          <p class="fe"></p>
+        </div>
+      </section>
+
+      <!-- 3. 질문 고르기 -->
+      <section class="card" data-k="q" id="secQ">
+        <h2 class="sec-h"><span class="n">3</span><span id="qTitle">질문 16개 고르기</span></h2>
+        <p class="sec-d" id="qHelp"></p>
+        <div class="wmf-pick">
+          <div class="wmf-pick-l">
+            <div class="wmf-topics" id="wTopics"></div>
+            <ul class="wmf-list" id="wList"></ul>
+            <div class="wmf-row"><button type="button" class="wmf-btn-s" id="wMore">다른 질문 보기</button><span class="wmf-page" id="wPage"></span></div>
+            <div class="wmf-own-w"><input type="text" class="in" id="wOwn" maxlength="80" placeholder="직접 쓰기: 여쭙고 싶은 질문" enterkeyhint="done"><button type="button" class="wmf-btn-s" id="wOwnAdd">담기</button></div>
+          </div>
+          <div>
+            <div class="wmf-row wmf-bar"><b class="wmf-count" id="wCount">0 / 16</b><span><button type="button" class="wmf-btn-s" id="wFillAll">빈 칸 골고루 채우기</button><button type="button" class="wmf-btn-t" id="wClear">모두 비우기</button></span></div>
+            <div class="wmf-all"><b>모든 장을 같은 방법으로</b><span class="wmf-sheet-m"><button type="button" data-all="전화">전화</button><button type="button" data-all="녹음">녹음</button><button type="button" data-all="손글씨">손글씨</button></span></div>
+            <p class="wmf-legend">전화: 기록일에 위드메모리가 전화로 여쭤요 · 녹음: 링크를 열어 직접 녹음해요 · 손글씨: 기록지를 우편으로 보내 드려요</p>
+            <div class="wmf-board" id="wBoard"></div>
+            <p class="wmf-status" id="wStatus"></p>
+            <p class="fe"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 진행 정보 -->
+      <section class="card">
+        <h2 class="sec-h"><span class="n">4</span>진행 정보</h2>
+        <p class="sec-d" id="moreDesc">고르신 방법에 맞춰 필요한 칸만 보여 드려요.</p>
+
+        <div class="fld" data-k="callTime" id="fCallTime">
+          <span class="lb">전화 희망 시간 <small>전화로 답하는 장이 있어요</small></span>
+          <div class="chips">
+            <label class="chip" id="callSame"><input type="radio" name="callTime" value="same"><span>지난번과 같게</span></label>
+            <label class="chip"><input type="radio" name="callTime" value="오전 9시–12시"><span>오전 9시–12시</span></label>
+            <label class="chip"><input type="radio" name="callTime" value="낮 12시–3시"><span>낮 12시–3시</span></label>
+            <label class="chip"><input type="radio" name="callTime" value="오후 3시–6시"><span>오후 3시–6시</span></label>
+            <label class="chip"><input type="radio" name="callTime" value="저녁 6시–8시"><span>저녁 6시–8시</span></label>
+            <label class="chip"><input type="radio" name="callTime" value="상관없음"><span>상관없음</span></label>
+          </div>
+          <p class="help">기록일에 고르신 시간대에 전화드려요.</p>
+          <p class="fe"></p>
+        </div>
+
+        <div class="fld" data-k="phone1New" id="fPhone1New">
+          <label class="lb" for="phone1New" id="phone1NewLb">부모님 연락처 변경 <small>바뀐 경우에만</small></label>
+          <input class="in tel" id="phone1New" type="tel" inputmode="numeric" maxlength="13" placeholder="비워 두시면 지난번 번호로 연락드려요">
+          <p class="fe"></p>
+        </div>
+        <div class="fld" data-k="phone2New" id="fPhone2New">
+          <label class="lb" for="phone2New">두 번째 부모님 연락처 변경 <small>바뀐 경우에만</small></label>
+          <input class="in tel" id="phone2New" type="tel" inputmode="numeric" maxlength="13" placeholder="비워 두시면 지난번 번호로 연락드려요">
+          <p class="fe"></p>
+        </div>
+
+        <div class="fld" data-k="a1" id="fA1">
+          <span class="lb" id="a1Lb">부모님 주소<i>*</i></span>
+          <div class="stack">
+            <div class="row2"><input class="in" id="a1zip" placeholder="우편번호" inputmode="numeric" maxlength="5"><button type="button" class="btn-s" data-post="a1">주소 찾기</button></div>
+            <input class="in" id="a1addr" maxlength="120" placeholder="주소">
+            <input class="in" id="a1detail" maxlength="80" placeholder="상세주소 (동·호수)">
+          </div>
+          <p class="help" id="a1Help">손글씨 장이 있어 이 주소로 기록지를 보내 드려요.</p>
+          <p class="fe"></p>
+        </div>
+        <div class="fld" data-k="a2" id="fA2">
+          <span class="lb" id="a2Lb">두 번째 부모님 주소 <small>따로 사시는 경우만</small></span>
+          <div class="stack">
+            <div class="row2"><input class="in" id="a2zip" placeholder="우편번호" inputmode="numeric" maxlength="5"><button type="button" class="btn-s" data-post="a2">주소 찾기</button></div>
+            <input class="in" id="a2addr" maxlength="120" placeholder="주소">
+            <input class="in" id="a2detail" maxlength="80" placeholder="상세주소 (동·호수)">
+          </div>
+          <p class="fe"></p>
+        </div>
+
+        <div class="fld" data-k="pickup" id="fPickup">
+          <span class="lb" id="pickupLb">기록지 회수 장소<i>*</i></span>
+          <div class="chips">
+            <label class="chip" id="pickupSame"><input type="radio" name="pickup" value="same"><span>지난번과 같게</span></label>
+            <label class="chip"><input type="radio" name="pickup" value="현관 앞"><span>현관 앞</span></label>
+            <label class="chip"><input type="radio" name="pickup" value="우편함"><span>우편함</span></label>
+            <label class="chip"><input type="radio" name="pickup" value="기타 (카카오톡 문의)"><span>기타 (카카오톡 문의)</span></label>
+          </div>
+          <p class="help">다 쓰신 기록지를 택배 기사님이 가지러 가는 곳이에요.</p>
+          <p class="fe"></p>
+        </div>
+
+        <div class="fld" data-k="photo">
+          <span class="lb">사진에 얽힌 이야기를 남길 방법 <small>사진 추가 옵션을 고르신 분만</small></span>
+          <div class="chips col">
+            <label class="chip"><input type="radio" name="photo" value="" checked><span>사진 추가 옵션을 고르지 않았어요</span></label>
+            <label class="chip"><input type="radio" name="photo" value="녹음"><span>녹음 (사진 링크에서 사진마다 1분 안으로 녹음)</span></label>
+            <label class="chip" id="photoHand"><input type="radio" name="photo" value="손글씨"><span>손글씨 (기록지 사진 이야기 칸에 적기)</span></label>
+          </div>
+          <p class="help" id="photoHelp">손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요.</p>
+          <p class="fe"></p>
+        </div>
+      </section>
+
+      <!-- 5. 확인과 동의 -->
+      <section class="card">
+        <h2 class="sec-h"><span class="n">5</span>확인과 동의</h2>
+        <p class="sec-d">마지막으로 두 가지를 확인해 주세요.</p>
+
+        <div class="fld" data-k="informed">
+          <span class="lb">부모님께 미리 말씀드리셨나요?<i>*</i></span>
+          <label class="chk"><input type="checkbox" id="informed"><span id="informedText"></span></label>
+          <p class="fe"></p>
+        </div>
+
+        <div class="fld" data-k="privacy">
+          <span class="lb">개인정보 수집 및 이용 동의<i>*</i></span>
+          <div class="policy" id="policy" tabindex="0">위드메모리는 기록물 제작과 진행 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.
+
+1. 수집·이용 목적
+기록물(책) 제작, 기록일·진행 안내 연락(전화, 알림톡, 문자), 기록지 발송과 회수, 결과물 배송, 이어서 신청할 때 입력 정보 재사용
+
+2. 수집 항목
+신청자 성함·연락처, 부모님(받는 분) 성함·연락처·주소, 기록일, 전화 희망 시간, 기록지 회수 장소, 이번 편 참여 대상, 질문과 장별 답하는 방법, 사진에 얽힌 이야기를 남길 방법
+(각 페이지에서 입력하는 항목만 수집합니다)
+
+3. 보유·이용 기간
+질문 등 신청 정보는 해당 편 결과물을 발송한 날부터 3개월, 연락처·주소는 마지막 회차 결과물을 발송한 날부터 2년 동안 보관한 뒤 파기합니다.
+
+4. 동의를 거부할 권리
+동의를 거부하실 수 있으며, 거부하시면 기록물 제작을 진행할 수 없습니다.
+
+부모님의 정보는 부모님께 알린 뒤 입력해 주세요. 부모님 본인의 동의는 처음 신청하실 때 동의 링크로 따로 받습니다.
+자세한 내용은 개인정보처리방침에서 확인하실 수 있습니다.</div>
+          <label class="chk"><input type="checkbox" id="privacy"><span>개인정보 수집 및 이용에 동의합니다.</span></label>
+          <p class="fe"></p>
+        </div>
+      </section>
+
+      <p class="err-box" id="err" hidden></p>
+      <button type="submit" class="submit" id="submitBtn">제출하기</button>
+      <p class="foot-c">문의 070-5236-0786 · 카카오톡 채널 위드메모리</p>
+    </div>
+  </form>
+
+  <div class="card done" id="done" hidden>
+    <div class="ck">✓</div>
+    <h2>접수되었어요</h2>
+    <p>정성껏 준비하겠습니다. 감사합니다.</p>
+    <div class="sum" id="doneSum"></div>
+    <ul class="nexts" id="doneNext"></ul>
+    <a class="btn-line" id="doneConsent" href="#" hidden>부모님 동의 페이지 열기</a>
+    <p class="foot-c">문의 070-5236-0786 · 카카오톡 채널 위드메모리</p>
+  </div>
+</div>
+<div class="toast" id="toast" aria-live="polite"></div>
+<noscript><p style="text-align:center;padding:20px">이 페이지는 자바스크립트를 켜야 작성할 수 있어요.</p></noscript>
+
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async></script>
+<script>
+window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑과 인연","부모가 된 날들","가족과 고향","좋아하는 것","인생의 지혜","지금과 앞으로"],K:{A:"나요?",B:" 무엇인가요?",C:" 가장 ",D:"은 무엇이었",E:"이 있",F:"가장 좋아하는 ",G:"은 ",H:"던 ",I:"는 ",J:" 시절",K:"고 싶",L:"라고 생각하세요?",M:"인가요?",N:"을 ",O:"어릴 때",P:"어떤 ",Q:"게 ",R:"언제였",S:"기억에 남",T:"가 ",U:"으로 ",V:"이 ",W:"무엇이",X:"가장 ",Y:"기억하시",Z:" 중",a:"해 ",b:"나 ",c:"다고 느낀 ",d:"사람",e:"처음 ",f:"한 ",g:"어린",h:"에 ",i:"를 ",j:"어디",k:"시절",l:"좋아했",m:"자주 ",n:"다면 ",o:"부모님",p:"가족",q:"의 ",r:"꼭 ",s:"순간",t:"에서 ",u:"배우자",v:" 기억나",w:"으세요?",x:"학창",y:"고 ",z:"누구"},D:"어릴 적 살H동네IP모습이었A|어릴 적 살H집GP모습이었A|OClH놀이IW었A|gJC친했H친구Iz였A|OClH음식DA|gJ 명절GP풍경이었A|OC갖K었H물건DA|gJ 받G선물ZCSI것은B|O 꿈DA|gJC무서웠H것DA|O 크Q혼났H일EA|gJC행복했H하루IRA|어릴 적 별명DA|gJ 여름G어떻Q보내셨A|gJ 겨울 하면 떠오르I풍경은B|e텔레비전N본 날NYA|O 용돈N받으면 jh쓰셨A|gJ m불렀H동요T있A|O 할머니b할아버지와q추억EA|gJ 형제자매와C많V싸운 이유IW었A|O 집t맡았H심부름DA|gJ 동네t유명했HdE었A|OC멀리 T본 곳Gj였A|gJ SI생일EA|O lH꽃이b나무T있었A|gJ 잠들기 전h무엇N하셨A|OC맛있Q먹었H간식DA|gJ 비 오I날에I무엇N하며 노셨A|O 처음U혼자 해낸 일DA|gJC부러웠H친구T있었A|O 집 근처hP가게들E었A|gJ 나를C예뻐a주신 어른Gz였A|OC크Q다쳤H기억EA|gJ 즐겨 듣H라디오 프로그램E었A|OClH옷GP옷이었A|gJ 동네 잔치b장날 풍경NYA|O 처음U거짓말N했H기억EA|gJ 동네 친구들과 m가H곳Gj였A|OC신기했H물건DA|gJ 처음U돈N벌어 본 경험EA|OC자랑하K었H일DA|gJ e본 바다b산NYA|O lH만화b이야기책E었A|gJC기다려지H날GRA|O 몰래 했H장난ZvI것EA|gJ 살H집에서ClH자리Ij였A|O 들었H말Z 아직도vI말EA|gJ 기억Z 사진U남기KG장면EA|O 커서 되K었H어른q모습G어땠A|gJ로 하루만 돌아간n무엇N하Kw#e학교h가H날NYA|학교까지 어떻Q다니셨A|XlH과목DA|X싫어했H과목DA|SI선생님V계신가요?|xJC친했H친구Iz였A|xJ 친구Z 지금도 연락하IdEA|도시락 반찬ZClH것DA|수학여행Gj로 가셨A|xJ 별명E었A|교복Ne입었N때 기분V어땠A|시험 기간에I어떻Q공부하셨A|학교t받G상Z SI것EA|xJC크Q혼난 일DA|방과 후에I주로 무엇N하셨A|xJ lH가수b배우T있었A|쉬I시간에I친구들과 무엇N하며 노셨A|학교 앞t즐겨 사 먹H것E었A|xJC설렜HsGRA|반장처럼 맡았H역할E었A|xJC열심히 했H일DA|졸업식 날GP기억U남아 있A|xJ 꿈DA|공부 말y잘했H것E었A|xJC억울했H일E었A|친구들과 몰래 했H일ZvI것EA|학교 운동회b체육대회t무엇N하셨A|xJ 즐겨 읽H책E었A|XSI소풍 장소Ij였A|xJC무서웠H선생님GP분이셨A|학교 다니며C힘들었H일DA|xJ 친구들 사이t유행하H것E었A|처음U받G편지b쪽지iYA|xJ 짝꿍GPd이었A|학교 가기 싫었H날에I어떻Q하셨A|xJC큰 고민DA|그J 교실GP모습이었A|xJ 방학G어떻Q보내셨A|xJ로 돌아간nra보KG일EA|그J oG공부h대aP말씀N하셨A|xJC자신 있었HsGRA|처음U진지하Q고민했H진로IW었A|xJC많V웃었H일DA|선생님께 칭찬받았H기억EA|xJ 친구와 크Q다툰 적EA|학교 가I길h늘 보H풍경E었A|xJq나에Q한마디 a준nW라y하시겠어요?|xJ 사진ZC좋아하I사진GP사진M|그JC갖K었H학용품DA|학교i떠날 때C아쉬웠H것DA#스무 살 때ClH노래IW었A|스무 살q나IPd이었A|첫 월급N받H날, 무엇N하셨A|젊GkC즐겨 하H옷차림G어땠A|처음U집N떠b살았H곳Gj였A|젊Gk 친구들과 m모이H곳Gj였A|그J 유행하H말이b노래T있었A|처음U혼자 여행N떠났H곳Gj였A|젊GkC용기 냈H일DA|젊GkC즐겨 보H영화b드라마IW었A|그J 친구들과C많V나눈 이야기IW었A|젊G날C갖K었H물건DA|처음U어른V되었csGRA|젊GkC크Q웃었H일DA|젊GkC크Q실패했H경험DA|젊Gk 돈V없어도 즐거웠H일EA|젊Gk 즐겨 찾H음식점이b가게T있었A|처음U집h전화기i들이H날NYA|젊GkC멋있어 보였HdGz였A|그JC큰 걱정DA|젊G날C자유롭csGRA|젊Gkq나if단어로 표현한다면B|젊GkC열정N쏟았H일DA|그JCm듣H잔소리IW었A|젊G날 친구와 함께한CSI여행Gj였A|젊Gk lH운동이b취미T있었A|그J e배운 기술이b재주T있A|젊Gkh했던C무모f일DA|그JC아끼H물건DA|젊G날 오래 SG편지T있A|젊GkC행복했H계절GRA|젊GkC아름답c풍경Gj였A|젊GkC존경했HdGz였A|그JCT보K었H곳Gj였A|젊G날 친구들 사이t나IP역할이었A|처음U큰돈N모아 본 경험EA|젊GkC떨렸H날GRA|그J 밤N새워 가며 했H일EA|젊Gkq나에Qa주KG말은B|젊Gk 들었H조언Z 지금도vI것EA|그J에I주말N어떻Q보내셨A|젊G날C뿌듯했H일DA|처음Uo께 선물N드렸H날NYA|젊GkC친했H친구와IP추억EA|그J 유행하H머리 모양Na보신 적EA|젊GkC신나Q놀았H날GRA|그J e타 본 교통수단ZvI것EA|젊G날C설렜H첫 경험DA|그J로 하루 돌아간nzi만나Kw|젊Gk 꿈꾸H미래와 지금G얼마b닮았A#e일N시작했N때 P일N하셨A|첫 출근 날NYA|일하면서C보람 있었HsGRA|일하면서C힘들었H시기IRA|일V힘들 때 버틸 수 있Qa준 것DA|함께 일fdZCSIdGzM|일하며 배운 것ZC소중f것은B|X오래 f일DA|일N고i때 무엇을C중요하Q생각하셨A|다시 직업N고i수 있nP일Na보Kw|일하면서 받G칭찬ZCSI말은B|일하며C크Q실수했H일EA|일N마치y돌아오I길h주로 무슨 생각N하셨A|일과 p 사이에서C고민했HsGRA|처음U일t인정받았H날NYA|일하면서C자랑스러웠H결과물은B|X바빴Hkq하루I어떻Q흘러갔A|일하며 사귄 친구Z 지금도 만나I분EA|돈h대해C크Q배운 경험은B|X아끼며 모았H돈Gjh쓰셨A|일N바꾸거b그만두기로 했HsEA|일터에서C즐거웠H시간GRA|XSI일터Ij였A|처음U내 힘U무언가i이루었c때IRA|일하며C많V쓴 물건이b도구IW었A|일하면서 생긴 습관Z 지금도 남아 있I것EA|X오래 일f곳N떠나H날G어땠A|일하I모습Np에Q보여 준 적EA|Pd과 일할 때C즐거웠A|일N잘하I비결EnWL|돈보다 더Z요하다y느꼈HsEA|일하면서C크Q웃었H일DA|e내 집이b내 방N마련했N때 기분V어땠A|살면서C큰 결정DA|중요f결정N내릴 때 z와C많V상의하셨A|이사를C많V다녔HkGRA|X오래 산 동네Ij였A|살아 본 동네ZC정V들었H곳GjM|일N줄이거b쉬Q된다면C하KG일은B|일하며 만난 고마운 분께 전하KG말EA|일과 관련a아직 이루지 못f꿈EA|XSI월급날GRA|살면서C잘f저축이b투자IW었A|살면서C아까웠H지출DA|일하며C무서웠HsGRA|일하느라 놓쳐서 아쉬운 일EA|나q일V누군가에Q도움V되었c적EA|일N하며 스스로C많V성장했c때I언제M|자녀T일N시작할 때 ra주KG말EA|지금까지 a온 일h제목N붙인nW라y하시겠어요?#처음U누군가ilH기억EA|첫사랑GPd이었A|처음U받G연애편지iYA|설렘Ne느꼈HsGRA|젊Gk 이상형GPd이었A|좋아하Id에Q마음N전a본 적EA|사랑GWL|살면서C고마운 인연GzM|우연히 만b오래 이어진 인연EA|X오래된 친구IzM|친구에게C크Q도움받았H일은B|연락V끊겼지만 다시 만나KGdEA|dN볼 때C중요하Q보I점은B|좋G친구란 Pd이L|d과q관계에서C크Q배운 점은B|누군가에Qr사과하KG일EA|누군가에Qr고맙다y말하KG일EA|XSI데이트 장소Ij였A|받았H선물ZC마음V담겼H것DA|누군가i위해C정성껏 준비했H선물DA|짝사랑Na본 적EA|X로맨틱했HsGRA|사랑 노래ZC마음h와닿았H노래는B|오래가I관계q비결GWL|자녀T좋GdN만나려면 무엇N봐야 한다y생각하세요?|*uie만난 날NYA|*uq첫인상G어땠A|*결혼N결심하Q된 sGRA|*프러포즈I어떻Q주고받으셨A|*결혼식 날GP모습이었A|*신혼J 살H집GP곳이었A|*신혼 때C많V다툰 이유IW었A|*u에게C고마웠HsGRA|*u의C좋G점은B|*u와 함께 떠난 여행ZCSI곳GjM|*다툰 뒤 화해하I두 분만q방법E었A|*u에Q아직 하지 못f말EA|*함께 지내며C행복했H시기IRA|*결혼 생활에서C크Q배운 것은B|*결혼기념일h기억나I일EA|*uTa준 음식ZC좋아하I것은B|*두 분V함께 좋아하H노래T있A|*u와 e사진N찍었H날NYA|*연애JC설렜H날GRA|*결혼 전 양To께 인사드리H날G어땠A|*u에Q닮KG점EA|*다시 태어나도 지금qui만나Kw|*함께 이겨 낸C힘든 시기IRA|*u에Q받G편지b선물Z 간직하y있I것EA|*u에Qf문장U마음N전한nW라y하시겠어요?#제T태어나H날, P기분이셨A|저ie품h안았N때 무슨 생각V드셨A|제 이름G어떻Q지으셨A|제Te걸었H날NYA|제Tef말DA|어릴 적 저IP아이였A|제TOC속상하Q했H일DA|제TOC자랑스러웠H일DA|저i키우며C힘들었H시기IRA|저i키우며C행복했HsGRA|제T아팠N때vI일EA|제TOClH음식DA|제TO 즐겨 하H놀이IW었A|제 첫 생일G어떻Q보내셨A|제T입학하H날 P마음이셨A|부모T되y나서C크Q달라진 점은B|부모T된다I것GP의미였A|저에Qa주K었지만 못 a준 것EA|저i키우며C잘했다y생각하I일은B|제T사춘기였N때 P마음이셨A|저와C크Q다퉜H일NYA|제T모르I제 gJ 이야기T있A|제TO m하H말버릇E었A|제Te집N떠나H날 P마음이셨A|저i보며C뿌듯했HsGRA|저에Q미안했H일EA|저에Q고마웠H일EA|제T닮았으면 했H모습E었A|제T닮지 않았으면 했H모습E었A|저i키울 때C많V도와주신 분Gz였A|저에Qm불러 주H자장가T있A|제TO 간 p 여행ZCSI곳GjM|저i키우Hk 우리 집GP모습이었A|제TOC걱정했H것DA|저에Qr가르쳐 주K었H것DA|제TOC웃겼H일DA|제Te받아 온 성적표b상장NYA|제 gJ 사진ZC좋아하I사진GP사진M|제Te번 돈U드린 선물NYA|저i혼낸 뒤 속으로IP마음이셨A|저와 함께했H평범하지만 행복f하루IRA|저만q특별f점GWL|제T어른V되었csGRA|저i키우며 들었H말ZC힘V된 말DA|저에Q들G말ZC기뻤H말DA|제가C많V닮G점은B|제 gJ로 하루만 돌아간n무엇Na주Kw|부모로서 스스로에Q몇 점N주Kw|부모 노릇h대a저에Qra주KG조언EA|저if단어로 표현한다면B#고향GjM|고향N떠올리면C먼저 생각나I풍경은B|o(저q할머니, 할아버지)GP분이셨A|o께C많V들었H말은B|o께C감사했H일은B|oN닮G점E다면B|o께 r하K었H말EA|oVa주시H음식ZC그리운 것은B|형제자매Zh몇째셨A|형제자매와의C즐거운 추억은B|형제자매ZC많V의지했HdGz였A|우리 집안h전a내려오I이야기T있A|집안q가훈이bm쓰H말E었A|명절hpV모이면 r하H일E었A|gJ p과 함께 간 나들V중vI곳EA|저q증조oh대a들G이야기T있A|고향에서C유명했H음식DA|고향 사투리ZC좋아하I말은B|고향h다시 간다면C먼저 T보KG곳GjM|우리 집 명절 음식Z r이어졌으면 하I것EA|pZC재미있IdGz였A|p이C똘똘 뭉쳤H때IRA|p 사진ZC소중f사진GP사진M|pN위a내려놓았H것EA|p이C힘들었HkN어떻Q이겨 내셨A|p끼리만 아I웃긴 이야기T있A|우리 p만q특별f습관이b전통EA|pZC존경하IdGzM|친척Z 특히 가깝Q지낸 분EA|고향 집에서ClH계절GRA|o과 함께한C행복f기억은B|o께C죄송했H일은B|o이C자랑스러워하셨H일DA|o께 배운C소중f가르침은B|형제자매에Q지금 r전하KG말EA|고향N떠나H날NYA|고향 마Nd들GP분들이었A|우리 집안 d들q공통점GWL|pZ 저와C닮G분GzL|우리 p에게CSI사건은B|p에Q받은C큰 사랑DA|pV함께 모여 먹H음식ZC기억나I것은B|gJ 집t기르H동물E었A|p 행사ZC크Q치른 날GRA|우리 집안h대대로 내려오I물건EA|pNf단어로 표현한다면B|손주b다음 세대에Qr전하KGp 이야기T있A|고향t들려오H소리ZvI것EA|pV늘 함께할 수 있I비결GWL|우리 pV앞Ur함께 a보KG일EA#X많V따라 부른 노래는B|F음식은B|X자신 있I요리는B|F계절G언제M|F꽃은B|F색은B|F영화는B|F드라마는B|F가수IzM|F책이b글귀T있A|F장소IjM|F과일은B|F간식은B|F날씨IP날씨M|하루ZC좋아하I시간대I언제M|X즐겨 하I취미는B|새로 배워 보KG취미T있A|F운동은B|F옷이b소품은B|F향기는B|F음료b차는B|F명절 음식은B|기분V좋N때 흥얼거리I노래T있A|마음V힘들 때 찾I음식EA|F방송 프로그램은B|F말이b표현EA|F여행지IjM|다시 T보KG여행지IjM|F동물은B|F숫자b날짜T있A|X아끼I물건은B|요즘 푹 빠져 있I것EA|요즘C즐거운 시간G언제M|m가I단골 가게T있A|좋아하I반찬 세 가지i꼽는다면B|F소리는B|비 오I날 생각나I것EA|눈 오I날 생각나I것EA|F산이b바다T있A|F명언이b속담은B|선물로 받KG것EA|생일에C먹KG음식은B|F놀이b게임EA|집t키우KG식물이b동물EA|F아침 식사는B|혼자 있N때 주로 무엇N하시A|X행복해지IsG언제M|F외식 메뉴는B|우리 pV모이기C좋G장소IjL|좋아하I것 하나i저에Q추천a주신다면B#살면서C잘f일은B|살면서C후회되I일은B|인생에서C중요f것GWL|행복이란 WL|힘든 일V생기면 어떻Q이겨 내시A|F삶q태도는B|돈h대ar알려 주KG것EA|건강N위ar지키I습관EA|dN대할 때C중요하Q생각하I것은B|살면서C크Q배운 교훈은B|누군가에Q받G조언ZC도움V된 것은B|실패했N때C힘V된 말DA|나이T들어서 좋G점은B|젊Gd들에Qra주KG말EA|스스로C자랑스러운 점은B|스스로C고치KG점은B|걱정N덜어 내I나만q방법EA|X용기T필요했HsGRA|인생N다시 산n바꾸KGf가지는B|인생N다시 살아도 r그대로 하KG일은B|X감사f일은B|용서란 WL|닮KG삶N산 dEA|좋G어른이란 Pd이L|살면서 지켜 온 원칙EA|세상이C많V변했c때I언제M|옛날V더 좋았다y느끼I것EA|요즘V더 좋다y느끼I것EA|XSI역사적인 s은B|시간V지나y보니 별것 아니었H걱정EA|인생q전환점이라y생각하IsG언제M|행운이라y느꼈H일은B|X아껴 쓰라y말하KG것은B|지금 알y있I것N스무 살 때 알았n좋았N것은B|가정N꾸리I것h대aa주KG말EA|자녀i키우Id에Qa주KG조언EA|d 사이tr지켜야 할 예의IWL|마음V흔들릴 때 붙잡I말EA|X오래 간직하KG기억은B|살면서C뜻밖이었H일은B|인생N계절로 표현한n지금G어느 계절M|인생N책U쓴n제목G무엇U하Kw|X힘들었H시기i지나y나서 달라진 점은B|b자신에게C고마운 점은B|욕심N내려놓Q된 sEA|남들V뭐라 해도 지켜 온 것EA|X잘 참았다y생각하I일은B|좋G하루란 P하루L|나V드I것h대a어떻Q생각하세요?|저에Qr물려주KG삶q지혜는B#요즘Ca보KG일은B|요즘 하루I어떻Q보내시A|요즘Cm웃Q되I일은B|요즘C걱정되I일은B|요즘Cm떠오르IdGzM|요즘 새로 배우y있I것EA|올ar이루KG일EA|앞UrT보KG곳GjM|앞U도전a보KG일EA|버킷리스트ZC먼저 이루KG것은B|지금C감사fdGzM|지금 곁h있어C든든fdGzM|요즘C고마운 물건은B|요즘 몸과 마음이C편안f때I언제M|10년 뒤 나IP모습이었으면 좋겠A|저와 함께 ra보KG일EA|저와 함께 T보KG곳EA|저에게C바라I것은B|저에Q서운했H일EA|요즘 제Ta드려서 기뻤H일EA|저에Qra주KG말EA|제TPdU살아가길 바라시A|손주b다음 세대에Q남기KG말EA|앞UpV어떻Q지냈으면 좋겠A|요즘Cm하I생각은B|요즘C좋아하I하루 일과는B|지금C편안f장소IjM|요즘C잘 먹I음식은B|요즘 m연락하I친구IzM|지금 사I곳에서C좋G점은B|요즘 새로 알Q된 것Z 신기했H것EA|휴대폰으로Cm하I것은B|지금C아끼I시간G언제M|앞Ur만나KGdEA|요즘 새로 생긴 습관EA|요즘C마음V따뜻했HsG언제M|최근에C뿌듯했H일은B|올해CSI일은B|지금q나에Q점수i준n몇 점M|앞으로C지키KG것은B|지금C바라I것 f가지는B|p에게C듣KG말은B|요즘Cm쓰I말은B|오늘 하루ZC좋았HsGRA|앞Ua보KG봉사b나눔EA|나중h저에Qr물려주KG물건EA|이 책을 펼쳐 볼 저에게 어떤 말을 남기고 싶으세요?|1년 뒤 오늘, P모습이었으면 좋겠A|우리 p에Q지금C필요f것GWL|오늘 V질문h답하며 P마음V드셨A"};
+</script>
+<script>
+(function () {
+  'use strict';
+
+  /* ▼ 설정: 운영 시트 Apps Script 웹 앱 주소 (배포 후 받은 /exec 주소로 바꾸세요) */
+  var API_URL = 'https://script.google.com/macros/s/여기에_운영시트_웹앱_배포_ID/exec';
+  var CONSENT_URL = 'https://withmemory0928.github.io/with-memory-rec/consent.html';
+  var MYPAGE_URL = 'https://with-memory.com/shop_mypage';
+
+  var NUM = ['첫', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열'];
+  var EDN = ['', '첫 번째 편', '두 번째 편', '세 번째 편', '네 번째 편', '다섯 번째 편', '여섯 번째 편'];
+  var METHODS = ['전화', '녹음', '손글씨'];
+  var DOW = '일월화수목금토';
+
+  var BEFORE = {
+    1: {
+      title: '신청 전에 부모님께 먼저 말씀해 주세요',
+      lead: '이 기록에는 부모님의 연락처와 목소리·손글씨·사진, 사진에 얽힌 이야기가 담기므로 부모님의 동의가 꼭 필요합니다. 결제 후 카카오톡으로 정보 입력 링크와 함께 동의 링크가 신청하신 분께 전달됩니다. 동의 링크는 부모님께 보내 드리거나, 부모님과 함께 열어 진행해 주세요. 아래 내용을 부모님께 설명해 주세요.',
+      list: [
+        '기록일에 위드메모리가 부모님께 전화 또는 문자(링크)를 드립니다.',
+        '부모님의 목소리 녹음, 손글씨, 사진과 사진에 얽힌 이야기로 책이 만들어지고, 책은 신청자에게 전달됩니다.',
+        '녹음은 글로 옮겨 적으며, 군말과 반복만 정리하고 말투는 그대로 둡니다.',
+        '정해진 보관 기간이 지나면 파일은 삭제됩니다.',
+        '음성을 글로 바꾸고 파일을 보관하기 위해 파일이 해외 회사에 전달됩니다. 이 두 가지(녹음·사진·책 제작·전달, 해외 보관)는 필수 동의이며, 동의하지 않으시면 서비스를 진행할 수 없습니다.',
+        '이야기 도중 말씀하시거나 적어 주신(사진에 얽힌 이야기 포함) 건강·질병, 종교, 정치 내용을 책에 담는 것과, 녹음 파일을 신청자에게 전달하는 것은 선택 동의입니다. 동의하지 않으시면 해당 내용은 책에서 빠지고, 녹음 파일은 전달되지 않습니다.',
+        '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 손글씨로 남기는 것은 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
+        '여섯 편을 구매하신 경우, 완성 후 형제·자매에게 책을 선물하시면 그분들께도 책이 전달됩니다. (선택 사항)',
+        '답하기 어려운 질문은 건너뛰셔도 되고, 언제든 중단이나 삭제를 요청하실 수 있습니다. (카카오톡 채널)'
+      ],
+      foot: '부모님께 설명하고, 결제 후 받으시는 동의 링크로 부모님의 동의를 받겠다는 뜻으로 아래 입력폼 맨 끝의 확인 칸에 체크해 주세요. 부모님 대신 동의 링크를 열어 체크하시는 경우에도 반드시 내용을 설명해 드리고 동의를 받아 주세요.'
+    },
+    2: {
+      title: '신청 전에 부모님 두 분께 먼저 말씀해 주세요',
+      lead: '이 기록에는 두 분의 연락처와 목소리·손글씨·사진, 사진에 얽힌 이야기가 담기므로 두 분 모두의 동의가 꼭 필요합니다. 결제 후 카카오톡으로 정보 입력 링크와 함께 동의 링크가 신청하신 분께 전달됩니다. 동의는 두 분이 각각 따로 하셔야 하며, 동의 링크를 각 분께 보내 드리거나 각 분과 함께 열어 진행해 주세요. 아래 내용을 두 분께 설명해 주세요.',
+      list: [
+        '기록일에 위드메모리가 부모님 두 분께 각각 전화 또는 문자(링크)를 드립니다.',
+        '두 분의 목소리 녹음, 손글씨, 사진과 사진에 얽힌 이야기로 책이 만들어지고, 책은 신청자에게 전달됩니다.',
+        '녹음은 글로 옮겨 적으며, 군말과 반복만 정리하고 말투는 그대로 둡니다.',
+        '정해진 보관 기간이 지나면 파일은 삭제됩니다.',
+        '음성을 글로 바꾸고 파일을 보관하기 위해 파일이 해외 회사에 전달됩니다. 이 두 가지(녹음·사진·책 제작·전달, 해외 보관)는 필수 동의이며, 동의하지 않으시면 서비스를 진행할 수 없습니다.',
+        '이야기 도중 말씀하시거나 적어 주신(사진에 얽힌 이야기 포함) 건강·질병, 종교, 정치 내용을 책에 담는 것과, 녹음 파일을 신청자에게 전달하는 것은 선택 동의입니다. 동의하지 않으시면 해당 내용은 책에서 빠지고, 녹음 파일은 전달되지 않습니다.',
+        '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 손글씨로 남기는 것은 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
+        '여섯 편을 구매하신 경우, 완성 후 형제·자매에게 책을 선물하시면 그분들께도 책이 전달됩니다. (선택 사항)',
+        '답하기 어려운 질문은 건너뛰셔도 되고, 두 분 모두 언제든 중단이나 삭제를 요청하실 수 있습니다. (카카오톡 채널)',
+        '한 분이라도 동의하지 않으시면 1인 상품으로 진행해 주세요.'
+      ],
+      foot: '두 분께 설명하고, 결제 후 받으시는 동의 링크로 두 분 각각의 동의를 받겠다는 뜻으로 아래 입력폼 맨 끝의 확인 칸에 체크해 주세요. 부모님 대신 동의 링크를 열어 체크하시는 경우에도 반드시 내용을 설명해 드리고 동의를 받아 주세요.'
+    }
+  };
+  var INFORMED = {
+    1: '부모님께 이 신청을 미리 말씀드렸습니다. 결제 후 받는 동의 링크로 부모님의 동의를 받아야 기록을 시작할 수 있다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
+    2: '부모님 두 분께 이 신청을 미리 말씀드렸습니다. 결제 후 받는 동의 링크로 두 분 각각의 동의를 받아야 기록을 시작할 수 있다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
+    later: '이번 편의 기록일과 진행 방법을 부모님께 미리 말씀드렸습니다.'
+  };
+
+  /* ───────── 상태 ───────── */
+  var S = {
+    o: '', people: 0, ed: 0, locked: false, range: null, done: [],
+    n: 0, Q: [], M: [], target: -1, topic: -1, order: [], page: 0,
+    nonce: '', sending: false, sent: false, dirty: false, minDate: '', maxDate: ''
+  };
+
+  /* ───────── 도우미 ───────── */
+  function $(s, r) { return (r || document).querySelector(s); }
+  function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function show(el, on) { if (typeof el === 'string') el = $(el); if (el) el.hidden = !on; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function addDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
+  function kday(s) { var a = s.split('-').map(Number), d = new Date(a[0], a[1] - 1, a[2]); return a[1] + '월 ' + a[2] + '일(' + DOW.charAt(d.getDay()) + ')'; }
+  function digits(v) { var d = String(v == null ? '' : v).replace(/\D/g, ''); if (d.indexOf('82') === 0 && d.length >= 11) d = '0' + d.slice(2); return d; }
+  function okPhone(d) { return /^01\d{8,9}$/.test(d); }
+  function val(id) { var el = document.getElementById(id); return el ? String(el.value || '').replace(/\s+/g, ' ').trim() : ''; }
+  function radio(name) { var el = $('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+  function setRadio(name, v) { $$('input[name="' + name + '"]').forEach(function (el) { el.checked = el.value === v; }); }
+  function uid() { return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+  var toastT;
+  function toast(msg) { var t = $('#toast'); t.textContent = msg; t.className = 'toast on'; clearTimeout(toastT); toastT = setTimeout(function () { t.className = 'toast'; }, 3000); }
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+  function apiReady() { return /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(API_URL); }
+  function fetchJson(url, opt, ms) {
+    return new Promise(function (resolve, reject) {
+      var done = false, ctl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (done) return; done = true; if (ctl) ctl.abort(); reject(new Error('timeout')); }, ms);
+      if (ctl) opt.signal = ctl.signal;
+      fetch(url, opt).then(function (r) { return r.json(); }).then(function (j) { if (done) return; done = true; clearTimeout(timer); resolve(j); })
+        .catch(function (e) { if (done) return; done = true; clearTimeout(timer); reject(e); });
+    });
+  }
+
+  /* ───────── 질문 은행 ───────── */
+  var BANK = [], TOPICS = [];
+  (function () {
+    var o = window.WMQ;
+    if (!o) return;
+    TOPICS = o.T;
+    o.D.split('#').forEach(function (g, ti) {
+      g.split('|').forEach(function (q) {
+        var sp = q.charAt(0) === '*';
+        if (sp) q = q.slice(1);
+        BANK.push({ t: ti, q: q.replace(/[A-Za-z]/g, function (c) { return o.K[c] || c; }), s: sp || TOPICS[ti] === '학창 시절' });
+      });
+    });
+  })();
+
+  /* ───────── 질문 고르기 ───────── */
+  function filled() { return S.Q.filter(Boolean).length; }
+  function noMethod() { return S.M.filter(function (m) { return !m; }).length; }
+  function pool(topic) { var a = []; BANK.forEach(function (b, i) { if (topic < 0 ? !b.s : b.t === topic) a.push(i); }); return a; }
+  function unused(list) { list = shuffle(list.slice()); for (var i = 0; i < list.length; i++) if (S.Q.indexOf(BANK[list[i]].q) < 0) return BANK[list[i]].q; return ''; }
+
+  function setCount(n) {
+    if (S.n === n) return;
+    var lost = 0;
+    for (var i = n; i < S.Q.length; i++) if (S.Q[i]) lost++;
+    var q = S.Q.slice(0, n), m = S.M.slice(0, n / 2);
+    while (q.length < n) q.push('');
+    while (m.length < n / 2) m.push('');
+    S.Q = q; S.M = m; S.n = n; S.target = -1;
+    $('#qTitle').textContent = '질문 ' + n + '개 고르기';
+    $('#qHelp').textContent = '한 장의 앞면과 뒷면에 질문이 하나씩, 모두 ' + (n / 2) + '장에 들어갑니다. 추천 질문을 담거나 직접 써 주세요. 빈 칸을 누르면 그 자리에 담깁니다. 장마다 답하실 방법도 골라 주세요.';
+    if (lost) toast('질문 ' + n + '개에 맞춰 뒤쪽 ' + lost + '개를 뺐어요.');
+    board();
+  }
+
+  function board() {
+    var h = '';
+    for (var s = 0; s < S.n / 2; s++) {
+      h += '<div class="wmf-sheet' + (S.showNeed && (!S.M[s] || !S.Q[2 * s] || !S.Q[2 * s + 1]) ? ' need' : '') + '"><div class="wmf-sheet-hd"><b>' + NUM[s] + ' 번째 장</b><span class="wmf-sheet-m">';
+      METHODS.forEach(function (m) { h += '<button type="button" data-shm="' + s + '" data-v="' + m + '"' + (S.M[s] === m ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + m + '</button>'; });
+      h += '</span><button type="button" class="wmf-fill1" data-fill="' + s + '">이 장 채우기</button></div>';
+      for (var k = 0; k < 2; k++) {
+        var i = 2 * s + k, side = k ? '뒷면' : '앞면';
+        if (S.Q[i]) h += '<div class="wmf-slot"><em>' + side + '</em><span>' + esc(S.Q[i]) + '</span><button type="button" data-del="' + i + '" aria-label="빼기">×</button></div>';
+        else h += '<div class="wmf-slot empty' + (i === S.target ? ' tg' : '') + '" data-slot="' + i + '" role="button" tabindex="0"><em>' + side + '</em><span>' + (i === S.target ? '여기에 담깁니다' : '빈 칸 · 누르면 여기에 담겨요') + '</span></div>';
+      }
+      h += '</div>';
+    }
+    $('#wBoard').innerHTML = h;
+    var f = filled(), nm = noMethod(), st = $('#wStatus');
+    $('#wCount').textContent = f + ' / ' + S.n;
+    if (f < S.n || nm) { st.textContent = (f < S.n ? '질문 ' + (S.n - f) + '개 남음' : '') + (f < S.n && nm ? ' · ' : '') + (nm ? '방법 미선택 ' + nm + '장' : ''); st.className = 'wmf-status'; }
+    else { st.textContent = '질문과 방법을 모두 골랐어요.'; st.className = 'wmf-status ok'; if (S.showNeed) clearBad('q'); }
+    list();
+    conditional();
+    saveDraft();
+  }
+
+  function list() {
+    if (!BANK.length) { $('#wList').innerHTML = '<li><span>추천 질문을 불러오지 못했어요. 직접 써 주세요.</span></li>'; return; }
+    var h = '', items = S.order.slice(6 * S.page, 6 * S.page + 6);
+    items.forEach(function (bi) {
+      var q = BANK[bi].q, on = S.Q.indexOf(q) > -1;
+      h += '<li><span>' + esc(q) + '</span><button type="button" data-i="' + bi + '"' + (on ? ' class="on" disabled' : '') + '>' + (on ? '담음' : '담기') + '</button></li>';
+    });
+    $('#wList').innerHTML = h;
+    $('#wPage').textContent = (S.page + 1) + ' / ' + Math.max(1, Math.ceil(S.order.length / 6));
+  }
+  function reorder() { S.order = shuffle(pool(S.topic)); S.page = 0; list(); }
+
+  function addQ(text) {
+    text = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!text) return false;
+    if (S.Q.indexOf(text) > -1) { toast('이미 담은 질문이에요.'); return false; }
+    var i = S.target > -1 && !S.Q[S.target] ? S.target : S.Q.indexOf('');
+    if (i < 0) { toast(S.n + '개를 모두 담았어요. ×로 빼고 담아 주세요.'); return false; }
+    S.Q[i] = text; S.target = -1; S.dirty = true;
+    board();
+    return true;
+  }
+  function fillSheet(s) {
+    var p = pool(S.topic);
+    for (var k = 0; k < 2; k++) { var i = 2 * s + k; if (!S.Q[i]) { var q = unused(p); if (q) S.Q[i] = q; } }
+    S.target = -1; S.dirty = true; board();
+  }
+  function fillAll() {
+    var lists = [], idx = [];
+    TOPICS.forEach(function (t, ti) { lists.push(pool(ti).filter(function (bi) { return !BANK[bi].s; })); if (lists[ti].length) idx.push(ti); });
+    shuffle(idx);
+    var c = 0;
+    for (var i = 0; i < S.n; i++) {
+      if (S.Q[i]) continue;
+      for (var tries = 0; tries < idx.length; tries++) { var q = unused(lists[idx[c++ % idx.length]]); if (q) { S.Q[i] = q; break; } }
+    }
+    S.target = -1; S.dirty = true; board();
+  }
+  var clearArmed = false;
+  function clearAll() {
+    var b = $('#wClear');
+    if (!clearArmed) { clearArmed = true; b.textContent = '한 번 더 누르면 비워져요'; setTimeout(function () { clearArmed = false; b.textContent = '모두 비우기'; }, 4000); return; }
+    clearArmed = false; b.textContent = '모두 비우기';
+    for (var i = 0; i < S.n; i++) S.Q[i] = '';
+    S.target = -1; board();
+  }
+
+  function initWidget() {
+    if (BANK.length) {
+      var h = '<button type="button" class="on" data-t="-1">전체</button>';
+      TOPICS.forEach(function (t, i) { h += '<button type="button" data-t="' + i + '">' + esc(t) + '</button>'; });
+      $('#wTopics').innerHTML = h;
+    }
+    $('#wTopics').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      $$('#wTopics button').forEach(function (x) { x.className = x === b ? 'on' : ''; });
+      S.topic = +b.getAttribute('data-t'); reorder();
+    });
+    $('#wList').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b || b.disabled) return;
+      addQ(BANK[+b.getAttribute('data-i')].q);
+    });
+    $('#wMore').addEventListener('click', function () { S.page++; if (6 * S.page >= S.order.length) { shuffle(S.order); S.page = 0; } list(); });
+    $('#wBoard').addEventListener('click', function (e) {
+      var el = e.target.closest('button, [data-slot]'); if (!el) return;
+      var v;
+      if ((v = el.getAttribute('data-del')) !== null) { S.Q[+v] = ''; S.target = +v; board(); }
+      else if ((v = el.getAttribute('data-shm')) !== null) { S.M[+v] = el.getAttribute('data-v'); S.dirty = true; board(); }
+      else if ((v = el.getAttribute('data-fill')) !== null) fillSheet(+v);
+      else if ((v = el.getAttribute('data-slot')) !== null) { S.target = S.target === +v ? -1 : +v; board(); }
+    });
+    $('#wBoard').addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute('data-slot') !== null) { e.preventDefault(); e.target.click(); } });
+    $('.wmf-all').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-all]'); if (!b) return;
+      for (var s = 0; s < S.n / 2; s++) S.M[s] = b.getAttribute('data-all');
+      S.dirty = true; board();
+    });
+    $('#wFillAll').addEventListener('click', fillAll);
+    $('#wClear').addEventListener('click', clearAll);
+    var own = $('#wOwn');
+    function addOwn() { if (addQ(own.value)) own.value = ''; }
+    $('#wOwnAdd').addEventListener('click', addOwn);
+    own.addEventListener('keydown', function (e) { if (e.isComposing || e.keyCode === 229) return; if (e.key === 'Enter') { e.preventDefault(); addOwn(); } });
+    reorder();
+  }
+
+  /* 작성 중인 질문만 이 기기에 임시 저장 (성함·연락처는 저장하지 않음) */
+  function draftKey() { return 'wmf:' + (S.o || '-') + ':' + S.ed; }
+  function saveDraft() { if (!S.ed || S.sent) return; if (!filled() && !S.M.some(Boolean)) { store(draftKey(), null); return; } store(draftKey(), JSON.stringify({ q: S.Q, m: S.M, at: Date.now() })); }
+  function loadDraft() {
+    if (filled()) return;
+    var raw = store(draftKey());
+    if (!raw) return;
+    try {
+      var d = JSON.parse(raw);
+      if (!d || Date.now() - d.at > 30 * 86400000) return;
+      for (var i = 0; i < S.n; i++) S.Q[i] = d.q[i] || '';
+      for (var s = 0; s < S.n / 2; s++) S.M[s] = METHODS.indexOf(d.m[s]) > -1 ? d.m[s] : '';
+      board();
+      if (filled()) toast('작성하시던 질문을 불러왔어요.');
+    } catch (e) {}
+  }
+
+  /* ───────── 상품·편 선택 ───────── */
+  function renderPeople() {
+    show('#peopleChips', !S.locked);
+    show('#peopleHelp', !S.locked);
+    show('#peopleShow', S.locked);
+    if (S.locked) $('#peopleShow').textContent = S.people === 2 ? '부모님 두 분' : '부모님 한 분';
+    setRadio('people', S.people ? String(S.people) : '');
+  }
+  function renderEd() {
+    var from = S.range ? S.range[0] : 1, to = S.range ? S.range[1] : 6, h = '';
+    for (var e = from; e <= to; e++) {
+      var dn = S.done.indexOf(e) > -1;
+      h += '<label class="chip"><input type="radio" name="ed" value="' + e + '"' + (S.ed === e ? ' checked' : '') + (dn ? ' disabled' : '') + '><span>' + EDN[e] + (e === 6 ? ' (마지막)' : '') + (dn ? '<em>접수됨</em>' : '') + '</span></label>';
+    }
+    $('#edChips').innerHTML = h;
+    var help = '';
+    if (S.locked && S.done.length) help = '이미 접수된 편은 고를 수 없어요. 고칠 내용이 있으면 카카오톡 채널로 알려 주세요.';
+    else if (!S.locked) help = '처음 작성하시면 첫 번째 편, 이어서 신청하셨다면 이번에 작성하실 편을 골라 주세요.';
+    $('#edHelp').textContent = help;
+    if (S.locked) {
+      var left = 0; for (var x = from; x <= to; x++) if (S.done.indexOf(x) < 0) left++;
+      if (!left) $('#edHelp').textContent = '이 주문의 편은 모두 접수되었어요. 고칠 내용이 있으면 카카오톡 채널로 알려 주세요.';
+    }
+  }
+
+  function hero() {
+    var two = S.people === 2, arch = '<svg viewBox="0 0 90 120" aria-hidden="true"><path d="M4 116V46A41 41 0 0 1 86 46V116Z" fill="none" stroke="#9C4A2B" stroke-width="2"/><path d="M12 108V46A33 33 0 0 1 78 46V108Z" fill="#9C4A2B" fill-opacity=".12" stroke="#9C4A2B" stroke-width="1"/></svg>';
+    $('#hArches').innerHTML = arch + (two ? arch : '');
+    $('#hTitle').textContent = S.people ? (two ? '부모님 두 분' : '부모님 한 분') : '부모님';
+    $('#hSub').textContent = !S.people ? '부모님의 이야기를 한 권에 담아요' : two ? '아버지와 어머니, 두 분의 이야기를 한 권에 함께 담아요' : '아버지 또는 어머니, 한 분의 이야기를 한 권에 담아요';
+    var tags = S.ed ? '<span class="tag' + (S.ed === 6 ? ' on' : '') + '">' + (S.ed === 6 ? '여섯 번째, 마지막 편' : EDN[S.ed]) + '</span><span class="tag">질문 ' + (S.ed === 6 ? 20 : 16) + '개</span>' : '<span class="tag">작성하는 편을 골라 주세요</span>';
+    $('#hTags').innerHTML = tags;
+    var b1 = S.ed === 1 && S.people;
+    show('#bot1', b1);
+    if (b1) $('#bot1Text').textContent = '부모님 ' + (two ? '한' : '두') + ' 분으로 알고 구매하셨다면, 작성하기 전에 마이페이지 › 주문 내역에서 주문을 취소한 뒤 ' + (two ? '1' : '2') + '인 상품으로 다시 구매해 주세요.';
+    show('#bot6', S.ed === 6);
+  }
+
+  function before() {
+    var b = BEFORE[S.people === 2 ? 2 : 1];
+    $('#bTitle').textContent = b.title;
+    $('#bLead').textContent = b.lead;
+    $('#bList').innerHTML = b.list.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
+    $('#bFoot').textContent = b.foot;
+    $('#before').open = S.ed === 1;
+  }
+
+  function parts() {
+    if (S.people !== 2) return [1];
+    if (S.ed === 1) return [1, 2];
+    var p = radio('participants');
+    return p === '첫 번째 분만' ? [1] : p === '두 번째 분만' ? [2] : [1, 2];
+  }
+
+  /* 고른 방법에 따라 필요한 칸만 보이기 */
+  function conditional() {
+    if (!S.ed || !S.people) return;
+    var first = S.ed === 1, two = S.people === 2, hasCall = S.M.indexOf('전화') > -1, hasHand = S.M.indexOf('손글씨') > -1, p = parts();
+    show('#fCallTime', hasCall);
+    show('#fPhone1New', !first && p.indexOf(1) > -1);
+    show('#fPhone2New', !first && two && p.indexOf(2) > -1);
+    show('#fA1', hasHand && (first || p.indexOf(1) > -1));
+    show('#fA2', hasHand && two && (first || p.indexOf(2) > -1));
+    show('#fPickup', hasHand);
+    var ph = $('#photoHand input');
+    ph.disabled = !hasHand;
+    if (!hasHand && ph.checked) setRadio('photo', '');
+    $('#moreDesc').textContent = hasCall || hasHand || !first ? '고르신 방법에 맞춰 필요한 칸만 보여 드려요.' : '전화나 손글씨로 답하는 장이 없어서 더 적으실 칸이 거의 없어요.';
+  }
+
+  function applyMode() {
+    var ready = !!(S.people && S.ed);
+    hero();
+    show('#main', ready);
+    if (!ready) return;
+    var first = S.ed === 1, two = S.people === 2;
+    before();
+    $('#basicDesc').textContent = first ? '신청하신 분과 부모님 정보를 입력해 주세요.' : '부모님 정보는 지난번 입력하신 내용을 그대로 씁니다. 바뀐 내용만 4번에 적어 주세요.';
+    show('#fApplicantName', first);
+    show('#gParents', first);
+    show('#gP2', first && two);
+    $('#p1NameLb').innerHTML = (two ? '첫 번째 부모님 성함' : '부모님 성함') + '<i>*</i>';
+    $('#p1PhoneLb').innerHTML = (two ? '첫 번째 부모님 연락처' : '부모님 연락처') + '<i>*</i>';
+    show('#fParticipants', !first && two);
+    $('#phone1NewLb').innerHTML = (two ? '첫 번째 부모님 연락처 변경' : '부모님 연락처 변경') + ' <small>바뀐 경우에만</small>';
+    // 주소·회수 장소: 1편은 필수, 2편부터는 바뀐 경우에만
+    $('#a1Lb').innerHTML = first ? ((two ? '첫 번째 부모님 주소' : '부모님 주소') + '<i>*</i>') : ((two ? '첫 번째 분 주소 변경' : '주소 변경') + ' <small>바뀐 경우에만</small>');
+    $('#a1Help').textContent = first ? '손글씨 장이 있어 이 주소로 기록지를 보내 드려요.' : '비워 두시면 처음 적어 주신 주소로 보내 드려요.';
+    $('#a2Lb').innerHTML = first ? '두 번째 부모님 주소 <small>따로 사시는 경우만</small>' : '두 번째 분 주소 변경 <small>바뀐 경우에만</small>';
+    $('#pickupLb').innerHTML = first ? '기록지 회수 장소<i>*</i>' : '기록지 회수 장소 <small>바뀐 경우에만</small>';
+    show('#pickupSame', !first);
+    show('#callSame', !first);
+    if (S.lastFirst !== first) {   // 1편 ↔ 2편 이후로 바뀌면 기본값 다시 잡기
+      setRadio('callTime', first ? '상관없음' : 'same');
+      setRadio('pickup', first ? '' : 'same');
+      S.lastFirst = first;
+    }
+    $('#informedText').textContent = first ? INFORMED[two ? 2 : 1] : INFORMED.later;
+    $('#applicantPhoneHelp').textContent = first ? '진행 안내를 이 번호로 보내 드려요. 구매하실 때 적은 번호와 같게 적어 주세요.' : '처음 신청하실 때 적은 번호와 같게 적어 주세요. 이 번호로 지난 편 정보를 찾아요.';
+    setCount(S.ed === 6 ? 20 : 16);
+    loadDraft();
+    conditional();
+  }
+
+  /* ───────── 주문 확인 ───────── */
+  function lookup(o) {
+    if (!o || !apiReady()) return Promise.resolve(null);
+    return fetchJson(API_URL + '?action=order&o=' + encodeURIComponent(o), { method: 'GET' }, 15000)
+      .then(function (r) { return r && r.ok ? r : null; })
+      .catch(function () { return null; });
+  }
+  function applyOrder(r) {
+    if (r && r.found) {
+      S.locked = true; S.people = r.people === 2 ? 2 : 1;
+      var from = Number(r.from) || 1, to = Number(r.to) || 6;
+      S.range = [Math.max(1, from), Math.min(6, to)];
+      S.done = (r.done || []).map(Number);
+      S.ed = 0;
+      for (var e = S.range[0]; e <= S.range[1]; e++) if (S.done.indexOf(e) < 0) { S.ed = e; break; }
+    } else {
+      S.locked = false; S.range = null; S.done = [];
+    }
+    renderPeople(); renderEd(); applyMode();
+  }
+  function showOrder() {
+    show('#oShow', !!S.o && S.oFixed);
+    show('#oEdit', !S.oFixed);
+    if (S.o && S.oFixed) $('#oShow').textContent = S.o;
+  }
+
+  /* ───────── 주소 찾기 (다음 우편번호) ───────── */
+  function postcode(key) {
+    if (!(window.daum && window.daum.Postcode)) { toast('주소 찾기를 불러오지 못했어요. 주소를 직접 입력해 주세요.'); $('#' + key + 'addr').focus(); return; }
+    new window.daum.Postcode({
+      oncomplete: function (d) {
+        var addr = d.roadAddress || d.jibunAddress || d.address || '';
+        if (d.buildingName && d.apartment === 'Y') addr += ' (' + d.buildingName + ')';
+        $('#' + key + 'zip').value = d.zonecode || '';
+        $('#' + key + 'addr').value = addr;
+        clearBad(key);
+        setTimeout(function () { $('#' + key + 'detail').focus(); }, 100);
+      }
+    }).open();
+  }
+  function addrVal(key) {
+    var zip = val(key + 'zip').replace(/\D/g, ''), a = val(key + 'addr'), d = val(key + 'detail');
+    if (!a) return '';
+    return (zip ? '[' + zip + '] ' : '') + a + (d ? ' ' + d : '');
+  }
+
+  /* ───────── 검사·제출 ───────── */
+  function clearBad(k) { var el = $('[data-k="' + k + '"]'); if (el) el.classList.remove('bad'); }
+  function setBad(k, msg) {
+    var el = $('[data-k="' + k + '"]');
+    if (!el) return null;
+    el.classList.add('bad');
+    var fe = el.querySelector('.fe'); if (fe) fe.textContent = msg;
+    return el;
+  }
+
+  function collect() {
+    var E = [], first = S.ed === 1, two = S.people === 2;
+    var d = { action: 'form', nonce: S.nonce, orderNo: S.o, people: S.people, edition: S.ed };
+    if (!S.o) E.push(['o', '주문번호를 입력해 주세요.']);
+    if (!S.people) E.push(['people', '부모님 인원을 골라 주세요.']);
+    if (!S.ed) E.push(['ed', '작성하는 편을 골라 주세요.']);
+    if (!S.people || !S.ed) return { E: E, d: d };
+
+    d.applicantName = first ? val('applicantName') : '';
+    if (first && !d.applicantName) E.push(['applicantName', '신청자 성함을 입력해 주세요.']);
+    d.applicantPhone = digits(val('applicantPhone'));
+    if (!okPhone(d.applicantPhone)) E.push(['applicantPhone', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+    d.recordDate = val('recordDate');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d.recordDate)) E.push(['recordDate', '기록일을 골라 주세요.']);
+    else if (d.recordDate < S.minDate) E.push(['recordDate', kday(S.minDate) + ' 이후 날짜로 골라 주세요.']);
+    else if (d.recordDate > S.maxDate) E.push(['recordDate', '1년 안의 날짜로 골라 주세요.']);
+
+    if (first) {
+      d.p1Name = val('p1Name'); d.p1Phone = digits(val('p1Phone'));
+      if (!d.p1Name) E.push(['p1Name', '성함을 입력해 주세요.']);
+      if (!okPhone(d.p1Phone)) E.push(['p1Phone', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+      if (two) {
+        d.p2Name = val('p2Name'); d.p2Phone = digits(val('p2Phone'));
+        if (!d.p2Name) E.push(['p2Name', '성함을 입력해 주세요.']);
+        if (!okPhone(d.p2Phone)) E.push(['p2Phone', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+      }
+    } else if (two) {
+      d.participants = radio('participants');
+      if (!d.participants) E.push(['participants', '이번 편에 참여하시는 분을 골라 주세요.']);
+    }
+
+    var f = filled(), nm = noMethod();
+    if (f < S.n || nm) E.push(['q', (f < S.n ? '질문 ' + (S.n - f) + '개를 더 담아 주세요. ' : '') + (nm ? '방법을 고르지 않은 장이 ' + nm + '개 있어요.' : '')]);
+    d.questions = [];
+    for (var s = 0; s < S.n / 2; s++) d.questions.push({ m: S.M[s], f: S.Q[2 * s], b: S.Q[2 * s + 1] });
+
+    var hasCall = S.M.indexOf('전화') > -1, hasHand = S.M.indexOf('손글씨') > -1, p = parts();
+    var ct = radio('callTime');
+    d.callTime = hasCall && ct !== 'same' ? ct : '';
+    if (first && hasCall && !d.callTime) d.callTime = '상관없음';
+
+    if (!first) {
+      d.phone1New = p.indexOf(1) > -1 ? digits(val('phone1New')) : '';
+      d.phone2New = two && p.indexOf(2) > -1 ? digits(val('phone2New')) : '';
+      if (d.phone1New && !okPhone(d.phone1New)) E.push(['phone1New', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+      if (d.phone2New && !okPhone(d.phone2New)) E.push(['phone2New', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+    }
+    d.addr1 = ''; d.addr2 = ''; d.pickup = '';
+    if (hasHand) {
+      if (first || p.indexOf(1) > -1) d.addr1 = addrVal('a1');
+      if (two && (first || p.indexOf(2) > -1)) d.addr2 = addrVal('a2');
+      var pk = radio('pickup');
+      d.pickup = pk === 'same' ? '' : pk;
+      if (first && !d.addr1) E.push(['a1', '기록지를 받으실 주소를 입력해 주세요.']);
+      if (first && !d.pickup) E.push(['pickup', '회수 장소를 골라 주세요.']);
+    }
+    d.photoMethod = radio('photo');
+    if (d.photoMethod === '손글씨' && !hasHand) E.push(['photo', '손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요.']);
+    d.informed = $('#informed').checked;
+    if (!d.informed) E.push(['informed', '확인 칸에 체크해 주세요.']);
+    d.privacy = $('#privacy').checked;
+    if (!d.privacy) E.push(['privacy', '동의하셔야 접수할 수 있어요.']);
+    return { E: E, d: d };
+  }
+
+  function submit(ev) {
+    ev.preventDefault();
+    if (S.sending) return;
+    $$('.bad').forEach(function (el) { el.classList.remove('bad'); });
+    show('#err', false);
+    var r = collect();
+    if (r.E.length) {
+      S.showNeed = true; board();
+      var firstEl = null;
+      r.E.forEach(function (x) { var el = setBad(x[0], x[1]); if (!firstEl && el) firstEl = el; });
+      $('#err').textContent = '확인이 필요한 칸이 ' + r.E.length + '곳 있어요.';
+      show('#err', true);
+      if (firstEl) firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (!apiReady()) { $('#err').textContent = '아직 접수 주소가 설정되지 않았어요. (관리자: API_URL 확인)'; show('#err', true); return; }
+    send(r.d, 0);
+  }
+
+  function send(d, attempt) {
+    S.sending = true;
+    var btn = $('#submitBtn');
+    btn.disabled = true; btn.textContent = '보내는 중…';
+    fetchJson(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) }, 40000)
+      .then(function (res) {
+        S.sending = false; btn.disabled = false; btn.textContent = '제출하기';
+        if (res && res.ok) return finish(d, res);
+        $('#err').textContent = (res && res.error) || '접수하지 못했어요. 잠시 후 다시 눌러 주세요.';
+        show('#err', true);
+        $('#err').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function () {
+        if (attempt < 1) { setTimeout(function () { send(d, attempt + 1); }, 1500); return; }
+        S.sending = false; btn.disabled = false; btn.textContent = '제출하기';
+        $('#err').textContent = '보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요. 계속 안 되면 카카오톡 채널로 알려 주세요.';
+        show('#err', true);
+      });
+  }
+
+  function finish(d, res) {
+    S.sent = true;
+    store(draftKey(), null);
+    var c = { '전화': 0, '녹음': 0, '손글씨': 0 };
+    d.questions.forEach(function (q) { c[q.m]++; });
+    var how = METHODS.filter(function (m) { return c[m]; }).map(function (m) { return m + ' ' + c[m] + '장'; }).join(' · ');
+    $('#doneSum').innerHTML =
+      '<div><b>주문번호</b><span>' + esc(d.orderNo) + '</span></div>' +
+      '<div><b>작성한 편</b><span>' + EDN[d.edition] + ' (' + (d.people === 2 ? '부모님 두 분' : '부모님 한 분') + ')</span></div>' +
+      '<div><b>기록일</b><span>' + kday(d.recordDate) + '</span></div>' +
+      '<div><b>답하는 방법</b><span>' + esc(how) + '</span></div>' +
+      '<div><b>접수번호</b><span>' + esc(res.id || '-') + '</span></div>';
+    var nx = ['접수 확인 안내를 카카오톡으로 보내 드려요. 밤늦게 접수하시면 다음 날 아침에 보내 드려요.'];
+    if (d.edition === 1) nx.push('부모님 동의가 확인되어야 기록을 시작해요. 아직이라면 아래 버튼으로 동의 페이지를 열어 부모님께 보내 드리거나 함께 진행해 주세요.' + (d.people === 2 ? ' 두 분이 각각 따로 동의하셔야 해요.' : ''));
+    nx.push('기록일은 기록일 3일 전까지 카카오톡 채널로 바꾸실 수 있어요.');
+    $('#doneNext').innerHTML = nx.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
+    var cb = $('#doneConsent');
+    cb.href = CONSENT_URL + '?o=' + encodeURIComponent(d.orderNo);
+    show(cb, d.edition === 1);
+    show('#f', false); show('#done', true);
+    window.scrollTo(0, 0);
+  }
+
+  /* ───────── 시작 ───────── */
+  function init() {
+    S.nonce = uid();
+    var today = new Date();
+    S.minDate = ymd(addDays(today, 3)); S.maxDate = ymd(addDays(today, 365));
+    var rd = $('#recordDate'); rd.min = S.minDate; rd.max = S.maxDate;
+    $('#dateHelp').textContent = '오늘부터 3일 뒤 이후 날짜로 골라 주세요. 가장 빠른 날은 ' + kday(S.minDate) + '이에요.';
+    $('#mypage').href = MYPAGE_URL;
+
+    initWidget();
+    S.n = 0; setCount(16);
+
+    // 연락처 칸: 숫자만 받아 하이픈 표시
+    $$('.tel').forEach(function (el) {
+      el.addEventListener('input', function () {
+        var d = digits(el.value).slice(0, 11), o = d;
+        if (d.length > 3 && d.length <= 7) o = d.slice(0, 3) + '-' + d.slice(3);
+        else if (d.length > 7) o = d.slice(0, 3) + '-' + d.slice(3, d.length === 10 ? 6 : 7) + '-' + d.slice(d.length === 10 ? 6 : 7);
+        el.value = o;
+      });
+    });
+    // 입력하면 그 칸의 오류 표시 지우기
+    $('#f').addEventListener('input', function (e) { var k = e.target.closest('[data-k]'); if (k && k.id !== 'secQ') k.classList.remove('bad'); S.dirty = true; });
+    $('#f').addEventListener('change', function (e) {
+      var k = e.target.closest('[data-k]'); if (k && k.id !== 'secQ') k.classList.remove('bad');
+      if (e.target.name === 'people') { S.people = Number(e.target.value); applyMode(); }
+      else if (e.target.name === 'ed') { saveDraft(); S.ed = Number(e.target.value); applyMode(); }
+      else if (e.target.name === 'participants') conditional();
+    });
+    $$('[data-post]').forEach(function (b) { b.addEventListener('click', function () { postcode(b.getAttribute('data-post')); }); });
+    $('#f').addEventListener('submit', submit);
+    $('#oCheck').addEventListener('click', function () {
+      var o = val('oInput').replace(/[^0-9A-Za-z_-]/g, '');
+      if (!o) { setBad('o', '주문번호를 입력해 주세요.'); return; }
+      S.o = o; clearBad('o');
+      $('#oCheck').disabled = true; $('#oCheck').textContent = '확인 중…';
+      lookup(o).then(function (r) {
+        $('#oCheck').disabled = false; $('#oCheck').textContent = '확인';
+        if (r && r.found) { S.oFixed = true; showOrder(); toast('주문을 확인했어요.'); }
+        else toast('주문을 확인하지 못했어요. 상품에 맞게 직접 골라 주세요.');
+        applyOrder(r);
+      });
+    });
+    $('#oInput').addEventListener('input', function () { S.o = val('oInput').replace(/[^0-9A-Za-z_-]/g, ''); });
+    window.addEventListener('beforeunload', function (e) { if (S.dirty && !S.sent) { e.preventDefault(); e.returnValue = ''; } });
+
+    var q = new URLSearchParams(location.search), o = (q.get('o') || '').replace(/[^0-9A-Za-z_-]/g, '').slice(0, 40);
+    S.o = o; S.oFixed = !!o;
+    showOrder();
+    renderPeople(); renderEd(); applyMode();
+    if (!o) { show('#loading', false); show('#f', true); if (apiReady()) fetch(API_URL + '?ping=1').catch(function () {}); return; }
+    lookup(o).then(function (r) {
+      show('#loading', false); show('#f', true);
+      applyOrder(r);
+      if (!r || !r.found) $('#edHelp').textContent = '주문 정보를 아직 확인하지 못했어요. 구매하신 상품에 맞게 직접 골라 주세요.';
+    });
+  }
+  init();
+})();
+</script>
 </body>
 </html>
