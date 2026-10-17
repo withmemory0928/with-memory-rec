@@ -374,14 +374,14 @@ input[type=date].in{line-height:50px}
           <p class="fe"></p>
         </div>
 
-        <div class="fld" data-k="photo">
-          <span class="lb">사진에 얽힌 이야기를 남길 방법 <small>사진 추가 옵션을 고르신 분만</small></span>
+        <div class="fld" data-k="photo" id="fPhoto" hidden>
+          <span class="lb" id="photoLb">이번 편에 사진을 넣으시겠어요?<i>*</i></span>
           <div class="chips col">
-            <label class="chip"><input type="radio" name="photo" value="" checked><span>사진 추가 옵션을 고르지 않았어요</span></label>
-            <label class="chip"><input type="radio" name="photo" value="녹음"><span>녹음 (사진 링크에서 사진마다 1분 안으로 녹음)</span></label>
-            <label class="chip" id="photoHand"><input type="radio" name="photo" value="손글씨"><span>손글씨 (기록지 사진 이야기 칸에 적기)</span></label>
+            <label class="chip"><input type="radio" name="photo" value="no"><span>이번 편에는 넣지 않을게요</span></label>
+            <label class="chip"><input type="radio" name="photo" value="녹음"><span>넣을게요 · 사진 이야기는 녹음으로 (사진마다 1분 안)</span></label>
+            <label class="chip" id="photoHand"><input type="radio" name="photo" value="손글씨"><span>넣을게요 · 사진 이야기는 손글씨로 (기록지 사진 이야기 칸)</span></label>
           </div>
-          <p class="help" id="photoHelp">손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요.</p>
+          <p class="help" id="photoHelp">사진 추가 1개로 한 편에 사진 2장(두 분은 각 2장)을 넣을 수 있어요. 손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요.</p>
           <p class="fe"></p>
         </div>
       </section>
@@ -414,7 +414,7 @@ input[type=date].in{line-height:50px}
 4. 동의를 거부할 권리
 동의를 거부하실 수 있으며, 거부하시면 기록물 제작을 진행할 수 없습니다.
 
-부모님의 정보는 부모님께 알린 뒤 입력해 주세요. 부모님 본인의 동의는 처음 신청하실 때 동의 링크로 따로 받습니다.
+입력하신 정보는 구글(미국 등)의 서버에 보관됩니다(개인정보처리방침 제7조). 부모님의 정보는 부모님께 알린 뒤 입력해 주세요. 부모님 본인의 동의는 처음 신청하실 때 동의 링크로 따로 받으며, 부모님이 동의하지 않으시면 입력하신 부모님 정보는 지체 없이 삭제합니다.
 자세한 내용은 개인정보처리방침에서 확인하실 수 있습니다.</div>
           <label class="chk"><input type="checkbox" id="privacy"><span>개인정보 수집 및 이용에 동의합니다.</span></label>
           <p class="fe"></p>
@@ -494,14 +494,14 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     }
   };
   var INFORMED = {
-    1: '부모님께 이 신청을 미리 말씀드렸습니다. 결제 후 받는 동의 링크로 부모님의 동의를 받아야 기록을 시작할 수 있다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
-    2: '부모님 두 분께 이 신청을 미리 말씀드렸습니다. 결제 후 받는 동의 링크로 두 분 각각의 동의를 받아야 기록을 시작할 수 있다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
+    1: '부모님께 이 신청을 미리 말씀드렸고, 부모님 성함·연락처(기록지로 답하시면 주소)를 위드메모리에 알리며 이 정보가 미국 등 해외(구글) 서버에 보관된다는 점도 말씀드렸습니다. 결제 후 받는 동의 링크로 부모님의 동의를 받아야 기록을 시작할 수 있고, 동의하지 않으시면 이 정보는 지체 없이 삭제된다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
+    2: '부모님 두 분께 이 신청을 미리 말씀드렸고, 두 분의 성함·연락처(기록지로 답하시면 주소)를 위드메모리에 알리며 이 정보가 미국 등 해외(구글) 서버에 보관된다는 점도 말씀드렸습니다. 결제 후 받는 동의 링크로 두 분 각각의 동의를 받아야 기록을 시작할 수 있고, 동의하지 않으시면 그분의 정보는 지체 없이 삭제된다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
     later: '이번 편의 기록일과 진행 방법을 부모님께 미리 말씀드렸습니다.'
   };
 
   /* ───────── 상태 ───────── */
   var S = {
-    o: '', people: 0, ed: 0, locked: false, range: null, done: [],
+    o: '', people: 0, ed: 0, locked: false, range: null, done: [], photoLeft: 0,
     n: 0, Q: [], M: [], target: -1, topic: -1, order: [], page: 0,
     nonce: '', sending: false, sent: false, dirty: false, minDate: '', maxDate: ''
   };
@@ -761,9 +761,11 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     show('#fA1', hasHand && (first || p.indexOf(1) > -1));
     show('#fA2', hasHand && two && (first || p.indexOf(2) > -1));
     show('#fPickup', hasHand);
+    show('#fPhoto', S.photoLeft > 0);
+    if (S.photoLeft > 0) $('#photoLb').innerHTML = '이번 편에 사진을 넣으시겠어요? <small>남은 사진 추가 ' + S.photoLeft + '번</small><i>*</i>';
     var ph = $('#photoHand input');
     ph.disabled = !hasHand;
-    if (!hasHand && ph.checked) setRadio('photo', '');
+    if (!hasHand && ph.checked) setRadio('photo', '녹음');
     $('#moreDesc').textContent = hasCall || hasHand || !first ? '고르신 방법에 맞춰 필요한 칸만 보여 드려요.' : '전화나 손글씨로 답하는 장이 없어서 더 적으실 칸이 거의 없어요.';
   }
 
@@ -814,10 +816,11 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       var from = Number(r.from) || 1, to = Number(r.to) || 6;
       S.range = [Math.max(1, from), Math.min(6, to)];
       S.done = (r.done || []).map(Number);
+      S.photoLeft = Number(r.photoLeft) || 0;
       S.ed = 0;
       for (var e = S.range[0]; e <= S.range[1]; e++) if (S.done.indexOf(e) < 0) { S.ed = e; break; }
     } else {
-      S.locked = false; S.range = null; S.done = [];
+      S.locked = false; S.range = null; S.done = []; S.photoLeft = 0;
     }
     renderPeople(); renderEd(); applyMode();
   }
@@ -913,7 +916,10 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       if (first && !d.addr1) E.push(['a1', '기록지를 받으실 주소를 입력해 주세요.']);
       if (first && !d.pickup) E.push(['pickup', '회수 장소를 골라 주세요.']);
     }
-    d.photoMethod = radio('photo');
+    var pm = S.photoLeft > 0 ? radio('photo') : 'no';
+    if (!pm) E.push(['photo', '이번 편에 사진을 넣으실지 골라 주세요.']);
+    d.usePhoto = pm === '녹음' || pm === '손글씨';
+    d.photoMethod = d.usePhoto ? pm : '';
     if (d.photoMethod === '손글씨' && !hasHand) E.push(['photo', '손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요.']);
     d.informed = $('#informed').checked;
     if (!d.informed) E.push(['informed', '확인 칸에 체크해 주세요.']);
@@ -972,6 +978,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       '<div><b>작성한 편</b><span>' + EDN[d.edition] + ' (' + (d.people === 2 ? '부모님 두 분' : '부모님 한 분') + ')</span></div>' +
       '<div><b>기록일</b><span>' + kday(d.recordDate) + '</span></div>' +
       '<div><b>답하는 방법</b><span>' + esc(how) + '</span></div>' +
+      (d.usePhoto ? '<div><b>사진</b><span>이번 편에 넣음 (이야기 ' + esc(d.photoMethod) + ')</span></div>' : '') +
       '<div><b>접수번호</b><span>' + esc(res.id || '-') + '</span></div>';
     var nx = ['접수 확인 안내를 카카오톡으로 보내 드려요. 밤늦게 접수하시면 다음 날 아침에 보내 드려요.'];
     if (d.edition === 1) nx.push('부모님 동의가 확인되어야 기록을 시작해요. 아직이라면 아래 버튼으로 동의 페이지를 열어 부모님께 보내 드리거나 함께 진행해 주세요.' + (d.people === 2 ? ' 두 분이 각각 따로 동의하셔야 해요.' : ''));
