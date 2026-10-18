@@ -36,6 +36,16 @@ h2{font-size:17px;margin-bottom:8px}
 .item .st.ok{color:var(--ok)} .item .st.err{color:var(--err)}
 .item audio{width:100%;margin-top:8px}
 .item img{max-width:100%;border-radius:8px;margin-top:8px;display:block}
+.pair{border-top:1px solid var(--line);padding:16px 0 4px}
+.pair:first-of-type{border-top:0;padding-top:4px}
+.pair .ttl{font-weight:700;font-size:16px}
+.pair .item{border-top:0;padding:0}
+.pair .ph{margin-top:8px;border-radius:10px;background:#efe7dc;min-height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pair .ph.on{min-height:0;background:none}
+.pair .ph img{width:100%;height:auto;margin:0;border-radius:10px}
+.pair .ph .ld{font-size:13px;color:var(--sub)}
+.pair .photo .fn{margin-top:6px}
+.pair .story{margin-top:12px;background:#faf5ee;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .info ul{padding-left:18px;font-size:14px;color:var(--fg)}
 .info li{margin:4px 0;word-break:keep-all}
 </style>
@@ -109,33 +119,84 @@ h2{font-size:17px;margin-bottom:8px}
     if (!files.length) { $('#list').innerHTML = '<section class="card"><p>받을 수 있는 파일이 아직 없습니다. 카카오톡 채널 @위드메모리로 문의해 주세요.</p></section>'; return; }
     $('#all').classList.remove('hide');
     var h = '';
-    ORDER.forEach(function (g) {
+    // 질문 녹음·전화 녹음: 종류별로 묶어서
+    ['질문 녹음', '전화 녹음'].forEach(function (g) {
       var list = files.filter(function (f) { return f.group === g; });
       if (!list.length) return;
       h += '<section class="card group"><h2>' + esc(g) + '<small>' + list.length + '개</small></h2>';
-      list.forEach(function (f) {
-        var audio = /^audio\//.test(f.mime) || /\.(m4a|webm|mp3|ogg|aac|wav)$/i.test(f.name);
-        var image = /^image\//.test(f.mime);
-        h += '<div class="item" data-i="' + f.i + '"><div class="lb">' + esc(f.label) + '</div>' +
-             '<div class="fn">' + esc(f.name) + ' · ' + size(f.kb) + '</div><div class="bt">' +
-             (audio ? '<button type="button" data-act="play">듣기</button>' : '') +
-             (image ? '<button type="button" data-act="view">보기</button>' : '') +
-             '<button type="button" data-act="save">받기</button></div><div class="st"></div></div>';
-      });
+      list.forEach(function (f) { h += itemHtml(f, '', f.label, '받기'); });
       h += '</section>';
     });
+    // 사진: 사진 바로 아래에 그 사진의 이야기
+    var photos = files.filter(function (f) { return f.group === '사진'; });
+    var stories = files.filter(function (f) { return f.group === '사진 이야기'; });
+    var used = {};
+    if (photos.length || stories.length) {
+      h += '<section class="card group"><h2>사진과 이야기<small>사진 ' + photos.length + '장' +
+           (stories.length ? ' · 이야기 ' + stories.length + '개' : '') + '</small></h2>';
+      photos.forEach(function (p) {
+        var s = stories.filter(function (x) { return !used[x.i] && String(x.label).replace(/\s*이야기$/, '') === p.label; })[0];
+        h += '<div class="pair"><div class="ttl">' + esc(p.label) + '</div>' + itemHtml(p, 'photo', '', '사진 받기');
+        if (s) { used[s.i] = 1; h += itemHtml(s, 'story', '이 사진에 담긴 이야기', '이야기 받기'); }
+        h += '</div>';
+      });
+      stories.forEach(function (s) { if (!used[s.i]) h += '<div class="pair">' + itemHtml(s, 'story', s.label, '이야기 받기') + '</div>'; });
+      h += '</section>';
+    }
     $('#list').innerHTML = h;
+    preload(photos.concat(stories));   // 사진과 이야기는 미리 받아 둠
   }
 
-  function fileBlob(i) {
-    if (blobs[i]) return Promise.resolve(blobs[i]);
-    return get({ action: 'file', k: k, i: i }).then(function (res) {
-      if (!res || !res.ok) throw new Error(res && res.code || 'error');
-      var bin = atob(res.data), n = bin.length, u = new Uint8Array(n);
-      for (var j = 0; j < n; j++) u[j] = bin.charCodeAt(j);
-      return (blobs[i] = new Blob([u], { type: res.mime || 'application/octet-stream' }));
-    });
+  function itemHtml(f, cls, label, saveText) {
+    var audio = /^audio\//.test(f.mime) || /\.(m4a|webm|mp3|ogg|aac|wav)$/i.test(f.name);
+    var image = /^image\//.test(f.mime), inline = image && cls === 'photo';
+    return '<div class="item' + (cls ? ' ' + cls : '') + '" data-i="' + f.i + '">' +
+      (label ? '<div class="lb">' + esc(label) + '</div>' : '') +
+      (inline ? '<div class="ph"><span class="ld">사진을 불러오는 중…</span></div>' : '') +
+      '<div class="fn">' + esc(f.name) + ' · ' + size(f.kb) + '</div><div class="bt">' +
+      (audio ? '<button type="button" data-act="play">듣기</button>' : '') +
+      (image && !inline ? '<button type="button" data-act="view">보기</button>' : '') +
+      '<button type="button" data-act="save">' + saveText + '</button></div><div class="st"></div></div>';
   }
+
+  function showPhoto(item, blob, f) {
+    var ph = $('.ph', item); if (!ph) return false;
+    var im = $('img', ph);
+    if (!im) { ph.innerHTML = ''; im = document.createElement('img'); im.alt = f.label; ph.appendChild(im); }
+    im.src = URL.createObjectURL(blob); ph.classList.add('on');
+    return true;
+  }
+
+  // 두 개씩 차례로 미리 받기 (사진 먼저, 이야기 다음)
+  function preload(list) {
+    var q = list.slice();
+    var run = function () {
+      var f = q.shift(); if (!f) return;
+      var item = document.querySelector('.item[data-i="' + f.i + '"]');
+      return fileBlob(f.i).then(function (b) {
+        if (item && f.group === '사진') showPhoto(item, b, f);
+      }, function () {
+        var ph = item && $('.ph', item);
+        if (ph) ph.innerHTML = '<button type="button" data-act="view">사진 다시 불러오기</button>';
+      }).then(run);
+    };
+    run(); run();
+  }
+
+  // 같은 파일을 두 번 요청하지 않도록 받는 중인 것도 기억
+  function fileBlob(i) {
+    if (!blobs[i]) {
+      blobs[i] = get({ action: 'file', k: k, i: i }).then(function (res) {
+        if (!res || !res.ok) throw new Error(res && res.code || 'error');
+        var bin = atob(res.data), n = bin.length, u = new Uint8Array(n);
+        for (var j = 0; j < n; j++) u[j] = bin.charCodeAt(j);
+        return new Blob([u], { type: res.mime || 'application/octet-stream' });
+      });
+      blobs[i].catch(function () { delete blobs[i]; });
+    }
+    return blobs[i];
+  }
+  
   function save(blob, name) {
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob); a.download = name; a.rel = 'noopener';
@@ -162,6 +223,7 @@ h2{font-size:17px;margin-bottom:8px}
         if (!au) { au = document.createElement('audio'); au.controls = true; item.appendChild(au); }
         au.src = URL.createObjectURL(blob); au.play().catch(function () {});
       } else if (act === 'view') {
+        if (showPhoto(item, blob, f)) return;
         var im = $('img', item);
         if (!im) { im = document.createElement('img'); im.alt = f.label; item.appendChild(im); }
         im.src = URL.createObjectURL(blob);
