@@ -296,13 +296,13 @@ audio{width:100%;margin:10px 0 0}
       try {
         var w = im.naturalWidth, h = im.naturalHeight;
         if (!w || !h) return ok();
-        var s = Math.min(1, Math.sqrt(16000000 / (w * h))), cw = Math.round(w * s), ch = Math.round(h * s);
+        var s = Math.min(1, 2400 / Math.max(w, h), Math.sqrt(16000000 / (w * h))), cw = Math.round(w * s), ch = Math.round(h * s);
         var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
         var cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cw, ch); cx.drawImage(im, 0, 0, cw, ch);
         cv.toBlob(function (b) {
           if (b && b.size > 1000) { p.file = b; p.mime = 'image/jpeg'; p.ext = 'jpg'; p.w = cw; p.h = ch; }
           ok();
-        }, 'image/jpeg', 0.95);
+        }, 'image/jpeg', 0.9);
       } catch (e) { ok(); }
     });
   }  
