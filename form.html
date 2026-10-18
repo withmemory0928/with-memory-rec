@@ -514,6 +514,20 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  // 손글씨 기록지 일정: 화요일 9시 전 접수 → 그 주 금요일 발송, 그 뒤 접수는 다음 주 금요일부터 (한국 시간 기준)
+  function handMin() {
+    var t = new Date(Date.now() + 9 * 3600000), d0 = new Date(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate()), h = t.getUTCHours();
+    for (var i = 0; i < 8; i++) { var d = addDays(d0, i); if (d.getDay() === 2 && (i > 0 || h < 9)) return ymd(addDays(d, 3)); }
+    return ymd(addDays(d0, 10));
+  }
+  function setDateMin(hasHand) {
+    var base = ymd(addDays(new Date(), 3)), m = hasHand ? handMin() : base;
+    if (m < base) m = base;
+    S.minDate = m; $('#recordDate').min = m;
+    $('#dateHelp').textContent = hasHand
+      ? '손글씨로 답하는 장이 있어 기록지 인쇄·발송 일정에 맞춰 ' + kday(m) + ' 이후로 고를 수 있어요.'
+      : '오늘부터 3일 뒤 이후 날짜로 골라 주세요. 가장 빠른 날은 ' + kday(m) + '이에요.';
+  }
   function addDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
   function kday(s) { var a = s.split('-').map(Number), d = new Date(a[0], a[1] - 1, a[2]); return a[1] + '월 ' + a[2] + '일(' + DOW.charAt(d.getDay()) + ')'; }
   function digits(v) { var d = String(v == null ? '' : v).replace(/\D/g, ''); if (d.indexOf('82') === 0 && d.length >= 11) d = '0' + d.slice(2); return d; }
@@ -761,6 +775,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     show('#fA1', hasHand && (first || p.indexOf(1) > -1));
     show('#fA2', hasHand && two && (first || p.indexOf(2) > -1));
     show('#fPickup', hasHand);
+    setDateMin(hasHand);
     show('#fPhoto', S.photoLeft > 0);
     if (S.photoLeft > 0) $('#photoLb').innerHTML = '이번 편에 사진을 넣으시겠어요? <small>남은 사진 추가 ' + S.photoLeft + '번</small><i>*</i>';
     var ph = $('#photoHand input');
@@ -872,6 +887,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     if (first && !d.applicantName) E.push(['applicantName', '신청자 성함을 입력해 주세요.']);
     d.applicantPhone = digits(val('applicantPhone'));
     if (!okPhone(d.applicantPhone)) E.push(['applicantPhone', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+    setDateMin(S.M.indexOf('손글씨') > -1);   // 접수 시각 기준으로 다시 계산
     d.recordDate = val('recordDate');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(d.recordDate)) E.push(['recordDate', '기록일을 골라 주세요.']);
     else if (d.recordDate < S.minDate) E.push(['recordDate', kday(S.minDate) + ' 이후 날짜로 골라 주세요.']);
@@ -995,9 +1011,8 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   function init() {
     S.nonce = uid();
     var today = new Date();
-    S.minDate = ymd(addDays(today, 3)); S.maxDate = ymd(addDays(today, 365));
-    var rd = $('#recordDate'); rd.min = S.minDate; rd.max = S.maxDate;
-    $('#dateHelp').textContent = '오늘부터 3일 뒤 이후 날짜로 골라 주세요. 가장 빠른 날은 ' + kday(S.minDate) + '이에요.';
+    S.maxDate = ymd(addDays(today, 365)); $('#recordDate').max = S.maxDate;
+    setDateMin(false);
     $('#mypage').href = MYPAGE_URL;
 
     initWidget();
