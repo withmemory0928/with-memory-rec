@@ -280,7 +280,7 @@ audio{width:100%;margin:10px 0 0}
     im.onload = function () {
       p.w = im.naturalWidth; p.h = im.naturalHeight;
       c.img.src = url; c.img.classList.remove('hide'); c.cap.classList.remove('hide');
-      uploadPhoto(n);
+      cleanPhoto(im, p).then(function () { if (pp[n] === p) uploadPhoto(n); });
     };
     im.onerror = function () {   // 미리보기를 못 하는 형식(일부 HEIC)도 원본 그대로 올림
       c.img.classList.add('hide'); c.cap.classList.add('hide');
@@ -289,6 +289,23 @@ audio{width:100%;margin:10px 0 0}
     im.src = url;
   }
 
+  // 올리기 전에 사진을 JPG로 바꾸면서 위치 정보 등 부가 정보를 지움 (HEIC도 휴대폰이 열 수 있으면 JPG로).
+  // 너무 큰 사진은 휴대폰 브라우저 한도(약 1,600만 화소) 안으로 줄임. 실패하면 원본 그대로 올림
+  function cleanPhoto(im, p) {
+    return new Promise(function (ok) {
+      try {
+        var w = im.naturalWidth, h = im.naturalHeight;
+        if (!w || !h) return ok();
+        var s = Math.min(1, Math.sqrt(16000000 / (w * h))), cw = Math.round(w * s), ch = Math.round(h * s);
+        var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+        var cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cw, ch); cx.drawImage(im, 0, 0, cw, ch);
+        cv.toBlob(function (b) {
+          if (b && b.size > 1000) { p.file = b; p.mime = 'image/jpeg'; p.ext = 'jpg'; p.w = cw; p.h = ch; }
+          ok();
+        }, 'image/jpeg', 0.95);
+      } catch (e) { ok(); }
+    });
+  }  
   function uploadPhoto(n) {
     var p = pp[n]; if (!p || busyP(n)) return;
     var c = ctl[n];
