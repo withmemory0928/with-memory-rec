@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>위드메모리 · 녹음과 사진 받기</title>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<style>
+:root{--bg:#f6f1ea;--card:#fffdf9;--fg:#3b2f27;--sub:#7a6c60;--line:#e6dccf;--accent:#7a4a2c;--accent2:#a0704f;--ok:#2f6b3a;--err:#b3261e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:28px 16px 48px}
+.brand{font-size:12px;letter-spacing:.18em;color:var(--accent2);font-weight:700}
+h1{font-size:24px;margin:4px 0 6px}
+.sub{color:var(--sub);font-size:15px;white-space:pre-line;word-break:keep-all}
+.sub.err{color:var(--err);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
+.note{background:#fff4e5;border:1px solid #f0d4a8;color:#7a4b00;border-radius:12px;padding:12px 14px;margin-top:14px;font-size:14px}
+.hide{display:none!important}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--fg);padding:8px 14px;font-size:15px}
+button:disabled{opacity:.5;cursor:default}
+button.primary{width:100%;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;padding:14px;font-size:17px}
+.hint{color:var(--sub);font-size:13px;margin-top:8px;word-break:keep-all}
+.prog{margin-top:10px;font-size:14px;color:var(--accent)}
+h2{font-size:17px;margin-bottom:8px}
+.group h2 small{font-weight:400;color:var(--sub);font-size:13px;margin-left:6px}
+.item{border-top:1px solid var(--line);padding:12px 0}
+.item:first-of-type{border-top:0;padding-top:4px}
+.item .lb{font-weight:600;word-break:keep-all}
+.item .fn{font-size:12px;color:var(--sub);word-break:break-all;margin-top:2px}
+.item .bt{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.item .st{font-size:13px;margin-top:6px;color:var(--sub)}
+.item .st.ok{color:var(--ok)} .item .st.err{color:var(--err)}
+.item audio{width:100%;margin-top:8px}
+.item img{max-width:100%;border-radius:8px;margin-top:8px;display:block}
+.info ul{padding-left:18px;font-size:14px;color:var(--fg)}
+.info li{margin:4px 0;word-break:keep-all}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">WITH MEMORY</div>
+  <h1>녹음과 사진 받기</h1>
+  <p id="sub" class="sub">불러오는 중입니다. 처음 여는 데는 몇 초 걸릴 수 있으니 잠시만 기다려 주세요.</p>
+
+  <div id="kakao" class="note hide">카카오톡 안에서는 파일이 저장되지 않을 수 있습니다. 오른쪽 위 메뉴(⋮ 또는 ···)에서 <b>다른 브라우저로 열기</b>를 눌러 주세요.</div>
+
+  <section id="all" class="card hide">
+    <button id="zip" class="primary" type="button">전체 한 번에 받기</button>
+    <p class="hint">모든 파일을 압축 파일(ZIP) 하나로 받습니다. 컴퓨터에서 받기 좋고, 휴대폰에서는 아래에서 하나씩 받으셔도 됩니다.</p>
+    <p id="zipProg" class="prog hide"></p>
+  </section>
+
+  <div id="list"></div>
+
+  <section id="info" class="card info hide">
+    <h2>꼭 확인해 주세요</h2>
+    <ul>
+      <li>받을 수 있는 기간이 지나면 이 페이지는 열리지 않습니다. 받은 파일은 휴대폰이나 컴퓨터에 따로 보관해 주세요.</li>
+      <li>아이폰은 <b>파일</b> 앱의 '다운로드' 폴더에, 안드로이드는 '다운로드' 폴더에 저장됩니다.</li>
+      <li>.webm 파일이 재생되지 않으면 VLC 같은 재생 앱으로 열어 주세요.</li>
+      <li>부모님이 녹음 파일 전달에 동의하지 않으신 경우 녹음은 들어 있지 않습니다.</li>
+      <li>문의: 카카오톡 채널 @위드메모리 (평일 09:00~18:00)</li>
+    </ul>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+(function () {
+  // 운영 시트 Apps Script 웹 앱 주소 (정보 입력 페이지 form.html에 있는 주소와 같음)
+  var API = 'https://script.google.com/macros/s/AKfycbwsCtsBRr9BASIk1J3XYXgb4OngI7u6iQOUrkQBfBgxXDs6aGOJ-A42PVWRIVJjOZYP/exec';
+  var ORDER = ['질문 녹음', '전화 녹음', '사진', '사진 이야기'];
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var k = (new URLSearchParams(location.search).get('k') || '').replace(/[^A-Za-z0-9]/g, '');
+  var data = null, blobs = {}, busy = false;
+
+  if (/KAKAOTALK/i.test(navigator.userAgent)) $('#kakao').classList.remove('hide');
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function size(kb) { return kb >= 1024 ? (kb / 1024).toFixed(1) + 'MB' : Math.max(1, kb) + 'KB'; }
+  function get(q) {
+    var u = API + '?' + Object.keys(q).map(function (x) { return x + '=' + encodeURIComponent(q[x]); }).join('&');
+    return fetch(u, { cache: 'no-store' }).then(function (r) { return r.json(); });
+  }
+  function fail(msg) { var s = $('#sub'); s.textContent = msg; s.classList.add('err'); }
+
+  if (!k) { fail('주소가 올바르지 않습니다. 안내지의 QR 코드를 다시 찍어 주세요.'); return; }
+
+  get({ action: 'dl', k: k }).then(function (res) {
+    if (!res || !res.ok) {
+      if (res && res.code === 'expired') fail('받을 수 있는 기간' + (res.until ? '(' + res.until + '까지)' : '') + '이 지났습니다.\n궁금한 점은 카카오톡 채널 @위드메모리로 문의해 주세요.');
+      else fail('주소를 확인할 수 없습니다. 안내지의 QR 코드를 다시 찍어 주세요.');
+      return;
+    }
+    data = res;
+    render();
+  }).catch(function () { fail('불러오지 못했습니다. 잠시 뒤 새로 고쳐 주세요.'); });
+
+  function render() {
+    var files = data.files || [];
+    $('#sub').textContent = (data.edition ? data.edition + '편 · ' : '') + '파일 ' + files.length + '개' +
+      (data.until ? '\n' + data.until + ' 23:59까지 받을 수 있습니다.' : '\n책을 받으신 날부터 7일째 되는 날 23:59까지 받을 수 있습니다.');
+    $('#info').classList.remove('hide');
+    if (!files.length) { $('#list').innerHTML = '<section class="card"><p>받을 수 있는 파일이 아직 없습니다. 카카오톡 채널 @위드메모리로 문의해 주세요.</p></section>'; return; }
+    $('#all').classList.remove('hide');
+    var h = '';
+    ORDER.forEach(function (g) {
+      var list = files.filter(function (f) { return f.group === g; });
+      if (!list.length) return;
+      h += '<section class="card group"><h2>' + esc(g) + '<small>' + list.length + '개</small></h2>';
+      list.forEach(function (f) {
+        var audio = /^audio\//.test(f.mime) || /\.(m4a|webm|mp3|ogg|aac|wav)$/i.test(f.name);
+        var image = /^image\//.test(f.mime);
+        h += '<div class="item" data-i="' + f.i + '"><div class="lb">' + esc(f.label) + '</div>' +
+             '<div class="fn">' + esc(f.name) + ' · ' + size(f.kb) + '</div><div class="bt">' +
+             (audio ? '<button type="button" data-act="play">듣기</button>' : '') +
+             (image ? '<button type="button" data-act="view">보기</button>' : '') +
+             '<button type="button" data-act="save">받기</button></div><div class="st"></div></div>';
+      });
+      h += '</section>';
+    });
+    $('#list').innerHTML = h;
+  }
+
+  function fileBlob(i) {
+    if (blobs[i]) return Promise.resolve(blobs[i]);
+    return get({ action: 'file', k: k, i: i }).then(function (res) {
+      if (!res || !res.ok) throw new Error(res && res.code || 'error');
+      var bin = atob(res.data), n = bin.length, u = new Uint8Array(n);
+      for (var j = 0; j < n; j++) u[j] = bin.charCodeAt(j);
+      return (blobs[i] = new Blob([u], { type: res.mime || 'application/octet-stream' }));
+    });
+  }
+  function save(blob, name) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name; a.rel = 'noopener';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 5000);
+  }
+  function errText(e) {
+    var c = e && e.message;
+    if (c === 'expired') return '받을 수 있는 기간이 지났습니다.';
+    if (c === 'too_big') return '파일이 커서 받지 못했습니다. 카카오톡 채널로 문의해 주세요.';
+    return '받지 못했습니다. 잠시 뒤 다시 눌러 주세요.';
+  }
+
+  $('#list').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (!b) return;
+    var item = b.closest('.item'), i = Number(item.getAttribute('data-i')), f = data.files[i], st = $('.st', item);
+    var act = b.getAttribute('data-act');
+    b.disabled = true; st.className = 'st'; st.textContent = '불러오는 중…';
+    fileBlob(i).then(function (blob) {
+      b.disabled = false; st.textContent = '';
+      if (act === 'save') { save(blob, f.name); st.className = 'st ok'; st.textContent = '받기를 눌렀습니다. 저장 위치를 확인해 주세요.'; }
+      else if (act === 'play') {
+        var au = $('audio', item);
+        if (!au) { au = document.createElement('audio'); au.controls = true; item.appendChild(au); }
+        au.src = URL.createObjectURL(blob); au.play().catch(function () {});
+      } else if (act === 'view') {
+        var im = $('img', item);
+        if (!im) { im = document.createElement('img'); im.alt = f.label; item.appendChild(im); }
+        im.src = URL.createObjectURL(blob);
+      }
+    }).catch(function (err) { b.disabled = false; st.className = 'st err'; st.textContent = errText(err); });
+  });
+
+  $('#zip').addEventListener('click', function () {
+    if (busy || !data) return;
+    if (!window.JSZip) { alert('압축 기능을 불러오지 못했습니다. 아래에서 하나씩 받아 주세요.'); return; }
+    busy = true;
+    var btn = $('#zip'), pg = $('#zipProg'), files = data.files, zip = new JSZip(), n = 0;
+    btn.disabled = true; pg.classList.remove('hide');
+    var next = function (idx) {
+      if (idx >= files.length) {
+        pg.textContent = '압축하는 중…';
+        return zip.generateAsync({ type: 'blob', compression: 'STORE' }).then(function (z) {
+          save(z, (data.edition ? data.edition + '편_' : '') + '위드메모리.zip');
+          pg.textContent = '받기를 눌렀습니다. 저장 위치를 확인해 주세요.';
+        });
+      }
+      pg.textContent = '파일 받는 중… ' + (idx + 1) + ' / ' + files.length;
+      return fileBlob(files[idx].i).then(function (b) { zip.file(files[idx].name, b); n++; return next(idx + 1); });
+    };
+    next(0).catch(function (err) { pg.textContent = errText(err) + ' (' + n + '개까지 받음)'; })
+      .then(function () { busy = false; btn.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>
