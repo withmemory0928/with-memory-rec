@@ -166,7 +166,7 @@ audio{width:100%;margin:10px 0 0}
     app.appendChild(list);
 
     var foot = el('div', 'card locked'); foot.id = 'foot';
-    foot.appendChild(el('p', 'note', '따로 제출하실 필요는 없습니다. ' + dl(info.deadline) + '까지 마지막으로 올리신 사진' + (isRec() ? '과 이야기' : '') + '로 책을 만듭니다.\n사진은 1장만 올리셔도 됩니다.'));
+    foot.appendChild(el('p', 'note', '따로 제출하실 필요는 없습니다. ' + dl(info.deadline) + '까지 마지막으로 올리신 사진' + (isRec() ? '과 이야기' : '') + '로 책을 만듭니다.'));
     app.appendChild(foot);
 
     function open() { list.classList.remove('locked'); foot.classList.remove('locked'); }
