@@ -524,9 +524,10 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     var base = ymd(addDays(new Date(), 3)), m = hasHand ? handMin() : base;
     if (m < base) m = base;
     S.minDate = m; $('#recordDate').min = m;
-    $('#dateHelp').textContent = hasHand
+    $('#dateHelp').textContent = (hasHand
       ? '손글씨로 답하는 장이 있어 기록지 인쇄·발송 일정에 맞춰 ' + kday(m) + ' 이후로 고를 수 있어요.'
-      : '오늘부터 3일 뒤 이후 날짜로 골라 주세요. 가장 빠른 날은 ' + kday(m) + '이에요.';
+      : '오늘부터 3일 뒤 이후 날짜로 골라 주세요. 가장 빠른 날은 ' + kday(m) + '이에요.')
+      + (S.until ? ' 이용 기간은 ' + kday(S.until) + '까지예요.' : '');
   }
   function addDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
   function kday(s) { var a = s.split('-').map(Number), d = new Date(a[0], a[1] - 1, a[2]); return a[1] + '월 ' + a[2] + '일(' + DOW.charAt(d.getDay()) + ')'; }
@@ -832,10 +833,11 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       S.range = [Math.max(1, from), Math.min(6, to)];
       S.done = (r.done || []).map(Number);
       S.photoLeft = Number(r.photoLeft) || 0;
+      S.until = r.until || ''; S.maxDate = S.until && S.until < S.max365 ? S.until : S.max365; $('#recordDate').max = S.maxDate;
       S.ed = 0;
       for (var e = S.range[0]; e <= S.range[1]; e++) if (S.done.indexOf(e) < 0) { S.ed = e; break; }
     } else {
-      S.locked = false; S.range = null; S.done = []; S.photoLeft = 0;
+      S.locked = false; S.range = null; S.done = []; S.photoLeft = 0; S.until = ''; S.maxDate = S.max365; $('#recordDate').max = S.maxDate;
     }
     renderPeople(); renderEd(); applyMode();
   }
@@ -891,7 +893,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     d.recordDate = val('recordDate');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(d.recordDate)) E.push(['recordDate', '기록일을 골라 주세요.']);
     else if (d.recordDate < S.minDate) E.push(['recordDate', kday(S.minDate) + ' 이후 날짜로 골라 주세요.']);
-    else if (d.recordDate > S.maxDate) E.push(['recordDate', '1년 안의 날짜로 골라 주세요.']);
+    else if (d.recordDate > S.maxDate) E.push(['recordDate', S.until ? '이용 기간(' + kday(S.until) + '까지) 안의 날짜로 골라 주세요. 기간이 부족하면 카카오톡 채널로 알려 주세요.' : '1년 안의 날짜로 골라 주세요.']);
 
     if (first) {
       d.p1Name = val('p1Name'); d.p1Phone = digits(val('p1Phone'));
@@ -1011,7 +1013,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   function init() {
     S.nonce = uid();
     var today = new Date();
-    S.maxDate = ymd(addDays(today, 365)); $('#recordDate').max = S.maxDate;
+    S.max365 = ymd(addDays(today, 365)); S.maxDate = S.max365; S.until = ''; $('#recordDate').max = S.maxDate;
     setDateMin(false);
     $('#mypage').href = MYPAGE_URL;
 
