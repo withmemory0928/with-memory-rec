@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>위드메모리 · 기록일 변경</title>
+<meta property="og:title" content="위드메모리 · 기록일 변경">
+<meta property="og:description" content="기록일 3일 전 23시 59분까지 직접 바꾸실 수 있습니다.">
+<meta property="og:type" content="website">
+<style>
+:root{--ink:#221D1A;--sub:#6E655E;--line:#ECE5DD;--soft:#F7F3EE;--accent:#9C4A2B;--accent-hover:#86401F;--accent-soft:#F1E5DD;--warn:#B03A2E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:15px;line-height:1.6;word-break:keep-all;-webkit-text-size-adjust:100%}
+b{font-weight:700}
+.wrap{max-width:520px;margin:0 auto;padding:18px 16px 40px}
+.brand{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.08em;margin:0 0 18px}
+h1{font-size:24px;line-height:1.35;margin:0 0 8px;letter-spacing:-.01em}
+.lead{font-size:14.5px;color:#4A3F38;margin:0 0 14px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:12px}
+.box h2{font-size:15px;margin:0 0 8px;color:var(--accent)}
+.rules{list-style:none;margin:0;padding:0}
+.rules li{position:relative;padding-left:14px;font-size:13.5px;color:#4A3F38;margin:0 0 6px}
+.rules li:last-child{margin:0}
+.rules li::before{content:"";position:absolute;left:2px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:12px}
+.card h2{font-size:15px;margin:0 0 4px}
+.card .hint{font-size:12.5px;color:var(--sub);margin:0 0 4px}
+.fl{display:block;font-size:14px;font-weight:600;margin-top:14px}
+.fl small{font-weight:400;color:var(--sub);font-size:12.5px;margin-left:4px}
+input[type=text],input[type=tel],input[type=date]{display:block;width:100%;height:50px;font-size:17px;font-family:inherit;padding:12px 14px;border:1.5px solid #D9CCC2;border-radius:12px;margin-top:6px;background:#fff;color:var(--ink);-webkit-appearance:none;appearance:none}
+input[type=date]{line-height:24px}
+input:focus{outline:none;border-color:var(--accent)}
+.arrow{text-align:center;color:var(--accent);font-size:18px;margin:10px 0 -4px}
+.note{font-size:12.5px;color:var(--sub);margin:10px 2px 0}
+#btn{display:block;width:100%;height:56px;margin-top:18px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(156,74,43,.25)}
+#btn:hover{background:var(--accent-hover)}
+#btn:disabled{opacity:.6;box-shadow:none}
+.err{display:none;color:var(--warn);font-size:14px;font-weight:600;background:#FBEEEC;border-radius:12px;padding:12px 14px;margin:12px 0 0}
+.foot{text-align:center;font-size:12px;color:var(--sub);margin-top:16px}
+.foot a{color:var(--accent);text-decoration:none;border-bottom:1px solid #E5D0C8}
+#done{display:none;background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px 20px;text-align:center}
+#done .check{width:56px;height:56px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/30px no-repeat;margin:0 auto 14px}
+#done h1{font-size:22px}
+.change{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0 6px;flex-wrap:wrap}
+.change span{font-size:14px;color:var(--sub);text-decoration:line-through}
+.change b{font-size:18px;color:var(--accent)}
+.change i{font-style:normal;color:var(--sub)}
+#done p{font-size:14px;color:#4A3F38;margin:8px 0}
+#done .note{font-size:12.5px;color:var(--sub)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="brand">WITH MEMORY · 위드메모리</p>
+
+<div id="form">
+  <h1>기록일 변경</h1>
+  <p class="lead">신청하신 분의 성함과 연락처, 지금 기록일을 넣으시면 바로 바꿔 드립니다.</p>
+
+  <div class="box">
+    <h2>바꾸시기 전에 확인해 주세요</h2>
+    <ul class="rules">
+      <li><b>기록일 3일 전 23시 59분까지</b> 바꾸실 수 있습니다. 예를 들어 기록일이 15일이면 12일 밤 11시 59분까지입니다.</li>
+      <li>새 기록일은 오늘부터 3일 뒤 이후, 이용 기간 안의 날로 골라 주세요.</li>
+      <li>손글씨(기록지)로 답하시는 편은 기록지 인쇄·발송 일정 때문에 고르실 수 있는 날이 며칠 늦어질 수 있습니다.</li>
+      <li>두 분이 함께 하시는 편은 두 분의 기록일이 함께 바뀝니다.</li>
+      <li>질문, 전화 시간, 답하는 방법을 바꾸시려면 카카오톡 채널로 알려 주세요.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>신청하신 분</h2>
+    <p class="hint">결제하실 때 쓰신 성함과 휴대폰 번호를 넣어 주세요.</p>
+    <label class="fl" for="name">성함</label>
+    <input type="text" id="name" autocomplete="name" maxlength="30">
+    <label class="fl" for="phone">휴대폰 번호</label>
+    <input type="tel" id="phone" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678" autocomplete="tel">
+  </div>
+
+  <div class="card">
+    <h2>기록일</h2>
+    <p class="hint">알림톡 '기록일 확인'으로 받으신 날짜를 넣어 주세요.</p>
+    <label class="fl" for="oldDate">지금 기록일</label>
+    <input type="date" id="oldDate">
+    <div class="arrow" aria-hidden="true">↓</div>
+    <label class="fl" for="newDate">바꾸실 기록일 <small id="minHint"></small></label>
+    <input type="date" id="newDate">
+  </div>
+
+  <button id="btn" type="button">기록일 바꾸기</button>
+  <p class="err" id="err"></p>
+  <p class="note">입력하신 성함과 연락처는 신청 내역을 찾는 데만 씁니다.</p>
+  <p class="foot">안 되시거나 궁금하신 점은 카카오톡 채널 '위드메모리'로 알려 주세요.</p>
+</div>
+
+<div id="done">
+  <div class="check"></div>
+  <h1>기록일 변경을 접수했습니다</h1>
+  <div class="change"><span id="dOld"></span><i>→</i><b id="dNew"></b></div>
+  <p id="dEd"></p>
+  <p id="dMsg"></p>
+  <p class="note">다시 바꾸시려면 기록일 3일 전 23시 59분까지 이 페이지에서 한 번 더 하시면 됩니다.</p>
+</div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var API_URL = 'https://script.google.com/macros/s/AKfycbwsCtsBRr9BASIk1J3XYXgb4OngI7u6iQOUrkQBfBgxXDs6aGOJ-A42PVWRIVJjOZYP/exec';
+  try { fetch(API_URL + '?ping=1', { mode: 'no-cors' }); } catch (e) {}
+
+  // 한국 시간 기준 오늘(yyyy-mm-dd)
+  function todayKst() {
+    try { return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' }); }
+    catch (e) { var d = new Date(Date.now() + 9 * 3600000); return d.toISOString().slice(0, 10); }
+  }
+  function addDays(key, n) {
+    var a = key.split('-').map(Number);
+    return new Date(Date.UTC(a[0], a[1] - 1, a[2] + n)).toISOString().slice(0, 10);
+  }
+  function kday(key) {
+    var a = key.split('-').map(Number), w = new Date(Date.UTC(a[0], a[1] - 1, a[2])).getUTCDay();
+    return a[1] + '월 ' + a[2] + '일(' + '일월화수목금토'.charAt(w) + ')';
+  }
+  var today = todayKst(), minNew = addDays(today, 3);
+  $('newDate').min = minNew;
+  $('newDate').max = addDays(today, 400);
+  $('minHint').textContent = kday(minNew) + ' 이후';
+
+  $('phone').addEventListener('input', function () {
+    var n = this.value.replace(/\D/g, '').slice(0, 11);
+    n = n.replace(/^(\d{1,3})(\d{1,4})?(\d{1,4})?$/, function (m, a, b, c) { return [a, b, c].filter(Boolean).join('-'); });
+    this.value = n;
+  });
+
+  function showErr(msg, el) {
+    var e = $('err');
+    e.textContent = msg;
+    e.style.display = 'block';
+    (el || e).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (el && el.focus) try { el.focus({ preventScroll: true }); } catch (x) {}
+  }
+  function check(d) {
+    if (!d.name) return { msg: '성함을 입력해 주세요.', el: $('name') };
+    if (!/^01\d{8,9}$/.test(d.phone.replace(/\D/g, ''))) return { msg: '휴대폰 번호를 확인해 주세요.', el: $('phone') };
+    if (!d.oldDate) return { msg: '지금 기록일을 골라 주세요.', el: $('oldDate') };
+    if (!d.newDate) return { msg: '바꾸실 기록일을 골라 주세요.', el: $('newDate') };
+    if (d.oldDate === d.newDate) return { msg: '지금 기록일과 같은 날이에요. 다른 날을 골라 주세요.', el: $('newDate') };
+    if (today > addDays(d.oldDate, -3)) return { msg: '기록일 변경은 기록일 3일 전(' + kday(addDays(d.oldDate, -3)) + ') 23시 59분까지 가능해요. 카카오톡 채널로 문의해 주세요.', el: $('oldDate') };
+    if (d.newDate < minNew) return { msg: '바꾸실 기록일은 ' + kday(minNew) + ' 이후로 골라 주세요.', el: $('newDate') };
+    return null;
+  }
+  function post(body, ms) {
+    return new Promise(function (resolve, reject) {
+      var done = false, ctl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (done) return; done = true; if (ctl) ctl.abort(); reject(new Error('timeout')); }, ms);
+      fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (done) return; done = true; clearTimeout(timer); resolve(j); })
+        .catch(function (e) { if (done) return; done = true; clearTimeout(timer); reject(e); });
+    });
+  }
+
+  var btn = $('btn');
+  btn.addEventListener('click', function () {
+    var d = {
+      action: 'date',
+      name: $('name').value.trim(),
+      phone: $('phone').value.trim(),
+      oldDate: $('oldDate').value,
+      newDate: $('newDate').value
+    };
+    var bad = check(d);
+    if (bad) { showErr(bad.msg, bad.el); return; }
+    $('err').style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = '확인하는 중입니다…';
+    post(d, 25000)
+      .then(function (res) {
+        if (!res || !res.ok) { showErr((res && res.error) || '바꾸지 못했습니다. 잠시 후 다시 눌러 주세요.'); return; }
+        $('dOld').textContent = res.oldDay;
+        $('dNew').textContent = res.newDay;
+        $('dEd').textContent = res.edition + '편의 기록일입니다.';
+        $('dMsg').textContent = res.late
+          ? '몇 분 안에 반영되며, \'기록일 확인\' 알림톡은 밤 시간이 지나 아침 8시 이후에 다시 보내 드립니다.'
+          : '몇 분 안에 반영되며, 바뀐 기록일을 \'기록일 확인\' 알림톡으로 다시 보내 드립니다.';
+        $('form').style.display = 'none';
+        $('done').style.display = 'block';
+        window.scrollTo(0, 0);
+      })
+      .catch(function () { showErr('연결이 원활하지 않습니다. 잠시 후 다시 눌러 주십시오.'); })
+      .then(function () { btn.disabled = false; btn.textContent = '기록일 바꾸기'; });
+  });
+})();
+</script>
+</body>
+</html>
