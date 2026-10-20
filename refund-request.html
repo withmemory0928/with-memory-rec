@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>위드메모리 · 환불 신청</title>
+<meta property="og:title" content="위드메모리 · 환불 신청">
+<meta property="og:description" content="언제든 접수하실 수 있고, 접수한 시각을 기준으로 환불 금액을 계산합니다.">
+<meta property="og:type" content="website">
+<style>
+:root{--ink:#221D1A;--sub:#6E655E;--line:#ECE5DD;--soft:#F7F3EE;--accent:#9C4A2B;--accent-hover:#86401F;--accent-soft:#F1E5DD;--on-bg:#FDF9F6;--warn:#B03A2E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:15px;line-height:1.6;word-break:keep-all;-webkit-text-size-adjust:100%}
+b{font-weight:700}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid #E5D0C8}
+.wrap{max-width:520px;margin:0 auto;padding:18px 16px 40px}
+.brand{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.08em;margin:0 0 18px}
+h1{font-size:24px;line-height:1.35;margin:0 0 8px;letter-spacing:-.01em}
+.lead{font-size:14.5px;color:#4A3F38;margin:0 0 14px}
+.box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:12px}
+.box h2{font-size:15px;margin:0 0 8px;color:var(--accent)}
+.rules{list-style:none;margin:0;padding:0}
+.rules li{position:relative;padding-left:14px;font-size:13.5px;color:#4A3F38;margin:0 0 6px}
+.rules li:last-child{margin:0}
+.rules li::before{content:"";position:absolute;left:2px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:12px}
+.card h2{font-size:15px;margin:0 0 4px}
+.card .hint{font-size:12.5px;color:var(--sub);margin:0 0 4px}
+.card h2 small{font-weight:400;color:var(--sub);font-size:12.5px;margin-left:4px}
+.fl{display:block;font-size:14px;font-weight:600;margin-top:14px}
+input[type=text],input[type=tel],select,textarea{display:block;width:100%;font-size:17px;font-family:inherit;padding:12px 14px;border:1.5px solid #D9CCC2;border-radius:12px;margin-top:6px;background:#fff;color:var(--ink)}
+input[type=text],input[type=tel],select{height:50px}
+select{-webkit-appearance:none;appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%239C4A2B' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") right 12px center/18px no-repeat;padding-right:40px}
+textarea{min-height:96px;resize:vertical;font-size:16px;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:8px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.opt input{-webkit-appearance:none;appearance:none;flex:0 0 22px;width:22px;height:22px;margin:1px 0 0;border:1.8px solid #B9ADA3;border-radius:50%;background:#fff;cursor:pointer}
+.opt input:checked{border:7px solid var(--accent)}
+.opt span{font-size:14.5px}
+.opt span small{display:block;font-size:12.5px;color:var(--sub);margin-top:2px}
+.opt.on{border-color:var(--accent);background:var(--on-bg)}
+.sub{display:none;margin-top:10px}
+.notice{display:none;font-size:13px;color:#4A3F38;background:var(--soft);border-radius:10px;padding:11px 13px;margin-top:10px}
+.note{font-size:12.5px;color:var(--sub);margin:10px 2px 0}
+#btn{display:block;width:100%;height:56px;margin-top:18px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(156,74,43,.25)}
+#btn:hover{background:var(--accent-hover)}
+#btn:disabled{opacity:.6;box-shadow:none}
+.err{display:none;color:var(--warn);font-size:14px;font-weight:600;background:#FBEEEC;border-radius:12px;padding:12px 14px;margin:12px 0 0}
+.foot{text-align:center;font-size:12px;color:var(--sub);margin-top:16px}
+#done{display:none}
+#done .top{background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px 20px 24px;text-align:center;margin-bottom:12px}
+#done .check{width:56px;height:56px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/30px no-repeat;margin:0 auto 14px}
+#done h1{font-size:22px}
+.stamp{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:10px 16px;margin:12px 0 4px;font-weight:700;font-size:16px}
+.rid{font-size:12.5px;color:var(--sub);margin:4px 0 0}
+.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{position:relative;padding-left:30px;margin:0 0 10px;font-size:14px;color:#4A3F38;counter-increment:s}
+.steps li:last-child{margin:0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.alert{display:none;font-size:13.5px;color:#4A3F38;background:#fff;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="brand">WITH MEMORY · 위드메모리</p>
+
+<div id="form">
+  <h1>환불 신청</h1>
+  <p class="lead">밤이나 주말에도 이 페이지에서 바로 접수하실 수 있습니다. 접수한 시각이 그대로 기록됩니다.</p>
+
+  <div class="box">
+    <h2>먼저 알려 드립니다</h2>
+    <ul class="rules">
+      <li><b>이 페이지에서 접수한 시각이 환불 신청 시각</b>이 됩니다. 기록일 2일 전 23시 59분까지 접수하시면 그 회차는 차감하지 않습니다.</li>
+      <li>접수하시면 확인할 때까지 <b>앞으로 예정된 편의 진행</b>(알림톡, 녹음·사진 링크, 전화, 기록지 발송)을 잠시 멈춥니다.</li>
+      <li>확인 후 남겨 주신 연락처로 환불 금액을 안내해 드리고, 신청을 확인한 날부터 3영업일 안에 결제하신 수단으로 환불해 드립니다.</li>
+      <li>금액 계산 방법은 <a href="https://with-memory.com/refund" target="_blank" rel="noopener">환불 정책</a>에서 보실 수 있습니다.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>신청하신 분</h2>
+    <p class="hint">결제하실 때 쓰신 성함과 휴대폰 번호를 넣어 주세요.</p>
+    <label class="fl" for="name">성함</label>
+    <input type="text" id="name" autocomplete="name" maxlength="30">
+    <label class="fl" for="phone">휴대폰 번호</label>
+    <input type="tel" id="phone" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678" autocomplete="tel">
+  </div>
+
+  <div class="card" id="scopeCard">
+    <h2>어떻게 환불받으시겠어요?</h2>
+    <label class="opt"><input type="radio" name="scope" value="all"><span>남은 회차 전부 환불<small>해지 또는 결제 7일 안의 청약철회</small></span></label>
+    <label class="opt"><input type="radio" name="scope" value="one"><span>두 분 상품에서 한 분만 해지<small>다른 한 분은 그대로 진행합니다</small></span></label>
+    <div class="sub" id="whoBox">
+      <label class="fl" for="who" style="margin-top:4px">해지하실 분의 성함</label>
+      <input type="text" id="who" maxlength="30">
+    </div>
+    <label class="opt"><input type="radio" name="scope" value="photo"><span>사진 추가 옵션만 환불<small>기록은 그대로 진행합니다</small></span></label>
+    <label class="opt"><input type="radio" name="scope" value="ask"><span>잘 모르겠어요<small>상담하고 정할게요. 진행은 멈추지 않습니다</small></span></label>
+  </div>
+
+  <div class="card">
+    <h2>사유 <small>선택</small></h2>
+    <select id="reason" aria-label="사유">
+      <option value="">고르지 않음</option>
+      <option>일정이 맞지 않아요</option>
+      <option>부모님이 원하지 않으세요</option>
+      <option>부모님께 사정이 생겼어요</option>
+      <option>부모님께서 돌아가셨어요</option>
+      <option>서비스가 기대와 달라요</option>
+      <option>기타</option>
+    </select>
+    <div class="notice" id="deathNote">마음 깊이 위로를 전합니다. 사망 사실을 확인할 수 있는 서류 사본을 카카오톡 채널 '위드메모리'로 보내 주시면, 진행이 끝난 편만 빼고 공제 없이 환불해 드립니다. 서류의 주민등록번호 뒷자리는 가려 주세요.</div>
+    <label class="fl" for="memo">남기실 말씀 <small style="font-weight:400;color:var(--sub);font-size:12.5px">선택</small></label>
+    <textarea id="memo" maxlength="300" placeholder="예: 다음 달 기록일만 취소하고 싶어요"></textarea>
+    <p class="note" style="margin:6px 2px 0">건강 상태처럼 민감한 내용은 적지 않으셔도 됩니다.</p>
+  </div>
+
+  <button id="btn" type="button">환불 신청하기</button>
+  <p class="err" id="err"></p>
+  <p class="note">입력하신 내용은 환불 처리와 안내에만 쓰며, 관련 법령이 정한 기간 동안 보관합니다.</p>
+  <p class="foot">궁금하신 점은 카카오톡 채널 '위드메모리'로 알려 주세요.</p>
+</div>
+
+<div id="done">
+  <div class="top">
+    <div class="check"></div>
+    <h1>환불 신청을 접수했습니다</h1>
+    <div class="stamp" id="dAt"></div>
+    <p class="rid" id="dId"></p>
+  </div>
+  <div class="alert" id="dHold">앞으로 예정된 편의 진행을 멈췄습니다. 마음이 바뀌어 계속 진행하시려면 카카오톡 채널로 알려 주세요.</div>
+  <div class="alert" id="dMiss">입력하신 성함과 번호로 주문을 바로 찾지 못했습니다. 접수 시각은 기록되었으니, 확인한 뒤 연락드리겠습니다. 결제하신 분의 성함이나 번호가 다르면 카카오톡 채널로 알려 주세요.</div>
+  <div class="alert" id="dDeath">마음 깊이 위로를 전합니다. 사망 사실을 확인할 수 있는 서류 사본(주민등록번호 뒷자리는 가린 것)을 카카오톡 채널로 보내 주세요.</div>
+  <div class="box">
+    <h2>다음 순서</h2>
+    <ol class="steps">
+      <li>위 접수 시각을 기준으로 진행된 회차를 확인해 환불 금액을 계산합니다.</li>
+      <li>남겨 주신 연락처로 환불 금액을 안내해 드립니다.</li>
+      <li>신청을 확인한 날부터 3영업일 안에 결제하신 수단으로 환불해 드립니다. 카드 취소는 카드사에 따라 며칠 더 걸릴 수 있습니다.</li>
+    </ol>
+  </div>
+  <p class="note" style="text-align:center">이 화면을 캡처해 두시면 접수 시각을 확인하실 때 편합니다.</p>
+</div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var API_URL = 'https://script.google.com/macros/s/AKfycbwsCtsBRr9BASIk1J3XYXgb4OngI7u6iQOUrkQBfBgxXDs6aGOJ-A42PVWRIVJjOZYP/exec';
+  try { fetch(API_URL + '?ping=1', { mode: 'no-cors' }); } catch (e) {}
+  var nonce = 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+
+  $('phone').addEventListener('input', function () {
+    var n = this.value.replace(/\D/g, '').slice(0, 11);
+    this.value = n.replace(/^(\d{1,3})(\d{1,4})?(\d{1,4})?$/, function (m, a, b, c) { return [a, b, c].filter(Boolean).join('-'); });
+  });
+  function scope() { var r = document.querySelector('input[name="scope"]:checked'); return r ? r.value : ''; }
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="scope"]'), function (el) {
+    el.addEventListener('change', function () {
+      Array.prototype.forEach.call(document.querySelectorAll('.opt'), function (o) { o.classList.toggle('on', o.querySelector('input').checked); });
+      $('whoBox').style.display = scope() === 'one' ? 'block' : 'none';
+    });
+  });
+  $('reason').addEventListener('change', function () {
+    $('deathNote').style.display = this.value === '부모님께서 돌아가셨어요' ? 'block' : 'none';
+  });
+
+  function showErr(msg, el) {
+    var e = $('err');
+    e.textContent = msg;
+    e.style.display = 'block';
+    (el || e).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function check(d) {
+    if (!d.name) return { msg: '성함을 입력해 주세요.', el: $('name') };
+    if (!/^01\d{8,9}$/.test(d.phone.replace(/\D/g, ''))) return { msg: '휴대폰 번호를 확인해 주세요.', el: $('phone') };
+    if (!d.scope) return { msg: '어떻게 환불받으실지 골라 주세요.', el: $('scopeCard') };
+    if (d.scope === 'one' && !d.who) return { msg: '해지하실 분의 성함을 적어 주세요.', el: $('who') };
+    return null;
+  }
+  function post(body, ms) {
+    return new Promise(function (resolve, reject) {
+      var done = false, ctl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (done) return; done = true; if (ctl) ctl.abort(); reject(new Error('timeout')); }, ms);
+      fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), signal: ctl ? ctl.signal : undefined })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (done) return; done = true; clearTimeout(timer); resolve(j); })
+        .catch(function (e) { if (done) return; done = true; clearTimeout(timer); reject(e); });
+    });
+  }
+
+  var btn = $('btn');
+  btn.addEventListener('click', function () {
+    var d = {
+      action: 'refund', nonce: nonce,
+      name: $('name').value.trim(),
+      phone: $('phone').value.trim(),
+      scope: scope(),
+      who: $('who').value.trim(),
+      reason: $('reason').value,
+      memo: $('memo').value.trim()
+    };
+    var bad = check(d);
+    if (bad) { showErr(bad.msg, bad.el); return; }
+    $('err').style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = '접수하는 중입니다…';
+    post(d, 25000)
+      .then(function (res) {
+        if (!res || !res.ok) { showErr((res && res.error) || '접수하지 못했습니다. 잠시 후 다시 눌러 주십시오.'); return; }
+        $('dAt').textContent = '접수 시각 ' + res.at;
+        $('dId').textContent = '접수번호 ' + res.id;
+        $('dHold').style.display = res.hold ? 'block' : 'none';
+        $('dMiss').style.display = res.matched ? 'none' : 'block';
+        $('dDeath').style.display = res.death ? 'block' : 'none';
+        $('form').style.display = 'none';
+        $('done').style.display = 'block';
+        window.scrollTo(0, 0);
+      })
+      .catch(function () { showErr('연결이 원활하지 않습니다. 다시 눌러 주십시오. 두 번 눌러도 한 번만 접수됩니다.'); })
+      .then(function () { btn.disabled = false; btn.textContent = '환불 신청하기'; });
+  });
+})();
+</script>
+</body>
+</html>
