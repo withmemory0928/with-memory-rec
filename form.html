@@ -1000,7 +1000,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       '<div><b>접수번호</b><span>' + esc(res.id || '-') + '</span></div>';
     var nx = ['접수 확인 안내를 카카오톡으로 보내 드려요. 밤늦게 접수하시면 다음 날 아침에 보내 드려요.'];
     if (d.edition === 1) nx.push('부모님 동의가 확인되어야 기록을 시작해요. 아직이라면 아래 버튼으로 동의 페이지를 열어 부모님께 보내 드리거나 함께 진행해 주세요.' + (d.people === 2 ? ' 두 분이 각각 따로 동의하셔야 해요.' : ''));
-    nx.push('기록일은 기록일 3일 전까지 카카오톡 채널로 바꾸실 수 있어요.');
+    nx.push('기록일은 기록일 3일 전 23시 59분까지 카카오톡 채널 메뉴 [기록일 변경]에서 바꾸실 수 있어요.');
     $('#doneNext').innerHTML = nx.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
     var cb = $('#doneConsent');
     cb.href = CONSENT_URL + '?o=' + encodeURIComponent(d.orderNo);
