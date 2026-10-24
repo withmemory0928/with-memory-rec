@@ -264,7 +264,7 @@ input[type=date].in{line-height:50px}
           <div class="fld" data-k="p1Phone">
             <label class="lb" for="p1Phone" id="p1PhoneLb">부모님 연락처<i>*</i></label>
             <input class="in tel" id="p1Phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
-            <p class="help">기록일에 이 번호로 전화 또는 문자(링크)를 드려요.</p>
+            <p class="help">기록일에 이 번호로 알림톡이나 문자로 안내를 보내 드려요.</p>
             <p class="fe"></p>
           </div>
           <div id="gP2">
@@ -306,8 +306,8 @@ input[type=date].in{line-height:50px}
           </div>
           <div>
             <div class="wmf-row wmf-bar"><b class="wmf-count" id="wCount">0 / 16</b><span><button type="button" class="wmf-btn-s" id="wFillAll">빈 칸 골고루 채우기</button><button type="button" class="wmf-btn-t" id="wClear">모두 비우기</button></span></div>
-            <div class="wmf-all"><b>모든 장을 같은 방법으로</b><span class="wmf-sheet-m"><button type="button" data-all="전화">전화</button><button type="button" data-all="녹음">녹음</button><button type="button" data-all="손글씨">손글씨</button></span></div>
-            <p class="wmf-legend">전화: 기록일에 위드메모리가 전화로 여쭤요 · 녹음: 링크를 열어 직접 녹음해요 · 손글씨: 기록지를 우편으로 보내 드려요</p>
+            <div class="wmf-all"><b>모든 장을 같은 방법으로</b><span class="wmf-sheet-m"><button type="button" data-all="녹음">녹음</button><button type="button" data-all="손글씨">손글씨</button></span></div>
+            <p class="wmf-legend">녹음: 링크를 열어 직접 녹음해요(스마트폰이 어려우시면 신청하신 분 휴대폰으로 함께 녹음하셔도 돼요) · 손글씨: 기록지를 우편으로 보내 드려요</p>
             <div class="wmf-board" id="wBoard"></div>
             <p class="wmf-status" id="wStatus"></p>
             <p class="fe"></p>
@@ -384,11 +384,11 @@ input[type=date].in{line-height:50px}
             <label class="chip"><input type="radio" name="photo" value="녹음"><span>넣을게요 · 사진 이야기는 녹음으로 (사진마다 1분 안)</span></label>
             <label class="chip" id="photoHand"><input type="radio" name="photo" value="손글씨"><span>넣을게요 · 사진 이야기는 손글씨로 (기록지 사진 이야기 칸)</span></label>
           </div>
-          <p class="help" id="photoHelp">사진 추가 1개로 한 편에 사진 2장(두 분은 각 2장)을 넣을 수 있어요. 손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요. 녹음한 사진 이야기는 사진 아래 한 면에 맞춰 옮겨요.</p>
+          <p class="help" id="photoHelp">사진 추가 1개로 한 편에 사진 2장(두 분은 각 2장)을 넣을 수 있어요. 사진 이야기 손글씨는 전체 장의 절반 이상을 손글씨로 답하실 때 고를 수 있어요. 녹음한 사진 이야기는 사진 아래 한 면에 맞춰 옮겨요.</p>           <div class="pg-note" id="photoAsk" hidden><b id="photoAskT" style="color:var(--warn)"></b><span><button type="button" class="wmf-btn-s" id="askMore">손글씨 장 늘리기</button> <button type="button" class="wmf-btn-s" id="askRec">사진 이야기는 녹음으로</button></span></div>
           <p class="fe"></p>
         </div>
 
-        <div class="pg-note"><b>답을 옮겨 적는 방식</b><span>녹음과 전화로 남기신 답은 "어, 음" 같은 군말과 말 더듬음만 덜고, 사투리와 말투, 입버릇은 그대로 살려 옮겨요. 뜻을 바꾸거나 없는 말을 더하지 않아요.</span><b>속지에 담기는 분량</b><span>속지 한 면에는 질문 하나와 답 하나를 담아요. 답이 길면 한 편에 두 개까지 그 질문만 속지 한 장(앞뒤)을 따로 쓰고, 그 밖의 답은 뜻이 같은 범위에서 되풀이되는 말을 덜어 한 면에 맞춰요. 이 때문에 한쪽 면이 비어 있는 속지가 생길 수 있어요.</span></div>
+        <div class="pg-note"><b>답을 옮겨 적는 방식</b><span>녹음으로 남기신 답은 "어, 음" 같은 군말과 말 더듬음만 덜고, 사투리와 말투, 입버릇은 그대로 살려 옮겨요. 뜻을 바꾸거나 없는 말을 더하지 않아요.</span><b>속지에 담기는 분량</b><span>속지 한 면에는 질문 하나와 답 하나를 담아요. 답이 길면 한 편에 두 개까지 그 질문만 속지 한 장(앞뒤)을 따로 쓰고, 그 밖의 답은 뜻이 같은 범위에서 되풀이되는 말을 덜어 한 면에 맞춰요. 이 때문에 한쪽 면이 비어 있는 속지가 생길 수 있어요.</span></div>
       </section>
 
       <!-- 5. 확인과 동의 -->
@@ -410,7 +410,7 @@ input[type=date].in{line-height:50px}
 기록물(책) 제작, 기록일·진행 안내 연락(전화, 알림톡, 문자), 기록지 발송과 회수, 결과물 배송, 이어서 신청할 때 입력 정보 재사용
 
 2. 수집 항목
-신청자 성함·연락처, 부모님(받는 분) 성함·연락처·주소, 기록일, 전화 희망 시간, 기록지 회수 장소, 이번 편 참여 대상, 질문과 장별 답하는 방법, 사진에 얽힌 이야기를 남길 방법
+신청자 성함·연락처, 부모님(받는 분) 성함·연락처·주소, 기록일, 기록지 회수 장소, 이번 편 참여 대상, 질문과 장별 답하는 방법, 사진에 얽힌 이야기를 남길 방법
 (각 페이지에서 입력하는 항목만 수집합니다)
 
 3. 보유·이용 기간
@@ -460,7 +460,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
 
   var NUM = ['첫', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열'];
   var EDN = ['', '첫 번째 편', '두 번째 편', '세 번째 편', '네 번째 편', '다섯 번째 편', '여섯 번째 편'];
-  var METHODS = ['전화', '녹음', '손글씨'];
+  var METHODS = ['녹음', '손글씨'];
   var DOW = '일월화수목금토';
 
   var BEFORE = {
@@ -468,13 +468,13 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       title: '신청 전에 부모님께 먼저 말씀해 주세요',
       lead: '이 기록에는 부모님의 연락처와 목소리·손글씨·사진, 사진에 얽힌 이야기가 담기므로 부모님의 동의가 꼭 필요합니다. 결제 후 카카오톡으로 정보 입력 링크와 함께 동의 링크가 신청하신 분께 전달됩니다. 동의 링크는 부모님께 보내 드리거나, 부모님과 함께 열어 진행해 주세요. 아래 내용을 부모님께 설명해 주세요.',
       list: [
-        '기록일에 위드메모리가 부모님께 전화 또는 문자(링크)를 드립니다.',
+        '기록일에 위드메모리가 부모님께 녹음 링크(알림톡·문자)나 기록지(우편)를 보내 드립니다.',
         '부모님의 목소리 녹음, 손글씨, 사진과 사진에 얽힌 이야기로 책이 만들어지고, 책은 신청자에게 전달됩니다.',
         '녹음은 글로 옮겨 적으며, 군말과 반복만 정리하고 말투는 그대로 둡니다.',
         '정해진 보관 기간이 지나면 파일은 삭제됩니다.',
         '음성을 글로 바꾸고 파일을 보관하기 위해 파일이 해외 회사에 전달됩니다. 녹음·사진·책 제작, 신청하신 분께 책 전달, 해외 보관과 처리, 이야기에 담길 수 있는 건강·질병·종교·정치 내용의 처리는 필수 동의이며, 하나라도 동의하지 않으시면 서비스를 진행할 수 없습니다.',
         '녹음 파일을 신청하신 분께 전달하는 것은 선택 동의이며, 동의하지 않으시면 녹음 파일만 전달되지 않습니다. 책에 싣고 싶지 않은 이야기가 있으면 그 편의 답을 마치신 뒤 카카오톡 채널로 알려 주세요. 인쇄에 들어가기 전이면 빼 드립니다.',
-        '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 손글씨로 남기는 것은 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
+        '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 사진 이야기를 손글씨로 남기는 것은 전체 장의 절반 이상을 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
         '여섯 번째 편까지 기록하신 뒤 완성본·선물본을 따로 신청하시면, 신청하신 분이 정한 분(형제·자매 등)께도 책이 전달됩니다. (선택 사항)',
         '답하기 어려운 질문은 건너뛰셔도 되고, 언제든 중단이나 삭제를 요청하실 수 있습니다. (카카오톡 채널)'
       ],
@@ -484,13 +484,13 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       title: '신청 전에 부모님 두 분께 먼저 말씀해 주세요',
       lead: '이 기록에는 두 분의 연락처와 목소리·손글씨·사진, 사진에 얽힌 이야기가 담기므로 두 분 모두의 동의가 꼭 필요합니다. 결제 후 카카오톡으로 정보 입력 링크와 함께 동의 링크가 신청하신 분께 전달됩니다. 동의는 두 분이 각각 따로 하셔야 하며, 동의 링크를 각 분께 보내 드리거나 각 분과 함께 열어 진행해 주세요. 아래 내용을 두 분께 설명해 주세요.',
       list: [
-        '기록일에 위드메모리가 부모님 두 분께 각각 전화 또는 문자(링크)를 드립니다.',
+        '기록일에 위드메모리가 부모님 두 분께 각각 녹음 링크(알림톡·문자)나 기록지(우편)를 보내 드립니다.',
         '두 분의 목소리 녹음, 손글씨, 사진과 사진에 얽힌 이야기로 책이 만들어지고, 책은 신청자에게 전달됩니다.',
         '녹음은 글로 옮겨 적으며, 군말과 반복만 정리하고 말투는 그대로 둡니다.',
         '정해진 보관 기간이 지나면 파일은 삭제됩니다.',
         '음성을 글로 바꾸고 파일을 보관하기 위해 파일이 해외 회사에 전달됩니다. 녹음·사진·책 제작, 신청하신 분께 책 전달, 해외 보관과 처리, 이야기에 담길 수 있는 건강·질병·종교·정치 내용의 처리는 필수 동의이며, 하나라도 동의하지 않으시면 서비스를 진행할 수 없습니다.',
         '녹음 파일을 신청하신 분께 전달하는 것은 선택 동의이며, 동의하지 않으시면 녹음 파일만 전달되지 않습니다. 책에 싣고 싶지 않은 이야기가 있으면 그 편의 답을 마치신 뒤 카카오톡 채널로 알려 주세요. 인쇄에 들어가기 전이면 빼 드립니다.',
-        '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 손글씨로 남기는 것은 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
+        '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 사진 이야기를 손글씨로 남기는 것은 전체 장의 절반 이상을 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
         '여섯 번째 편까지 기록하신 뒤 완성본·선물본을 따로 신청하시면, 신청하신 분이 정한 분(형제·자매 등)께도 책이 전달됩니다. (선택 사항)',
         '답하기 어려운 질문은 건너뛰셔도 되고, 두 분 모두 언제든 중단이나 삭제를 요청하실 수 있습니다. (카카오톡 채널)',
         '한 분이라도 동의하지 않으시면 1인 상품으로 진행해 주세요.'
@@ -784,10 +784,13 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     setDateMin(hasHand);
     show('#fPhoto', S.photoLeft > 0);
     if (S.photoLeft > 0) $('#photoLb').innerHTML = '이번 편에 사진을 넣으시겠어요? <small>남은 사진 추가 ' + S.photoLeft + '번</small><i>*</i>';
-    var ph = $('#photoHand input');
-    ph.disabled = !hasHand;
-    if (!hasHand && ph.checked) setRadio('photo', '녹음');
-    $('#moreDesc').textContent = hasCall || hasHand || !first ? '고르신 방법에 맞춰 필요한 칸만 보여 드려요.' : '전화나 손글씨로 답하는 장이 없어서 더 적으실 칸이 거의 없어요.';
+    var hN = S.M.filter(function (m) { return m === '손글씨'; }).length, hNeed = Math.ceil(S.M.length / 2);
+    var low = radio('photo') === '손글씨' && hN < hNeed;
+    show('#photoAsk', low);
+    if (low) $('#photoAskT').textContent = '사진 이야기를 손글씨로 남기려면 전체 ' + S.M.length + '장 중 ' + hNeed + '장 이상을 손글씨로 답해 주셔야 해요. 지금은 ' + hN + '장이에요.';
+    $('#askMore').onclick = function () { $('#secQ').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    $('#askRec').onclick = function () { setRadio('photo', '녹음'); conditional(); };
+    $('#moreDesc').textContent = hasCall || hasHand || !first ? '고르신 방법에 맞춰 필요한 칸만 보여 드려요.' : '손글씨로 답하는 장이 없어서 더 적으실 칸이 거의 없어요.';
   }
 
   function applyMode() {
@@ -943,7 +946,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     if (!pm) E.push(['photo', '이번 편에 사진을 넣으실지 골라 주세요.']);
     d.usePhoto = pm === '녹음' || pm === '손글씨';
     d.photoMethod = d.usePhoto ? pm : '';
-    if (d.photoMethod === '손글씨' && !hasHand) E.push(['photo', '손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요.']);
+    if (d.photoMethod === '손글씨' && S.M.filter(function (m) { return m === '손글씨'; }).length * 2 < S.M.length) E.push(['photo', '사진 이야기를 손글씨로 남기려면 손글씨 장을 ' + Math.ceil(S.M.length / 2) + '장 이상으로 골라 주세요.']);
     d.informed = $('#informed').checked;
     if (!d.informed) E.push(['informed', '확인 칸에 체크해 주세요.']);
     d.privacy = $('#privacy').checked;
@@ -1040,7 +1043,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       var k = e.target.closest('[data-k]'); if (k && k.id !== 'secQ') k.classList.remove('bad');
       if (e.target.name === 'people') { S.people = Number(e.target.value); applyMode(); }
       else if (e.target.name === 'ed') { saveDraft(); S.ed = Number(e.target.value); applyMode(); }
-      else if (e.target.name === 'participants') conditional();
+      else if (e.target.name === 'participants' || e.target.name === 'photo') conditional();
     });
     $$('[data-post]').forEach(function (b) { b.addEventListener('click', function () { postcode(b.getAttribute('data-post')); }); });
     $('#f').addEventListener('submit', submit);
