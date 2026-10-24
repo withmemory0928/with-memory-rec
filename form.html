@@ -70,6 +70,9 @@ input[type=date].in{line-height:50px}
 .chip input:focus-visible+span{box-shadow:0 0 0 3px rgba(156,74,43,.25)}
 .chip input:disabled+span{opacity:.45;cursor:default}
 .chip em{font-style:normal;font-size:12px;margin-left:6px}
+.pg-note{margin-top:16px;background:#FBF8F4;border:1px solid var(--line2);border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.65;color:var(--mute)}
+.pg-note b{display:block;color:var(--ink);margin:0 0 3px}
+.pg-note b+span+b{margin-top:10px}
 .locked{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--soft);font-weight:700}
 .chk{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--soft2);cursor:pointer;font-size:15px}
 .chk input{width:22px;height:22px;flex:none;margin:3px 0 0;accent-color:var(--accent)}
@@ -381,9 +384,11 @@ input[type=date].in{line-height:50px}
             <label class="chip"><input type="radio" name="photo" value="녹음"><span>넣을게요 · 사진 이야기는 녹음으로 (사진마다 1분 안)</span></label>
             <label class="chip" id="photoHand"><input type="radio" name="photo" value="손글씨"><span>넣을게요 · 사진 이야기는 손글씨로 (기록지 사진 이야기 칸)</span></label>
           </div>
-          <p class="help" id="photoHelp">사진 추가 1개로 한 편에 사진 2장(두 분은 각 2장)을 넣을 수 있어요. 손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요.</p>
+          <p class="help" id="photoHelp">사진 추가 1개로 한 편에 사진 2장(두 분은 각 2장)을 넣을 수 있어요. 손글씨는 손글씨로 답하는 장이 있을 때만 고를 수 있어요. 녹음한 사진 이야기는 사진 아래 한 면에 맞춰 옮겨요.</p>
           <p class="fe"></p>
         </div>
+
+        <div class="pg-note"><b>답을 옮겨 적는 방식</b><span>녹음과 전화로 남기신 답은 "어, 음" 같은 군말과 말 더듬음만 덜고, 사투리와 말투, 입버릇은 그대로 살려 옮겨요. 뜻을 바꾸거나 없는 말을 더하지 않아요.</span><b>속지에 담기는 분량</b><span>속지 한 면에는 질문 하나와 답 하나를 담아요. 답이 길면 한 편에 두 개까지 그 질문만 속지 한 장(앞뒤)을 따로 쓰고, 그 밖의 답은 뜻이 같은 범위에서 되풀이되는 말을 덜어 한 면에 맞춰요. 이 때문에 한쪽 면이 비어 있는 속지가 생길 수 있어요.</span></div>
       </section>
 
       <!-- 5. 확인과 동의 -->
@@ -494,8 +499,8 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     }
   };
   var INFORMED = {
-    1: '부모님께 이 신청을 미리 말씀드렸고, 부모님 성함·연락처(기록지로 답하시면 주소)를 위드메모리에 알리며 이 정보가 미국 등 해외(구글) 서버에 보관된다는 점도 말씀드렸습니다. 결제 후 받는 동의 링크로 부모님의 동의를 받아야 기록을 시작할 수 있고, 동의하지 않으시면 이 정보는 지체 없이 삭제된다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에는 내용을 설명하고, 부모님께서 동의하겠다고 직접 말씀하신 항목만 체크하겠습니다.',
-    2: '부모님 두 분께 이 신청을 미리 말씀드렸고, 두 분의 성함·연락처(기록지로 답하시면 주소)를 위드메모리에 알리며 이 정보가 미국 등 해외(구글) 서버에 보관된다는 점도 말씀드렸습니다. 결제 후 받는 동의 링크로 두 분 각각의 동의를 받아야 기록을 시작할 수 있고, 동의하지 않으시면 그분의 정보는 지체 없이 삭제된다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에는 내용을 설명하고, 부모님께서 동의하겠다고 직접 말씀하신 항목만 체크하겠습니다.',
+    1: '부모님께 이 신청을 미리 말씀드렸고, 부모님 성함·연락처(기록지로 답하시면 주소)를 위드메모리에 알리며 이 정보가 미국 등 해외(구글) 서버에 보관된다는 점도 말씀드렸습니다. 결제 후 받는 동의 링크로 부모님의 동의를 받아야 기록을 시작할 수 있고, 동의하지 않으시면 이 정보는 지체 없이 삭제된다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
+    2: '부모님 두 분께 이 신청을 미리 말씀드렸고, 두 분의 성함·연락처(기록지로 답하시면 주소)를 위드메모리에 알리며 이 정보가 미국 등 해외(구글) 서버에 보관된다는 점도 말씀드렸습니다. 결제 후 받는 동의 링크로 두 분 각각의 동의를 받아야 기록을 시작할 수 있고, 동의하지 않으시면 그분의 정보는 지체 없이 삭제된다는 점을 확인했습니다. 부모님 대신 동의 링크를 열어 체크하는 경우에도 반드시 내용을 설명하고 동의를 받겠습니다.',
     later: '이번 편의 기록일과 진행 방법을 부모님께 미리 말씀드렸습니다.'
   };
 
@@ -1000,7 +1005,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       '<div><b>접수번호</b><span>' + esc(res.id || '-') + '</span></div>';
     var nx = ['접수 확인 안내를 카카오톡으로 보내 드려요. 밤늦게 접수하시면 다음 날 아침에 보내 드려요.'];
     if (d.edition === 1) nx.push('부모님 동의가 확인되어야 기록을 시작해요. 아직이라면 아래 버튼으로 동의 페이지를 열어 부모님께 보내 드리거나 함께 진행해 주세요.' + (d.people === 2 ? ' 두 분이 각각 따로 동의하셔야 해요.' : ''));
-    nx.push('기록일은 기록일 3일 전 23시 59분까지 카카오톡 채널 메뉴 [기록일 변경]에서 바꾸실 수 있어요.');
+    nx.push('기록일은 기록일 3일 전 23시 59분까지 카카오톡 채널 메뉴 [기록일 변경]에서 직접 바꾸실 수 있어요.');
     $('#doneNext').innerHTML = nx.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
     var cb = $('#doneConsent');
     cb.href = CONSENT_URL + '?o=' + encodeURIComponent(d.orderNo);
