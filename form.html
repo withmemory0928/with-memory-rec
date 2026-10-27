@@ -187,7 +187,7 @@ input[type=date].in{line-height:50px}
       </div>
     </div>
     <p class="bot" id="bot1" hidden><strong>처음 작성하시나요? 인원을 먼저 확인해 주세요.</strong><span id="bot1Text"></span><br><a id="mypage" href="#" target="_blank" rel="noopener">마이페이지에서 주문 취소하기</a></p>
-    <p class="bot" id="bot6" hidden><strong>마지막 편은 질문이 20개예요.</strong>앞 편에서 고른 질문과 겹치지 않게 골라 주세요.</p>
+    <p class="bot" id="bot6" hidden><strong>마지막 다섯 번째 편이에요.</strong>앞 편에서 고른 질문과 겹치지 않게 골라 주세요. 다섯 편을 모두 마치시면 PDF와 웹책을 보내 드려요.</p>
 
     <!-- 1. 상품 확인 -->
     <section class="card">
@@ -295,7 +295,7 @@ input[type=date].in{line-height:50px}
 
       <!-- 3. 질문 고르기 -->
       <section class="card" data-k="q" id="secQ">
-        <h2 class="sec-h"><span class="n">3</span><span id="qTitle">질문 16개 고르기</span></h2>
+        <h2 class="sec-h"><span class="n">3</span><span id="qTitle">질문 20개 고르기</span></h2>
         <p class="sec-d" id="qHelp"></p>
         <div class="wmf-pick">
           <div class="wmf-pick-l">
@@ -305,7 +305,7 @@ input[type=date].in{line-height:50px}
             <div class="wmf-own-w"><input type="text" class="in" id="wOwn" maxlength="80" placeholder="직접 쓰기: 여쭙고 싶은 질문" enterkeyhint="done"><button type="button" class="wmf-btn-s" id="wOwnAdd">담기</button></div>
           </div>
           <div>
-            <div class="wmf-row wmf-bar"><b class="wmf-count" id="wCount">0 / 16</b><span><button type="button" class="wmf-btn-s" id="wFillAll">빈 칸 골고루 채우기</button><button type="button" class="wmf-btn-t" id="wClear">모두 비우기</button></span></div>
+            <div class="wmf-row wmf-bar"><b class="wmf-count" id="wCount">0 / 20</b><span><button type="button" class="wmf-btn-s" id="wFillAll">빈 칸 골고루 채우기</button><button type="button" class="wmf-btn-t" id="wClear">모두 비우기</button></span></div>
             <div class="wmf-all"><b>모든 장을 같은 방법으로</b><span class="wmf-sheet-m"><button type="button" data-all="녹음">녹음</button><button type="button" data-all="손글씨">손글씨</button></span></div>
             <p class="wmf-legend">녹음: 링크를 열어 직접 녹음해요(스마트폰이 어려우시면 신청하신 분 휴대폰으로 함께 녹음하셔도 돼요) · 손글씨: 기록지를 우편으로 보내 드려요</p>
             <div class="wmf-board" id="wBoard"></div>
@@ -407,14 +407,14 @@ input[type=date].in{line-height:50px}
           <div class="policy" id="policy" tabindex="0">위드메모리는 기록물 제작과 진행 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.
 
 1. 수집·이용 목적
-기록물(책) 제작, 기록일·진행 안내 연락(전화, 알림톡, 문자), 기록지 발송과 회수, 결과물 배송, 이어서 신청할 때 입력 정보 재사용
+기록물(책) 제작, 기록일·진행 안내 연락(전화, 알림톡, 문자), 기록지 발송과 회수, 결과물 배송, 이어서 신청할 때 입력 정보 재사용, PDF·웹책 발송과 웹책 보관 기간 만료 안내
 
 2. 수집 항목
 신청자 성함·연락처, 부모님(받는 분) 성함·연락처·주소, 기록일, 기록지 회수 장소, 이번 편 참여 대상, 질문과 장별 답하는 방법, 사진에 얽힌 이야기를 남길 방법
 (각 페이지에서 입력하는 항목만 수집합니다)
 
 3. 보유·이용 기간
-질문 등 신청 정보는 마지막 회차 결과물을 발송한 날부터 3개월, 연락처·주소는 마지막 회차 결과물을 발송한 날부터 2년 동안 보관한 뒤 파기합니다.
+질문 등 신청 정보는 다섯 번째 편 결과물을 발송한 날(이용 기간 안에 다섯 편을 마치지 못하면 이용 기간이 끝난 날)부터 3개월이 지난 뒤 처음 도래하는 1일에 파기합니다. 연락처·주소는 마지막 회차 결과물을 발송한 날부터 2년 동안 보관한 뒤 파기하며, 웹책을 받으신 경우 신청자 성함·연락처는 만료 안내를 위해 웹책 보관 기간이 끝날 때까지 보관합니다.
 
 4. 동의를 거부할 권리
 동의를 거부하실 수 있으며, 거부하시면 기록물 제작을 진행할 수 없습니다.
@@ -459,7 +459,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   var MYPAGE_URL = 'https://with-memory.com/shop_mypage';
 
   var NUM = ['첫', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열'];
-  var EDN = ['', '첫 번째 편', '두 번째 편', '세 번째 편', '네 번째 편', '다섯 번째 편', '여섯 번째 편'];
+  var EDN = ['', '첫 번째 편', '두 번째 편', '세 번째 편', '네 번째 편', '다섯 번째 편'];
   var METHODS = ['녹음', '손글씨'];
   var DOW = '일월화수목금토';
 
@@ -473,9 +473,9 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
         '녹음은 글로 옮겨 적으며, 군말과 반복만 정리하고 말투는 그대로 둡니다.',
         '정해진 보관 기간이 지나면 파일은 삭제됩니다.',
         '음성을 글로 바꾸고 파일을 보관하기 위해 파일이 해외 회사에 전달됩니다. 녹음·사진·책 제작, 신청하신 분께 책 전달, 해외 보관과 처리, 이야기에 담길 수 있는 건강·질병·종교·정치 내용의 처리는 필수 동의이며, 하나라도 동의하지 않으시면 서비스를 진행할 수 없습니다.',
-        '녹음 파일을 신청하신 분께 전달하는 것은 선택 동의이며, 동의하지 않으시면 녹음 파일만 전달되지 않습니다. 책에 싣고 싶지 않은 이야기가 있으면 그 편의 답을 마치신 뒤 카카오톡 채널로 알려 주세요. 인쇄에 들어가기 전이면 빼 드립니다.',
+        '녹음 파일을 신청하신 분께 전달하고 웹책에 목소리를 담는 것은 선택 동의이며, 동의하지 않으시면 녹음 파일과 웹책의 목소리만 빠집니다. 책에 싣고 싶지 않은 이야기가 있으면 그 편의 답을 마치신 뒤 카카오톡 채널로 알려 주세요. 인쇄에 들어가기 전이면 빼 드립니다.',
         '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 사진 이야기를 손글씨로 남기는 것은 전체 장의 절반 이상을 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
-        '여섯 번째 편까지 기록하신 뒤 완성본·선물본을 따로 신청하시면, 신청하신 분이 정한 분(형제·자매 등)께도 책이 전달됩니다. (선택 사항)',
+        '다섯 편(질문 100개)을 모두 마치시면 PDF와 웹책을 신청하신 분께 보내 드립니다. 선물본을 따로 신청하시면 신청하신 분이 정한 분(형제·자매 등)께도 책이 전달됩니다. (선택 사항)',
         '답하기 어려운 질문은 건너뛰셔도 되고, 언제든 중단이나 삭제를 요청하실 수 있습니다. (카카오톡 채널)'
       ],
       foot: '부모님께 설명하고, 결제 후 받으시는 동의 링크로 부모님의 동의를 받겠다는 뜻으로 아래 입력폼 맨 끝의 확인 칸에 체크해 주세요. 부모님 대신 동의 링크를 열어 체크하시는 경우에는 내용을 설명해 드리고, 부모님께서 동의하겠다고 직접 말씀하신 항목만 체크해 주세요.'
@@ -489,9 +489,9 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
         '녹음은 글로 옮겨 적으며, 군말과 반복만 정리하고 말투는 그대로 둡니다.',
         '정해진 보관 기간이 지나면 파일은 삭제됩니다.',
         '음성을 글로 바꾸고 파일을 보관하기 위해 파일이 해외 회사에 전달됩니다. 녹음·사진·책 제작, 신청하신 분께 책 전달, 해외 보관과 처리, 이야기에 담길 수 있는 건강·질병·종교·정치 내용의 처리는 필수 동의이며, 하나라도 동의하지 않으시면 서비스를 진행할 수 없습니다.',
-        '녹음 파일을 신청하신 분께 전달하는 것은 선택 동의이며, 동의하지 않으시면 녹음 파일만 전달되지 않습니다. 책에 싣고 싶지 않은 이야기가 있으면 그 편의 답을 마치신 뒤 카카오톡 채널로 알려 주세요. 인쇄에 들어가기 전이면 빼 드립니다.',
+        '녹음 파일을 신청하신 분께 전달하고 웹책에 목소리를 담는 것은 선택 동의이며, 동의하지 않으시면 녹음 파일과 웹책의 목소리만 빠집니다. 책에 싣고 싶지 않은 이야기가 있으면 그 편의 답을 마치신 뒤 카카오톡 채널로 알려 주세요. 인쇄에 들어가기 전이면 빼 드립니다.',
         '사진 추가 옵션을 고르신 경우, 기록일에 신청하신 분과 부모님께 사진 링크를 보내 드립니다. 링크에서 사진 2장을 올리고, 사진마다 그 사진에 얽힌 이야기를 1분 안으로 들려주시면 됩니다. 스마트폰이 어려우시면 신청하신 분이 부모님과 함께 올리셔도 됩니다. 사진 이야기를 손글씨로 남기는 것은 전체 장의 절반 이상을 기록지로 답하시는 경우에만 선택할 수 있습니다. 올리신 사진과 이야기는 그 편이 도착할 때까지 신청하신 분께 공개되지 않습니다. (선택 사항)',
-        '여섯 번째 편까지 기록하신 뒤 완성본·선물본을 따로 신청하시면, 신청하신 분이 정한 분(형제·자매 등)께도 책이 전달됩니다. (선택 사항)',
+        '다섯 편(질문 100개)을 모두 마치시면 PDF와 웹책을 신청하신 분께 보내 드립니다. 선물본을 따로 신청하시면 신청하신 분이 정한 분(형제·자매 등)께도 책이 전달됩니다. (선택 사항)',
         '답하기 어려운 질문은 건너뛰셔도 되고, 두 분 모두 언제든 중단이나 삭제를 요청하실 수 있습니다. (카카오톡 채널)',
         '한 분이라도 동의하지 않으시면 1인 상품으로 진행해 주세요.'
       ],
@@ -726,10 +726,10 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     setRadio('people', S.people ? String(S.people) : '');
   }
   function renderEd() {
-    var from = S.range ? S.range[0] : 1, to = S.range ? S.range[1] : 6, h = '';
+    var from = S.range ? S.range[0] : 1, to = S.range ? S.range[1] : 5, h = '';
     for (var e = from; e <= to; e++) {
       var dn = S.done.indexOf(e) > -1;
-      h += '<label class="chip"><input type="radio" name="ed" value="' + e + '"' + (S.ed === e ? ' checked' : '') + (dn ? ' disabled' : '') + '><span>' + EDN[e] + (e === 6 ? ' (마지막)' : '') + (dn ? '<em>접수됨</em>' : '') + '</span></label>';
+      h += '<label class="chip"><input type="radio" name="ed" value="' + e + '"' + (S.ed === e ? ' checked' : '') + (dn ? ' disabled' : '') + '><span>' + EDN[e] + (e === 5 ? ' (마지막)' : '') + (dn ? '<em>접수됨</em>' : '') + '</span></label>';
     }
     $('#edChips').innerHTML = h;
     var help = '';
@@ -746,13 +746,13 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     var two = S.people === 2, arch = '<svg viewBox="0 0 90 120" aria-hidden="true"><path d="M4 116V46A41 41 0 0 1 86 46V116Z" fill="none" stroke="#9C4A2B" stroke-width="2"/><path d="M12 108V46A33 33 0 0 1 78 46V108Z" fill="#9C4A2B" fill-opacity=".12" stroke="#9C4A2B" stroke-width="1"/></svg>';
     $('#hArches').innerHTML = arch + (two ? arch : '');
     $('#hTitle').textContent = S.people ? (two ? '부모님 두 분' : '부모님 한 분') : '부모님';
-    $('#hSub').textContent = !S.people ? '부모님의 이야기를 한 권에 담아요' : two ? '아버지와 어머니, 두 분의 이야기를 한 권에 함께 담아요' : '아버지 또는 어머니, 한 분의 이야기를 한 권에 담아요';
-    var tags = S.ed ? '<span class="tag' + (S.ed === 6 ? ' on' : '') + '">' + (S.ed === 6 ? '여섯 번째, 마지막 편' : EDN[S.ed]) + '</span><span class="tag">질문 ' + (S.ed === 6 ? 20 : 16) + '개</span>' : '<span class="tag">작성하는 편을 골라 주세요</span>';
+    $('#hSub').textContent = !S.people ? '부모님의 이야기를 한 권에 담아요' : two ? '아버지와 어머니, 두 분의 이야기를 한 분에 한 권씩 담아요' : '아버지 또는 어머니, 한 분의 이야기를 한 권에 담아요';
+    var tags = S.ed ? '<span class="tag' + (S.ed === 5 ? ' on' : '') + '">' + (S.ed === 5 ? '다섯 번째, 마지막 편' : EDN[S.ed]) + '</span><span class="tag">질문 20개</span>' : '<span class="tag">작성하는 편을 골라 주세요</span>';
     $('#hTags').innerHTML = tags;
     var b1 = S.ed === 1 && S.people;
     show('#bot1', b1);
     if (b1) $('#bot1Text').textContent = '부모님 ' + (two ? '한' : '두') + ' 분으로 알고 구매하셨다면, 작성하기 전에 마이페이지 › 주문 내역에서 주문을 취소한 뒤 ' + (two ? '1' : '2') + '인 상품으로 다시 구매해 주세요.';
-    show('#bot6', S.ed === 6);
+    show('#bot6', S.ed === 5);
   }
 
   function before() {
@@ -822,7 +822,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     }
     $('#informedText').textContent = first ? INFORMED[two ? 2 : 1] : INFORMED.later;
     $('#applicantPhoneHelp').textContent = first ? '진행 안내를 이 번호로 보내 드려요. 구매하실 때 적은 번호와 같게 적어 주세요.' : '처음 신청하실 때 적은 번호와 같게 적어 주세요. 이 번호로 지난 편 정보를 찾아요.';
-    setCount(S.ed === 6 ? 20 : 16);
+    setCount(20);
     loadDraft();
     conditional();
   }
@@ -837,8 +837,8 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   function applyOrder(r) {
     if (r && r.found) {
       S.locked = true; S.people = r.people === 2 ? 2 : 1;
-      var from = Number(r.from) || 1, to = Number(r.to) || 6;
-      S.range = [Math.max(1, from), Math.min(6, to)];
+      var from = Number(r.from) || 1, to = Number(r.to) || 5;
+      S.range = [Math.max(1, from), Math.min(5, to)];
       S.done = (r.done || []).map(Number);
       S.photoLeft = Number(r.photoLeft) || 0;
       S.until = r.until || ''; S.maxDate = S.until && S.until < S.max365 ? S.until : S.max365; $('#recordDate').max = S.maxDate;
@@ -1026,7 +1026,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     $('#mypage').href = MYPAGE_URL;
 
     initWidget();
-    S.n = 0; setCount(16);
+    S.n = 0; setCount(20);
 
     // 연락처 칸: 숫자만 받아 하이픈 표시
     $$('.tel').forEach(function (el) {
