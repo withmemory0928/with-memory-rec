@@ -222,8 +222,8 @@ audio{width:100%;margin:10px 0 0}
   }
   function setSaved(n, p) {
     if (p.warn) setState(n, '녹음이 끊겼습니다.\n음악·영상 앱을 끄고 다시 녹음해 주세요.', 'err');
-    else if (p.capped) setState(n, MAX_LABEL + '이 되어 녹음이 자동으로 멈추고 저장되었습니다 (' + fmt(p.secs) + ')\n▶ 아래 재생 버튼을 눌러 잘 녹음되었는지 들어 보세요', 'ok');
-    else setState(n, '저장되었습니다 (' + fmt(p.secs) + ')\n▶ 아래 재생 버튼을 눌러 목소리가 잘 녹음되었는지\n한 번 들어 보세요. 다시 하시려면 녹음 버튼을 눌러 주세요', 'ok');
+    else if (p.capped) setState(n, MAX_LABEL + '이 되어 녹음이 자동으로 멈추고 저장되었습니다 (' + fmt(p.secs) + ')\n아래 ▶ 버튼을 눌러 들어 보세요.\n다시 하시려면 녹음 버튼을 눌러 주세요', 'ok');
+    else setState(n, '저장되었습니다 (' + fmt(p.secs) + ')\n아래 ▶ 버튼을 눌러 들어 보세요.\n다시 하시려면 녹음 버튼을 눌러 주세요', 'ok');
   }
   // 녹음 중인 질문 말고는 버튼을 잠그고, 저장 중인 질문도 저장이 끝날 때까지 잠근다 (늦게 도착한 이전 녹음이 덮어쓰지 않게)
   function syncMics() {
