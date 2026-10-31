@@ -25,6 +25,7 @@ h1{font-size:24px;line-height:1.35;margin:0 0 8px;letter-spacing:-.01em}
 .rules li::before{content:"";position:absolute;left:2px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
 .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 16px;margin-bottom:12px}
 .card h2{font-size:15px;margin:0 0 4px}
+.dshow{font-size:14px;font-weight:700;color:var(--accent);margin:8px 2px 0}.dshow[hidden]{display:none}
 .card .hint{font-size:12.5px;color:var(--sub);margin:0 0 4px}
 .fl{display:block;font-size:14px;font-weight:600;margin-top:14px}
 .fl small{font-weight:400;color:var(--sub);font-size:12.5px;margin-left:4px}
@@ -83,9 +84,11 @@ input:focus{outline:none;border-color:var(--accent)}
     <p class="hint">알림톡 '기록일 확인'으로 받으신 날짜를 넣어 주세요.</p>
     <label class="fl" for="oldDate">지금 기록일</label>
     <input type="date" id="oldDate">
+    <p class="dshow" id="oldDateShow" hidden></p>
     <div class="arrow" aria-hidden="true">↓</div>
     <label class="fl" for="newDate">바꾸실 기록일 <small id="minHint"></small></label>
     <input type="date" id="newDate">
+    <p class="dshow" id="newDateShow" hidden></p>
   </div>
 
   <button id="btn" type="button">기록일 바꾸기</button>
@@ -123,6 +126,25 @@ input:focus{outline:none;border-color:var(--accent)}
     var a = key.split('-').map(Number), w = new Date(Date.UTC(a[0], a[1] - 1, a[2])).getUTCDay();
     return a[1] + '월 ' + a[2] + '일(' + '일월화수목금토'.charAt(w) + ')';
   }
+
+  // 날짜 칸 아래에 '2026년 11월 6일(금)'처럼 년·월·일을 풀어서 보여 줌 (칸 안의 표시 순서는 휴대폰 지역 설정을 따라서 바꿀 수 없음)
+  function dateShow(inputId, outId) {
+    var inp = document.getElementById(inputId), out = document.getElementById(outId), last = null;
+    if (!inp || !out) return;
+    function upd() {
+      var v = inp.value;
+      if (v === last) return; last = v;
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+      if (!m) { out.textContent = ''; out.hidden = true; return; }
+      var d = new Date(+m[1], +m[2] - 1, +m[3]);
+      out.textContent = '고르신 날짜: ' + m[1] + '년 ' + (+m[2]) + '월 ' + (+m[3]) + '일(' + '일월화수목금토'.charAt(d.getDay()) + ')';
+      out.hidden = false;
+    }
+    ['input', 'change', 'blur'].forEach(function (ev) { inp.addEventListener(ev, upd); });
+    setInterval(upd, 400);   // 다른 곳에서 값을 채워 넣는 경우(임시 저장 불러오기 등)도 따라가도록
+    upd();
+  }
+  dateShow('oldDate', 'oldDateShow'); dateShow('newDate', 'newDateShow');
   var today = todayKst(), minNew = addDays(today, 3);
   $('newDate').min = minNew;
   $('newDate').max = addDays(today, 400);
