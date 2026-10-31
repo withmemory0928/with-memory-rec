@@ -125,6 +125,17 @@ button{font:inherit;color:inherit}
 .sizes button{flex:1;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:10px 0;cursor:pointer;font-family:var(--serif)}
 .sizes button[aria-pressed="true"]{border-color:var(--accent2);background:var(--soft);font-weight:600}
 
+/* 비밀번호 */
+.lockf{display:grid;gap:10px;margin-top:16px;text-align:left}
+.lockf label{font-size:13px;font-weight:500;color:var(--ink)}
+.lockf input{font:inherit;font-size:24px;letter-spacing:.5em;text-align:center;padding:10px 10px 10px 18px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;font-variant-numeric:tabular-nums}
+.lockf input:focus{outline:2px solid var(--accent2);outline-offset:1px}
+.lockf .err{color:#b3261e;font-size:13px;min-height:1.2em;margin:0}
+.btn{border:0;background:var(--accent);color:#fffdf9;border-radius:999px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer}
+.btn[disabled]{opacity:.6;cursor:default}
+.btn.line{background:var(--paper);color:var(--accent);border:1px solid var(--accent2)}
+.pdfbox{border:1px solid var(--line);border-radius:12px;padding:14px;margin:0 0 18px;display:grid;gap:8px}
+.pdfbox .small{margin:0}
 /* 안내 화면 (불러오는 중 · 만료 · 오류) */
 .msg{position:absolute;inset:0;display:grid;place-items:center;padding:24px 16px;background:var(--bg);z-index:10}
 .msg .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:28px 22px;width:min(100%,380px);text-align:center}
@@ -168,6 +179,12 @@ button{font:inherit;color:inherit}
       <div class="spin" id="msgSpin"></div>
       <h2 id="msgH">책을 펼치고 있어요</h2>
       <p id="msgP">잠시만 기다려 주세요.</p>
+      <form class="lockf" id="lockForm" autocomplete="off" hidden>
+        <label for="pin">비밀번호 4자리</label>
+        <input id="pin" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="••••" aria-describedby="pinErr">
+        <p class="err" id="pinErr" role="alert"></p>
+        <button class="btn" type="submit" id="pinBtn">책 열기</button>
+      </form>
     </div>
   </div>
 </div>
@@ -192,21 +209,22 @@ button{font:inherit;color:inherit}
   var pauseIcon = '<svg viewBox="0 0 24 24"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z"/></svg>';
 
   function showMsg(h, p, spin) {
-    $('#msgH').textContent = h; $('#msgP').innerHTML = p; $('#msgSpin').hidden = !spin; $('#msg').hidden = false;
+    $('#msgH').textContent = h; $('#msgP').innerHTML = p; $('#msgSpin').hidden = !spin; $('#msg').hidden = false; $('#lockForm').hidden = true;
   }
   var CONTACT = '궁금한 점은 카카오톡 채널 <b>위드메모리</b>로 문의해 주세요.';
 
   /* ── 데이터 가져오기 ── */
-  function api(params) {
-    var u = API + '?' + new URLSearchParams(params).toString();
-    return fetch(u, { cache: 'no-store' }).then(function (r) { return r.json(); });
+  function api(body) {   // 비밀번호가 주소에 남지 않게 POST로 보냄
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), cache: 'no-store' })
+      .then(function (r) { return r.json(); });
   }
+  var PW = store.get('wm-pw-' + KEY) || '';
   var blobUrls = {}, pending = {};
   function fileUrl(i) {
     if (blobUrls[i]) return Promise.resolve(blobUrls[i]);
     if (pending[i]) return pending[i];
     if (DEMO) return Promise.reject(new Error('demo'));
-    pending[i] = api({ action: 'bookfile', k: KEY, i: i }).then(function (res) {
+    pending[i] = api({ action: 'bookfile', k: KEY, i: i, pw: PW }).then(function (res) {
       if (!res || !res.ok) throw new Error((res && res.code) || 'error');
       var bin = atob(res.data), n = bin.length, u = new Uint8Array(n);
       for (var j = 0; j < n; j++) u[j] = bin.charCodeAt(j);
@@ -218,19 +236,39 @@ button{font:inherit;color:inherit}
   }
 
   if (!KEY && !DEMO) { showMsg('주소를 확인해 주세요', '알림톡의 <b>웹책 보기</b> 버튼으로 다시 열어 주세요.<br>' + CONTACT); return; }
-  var load = DEMO ? Promise.resolve(demoData()) : api({ action: 'book', k: KEY });
-  load.then(function (d) {
+  function open(pw) {
+    var load = DEMO ? Promise.resolve(pw === '1234' ? demoData() : { ok: false, code: 'pw', wrong: !!pw, left: 4 }) : api({ action: 'book', k: KEY, pw: pw });
+    return load.then(function (d) {
+    if (d && !d.ok && d.code === 'pw') {
+      try { localStorage.removeItem('wm-pw-' + KEY); } catch (e) {}
+      showMsg('가족에게만 열리는 책이에요', '알림톡으로 받은 <b>비밀번호 4자리</b>를 넣어 주세요.');
+      $('#lockForm').hidden = false; $('#pinBtn').disabled = false;
+      $('#pinErr').textContent = d.wrong ? '비밀번호가 맞지 않아요.' + (d.left ? ' ' + d.left + '번 더 틀리면 10분 동안 잠겨요.' : '') : '';
+      $('#pin').value = ''; setTimeout(function () { $('#pin').focus(); }, 50);
+      return;
+    }
     if (!d || !d.ok) {
       var c = d && d.code;
+      if (c === 'locked') { showMsg('잠시 잠겼어요', '비밀번호를 여러 번 틀려서 ' + (d.min || 10) + '분 동안 열 수 없어요. 잠시 뒤에 다시 열어 주세요.<br>' + CONTACT); return; }
       if (c === 'expired') showMsg('열람 기간이 끝났어요', (d.until ? d.until + '까지 열람할 수 있는 책이었어요.<br>' : '') + '보관 기간이 끝나 웹책과 웹책에 담긴 자료는 삭제되었어요.<br>집에 있는 책과 내려받으신 PDF는 그대로 보관하실 수 있어요.<br>' + CONTACT);
       else if (c === 'pending') showMsg('웹책을 준비하고 있어요', '준비가 끝나면 알림톡으로 알려 드릴게요.<br>' + CONTACT);
       else if (c === 'invalid') showMsg('책을 찾지 못했어요', '주소가 바뀌었을 수 있어요. 알림톡의 <b>웹책 보기</b> 버튼으로 다시 열어 주세요.<br>' + CONTACT);
       else showMsg('잠시 문제가 생겼어요', '조금 뒤에 다시 열어 주세요.<br>' + CONTACT);
       return;
     }
+    PW = pw; store.set('wm-pw-' + KEY, pw);   // 이 휴대폰에서는 다음부터 묻지 않음
     build(d);
     $('#msg').hidden = true;
   }).catch(function () { showMsg('연결이 원활하지 않아요', '인터넷 연결을 확인한 뒤 다시 열어 주세요.<br>' + CONTACT); });
+  }
+  $('#lockForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = $('#pin').value.replace(/\D/g, '');
+    if (v.length !== 4) { $('#pinErr').textContent = '숫자 4자리를 넣어 주세요.'; return; }
+    $('#pinBtn').disabled = true; $('#pinErr').textContent = '확인하고 있어요…';
+    open(v);
+  });
+  open(PW);
 
   /* ── 책 만들기 ── */
   var pages = [], players = [], cur = 0, D;
@@ -292,9 +330,9 @@ button{font:inherit;color:inherit}
     var h = Math.floor(voiceSec / 3600), mnt = Math.round((voiceSec % 3600) / 60);
     end.innerHTML = '<div class="qno">마지막 쪽</div><h2 style="margin-top:10px">' + qItems.length + '개의 이야기를 모두 채웠어요</h2>' +
       '<div class="stat"><div><b>' + qItems.length + '</b><span>질문</span></div><div><b>' + (voiceSec ? (h ? h + '시간 ' : '') + mnt + '분' : '-') + '</b><span>목소리</span></div><div><b>' + photoN + '</b><span>사진</span></div></div>' +
-      '<p>이 책은 집에 있는 책과 같은 내용이에요. 휴대폰에서는 ' + esc(call || '부모님') + ' 목소리를 바로 들을 수 있어요.</p>' +
+      '<p>이 책은 집에 있는 책과 같은 내용이에요. 휴대폰에서는 ' + esc(call || '부모님') + ' 목소리를 바로 들을 수 있어요.</p>' + pdfBox() +
       '<p class="small">' + (d.until ? '열람 기간: ' + esc(d.until) + '까지. 기간이 끝나면 웹책과 담긴 자료는 삭제돼요. 끝나기 한 달 전에 연장 방법을 알림톡으로 알려 드려요.<br>' : '') +
-      '이 주소를 아는 사람은 누구나 책을 볼 수 있어요. 가족에게만 전해 주세요.<br>' + CONTACT + '</p>';
+      '주소와 비밀번호는 가족에게만 전해 주세요.<br>' + CONTACT + '</p>';
     addPage(end, 'end');
 
     // 차례 (편마다 묶어서)
@@ -305,7 +343,7 @@ button{font:inherit;color:inherit}
         return '<li><button data-go="' + t.go + '"><span class="no">' + esc(t.no) + '</span><span class="q">' + esc(t.q) + '</span><span class="kind">' + t.kind + '</span></button></li>';
       }).join('') + '</ol>';
     }).join('');
-    toc.innerHTML = '<h2>차례</h2><p class="lead">질문을 누르면 그 쪽으로 넘어가요. 화면을 옆으로 밀어도 넘어가요.</p>' + list;
+    toc.innerHTML = '<h2>차례</h2><p class="lead">질문을 누르면 그 쪽으로 넘어가요. 화면을 옆으로 밀어도 넘어가요.</p>' + pdfBox() + list;
     $('#tocSheet').innerHTML = '<h3>차례</h3><ol><li><button data-go="0"><span class="no">표지</span><span class="q">' + esc(title) + '</span><span class="kind"></span></button></li></ol>' + list +
       '<ol><li><button data-go="' + (pages.length - 1) + '"><span class="no">끝</span><span class="q">마지막 쪽</span><span class="kind"></span></button></li></ol>';
     $('#progT').dataset.total = qItems.length;
@@ -313,6 +351,27 @@ button{font:inherit;color:inherit}
     var saved = Number(store.get('wm-book-' + KEY));
     go(saved > 0 && saved < pages.length ? saved : 0);
   }
+
+  /* ── 100문항 PDF 내려받기 ── */
+  function pdfBox() {
+    var f = D.pdf != null && D.files[D.pdf];
+    var size = f && f.kb ? ' (' + (f.kb / 1024).toFixed(1) + 'MB)' : '';
+    return '<div class="pdfbox"><button class="btn line" type="button" data-pdf>PDF 내려받기' + size + '</button>' +
+      '<p class="small" data-pdfmsg>집에 있는 책과 같은 이야기를 PDF 한 권으로 받아요. 휴대폰이나 컴퓨터에 보관해 두세요.</p></div>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pdf]'); if (!b) return;
+    var msg = b.parentNode.querySelector('[data-pdfmsg]');
+    if (D.pdf == null) { msg.textContent = DEMO ? '예시에는 PDF가 없어요.' : 'PDF를 준비하고 있어요. 카카오톡 채널로 문의해 주세요.'; return; }
+    b.disabled = true; msg.textContent = 'PDF를 받는 중이에요. 잠시만 기다려 주세요…';
+    fileUrl(D.pdf).then(function (url) {
+      var a = document.createElement('a');
+      a.href = url; a.download = '위드메모리_' + ((D.call || '부모님') + '의 이야기') + '.pdf';
+      document.body.appendChild(a); a.click(); a.remove();
+      msg.textContent = '내려받았어요. 휴대폰의 \'파일\' 또는 \'다운로드\'에서 찾을 수 있어요.';
+    }).catch(function () { msg.textContent = DEMO ? '예시에는 PDF가 없어요.' : '받지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.'; })
+      .then(function () { b.disabled = false; });
+  });
 
   /* ── 목소리 재생 (문장 강조는 길이 비율로 맞춤) ── */
   function setupPlayer(sec, fileIdx, sents) {
@@ -411,7 +470,7 @@ button{font:inherit;color:inherit}
 
   /* ── 예시 (?demo=1): 서버 없이 화면만 확인할 때 ── */
   function demoData() {
-    return { ok: true, call: '엄마', people: 1, from: '2026-11-21', to: '2027-09-11', until: '2032년 9월 14일(화)', untilDay: '2032-09-14',
+    return { ok: true, pdf: null, call: '엄마', people: 1, from: '2026-11-21', to: '2027-09-11', until: '2032년 9월 14일(화)', untilDay: '2032-09-14',
       files: [{ i: 0, mime: 'audio/mp4', kb: 900, sec: 74 }, { i: 1, mime: 'audio/mp4', kb: 700, sec: 52 }, { i: 2, mime: 'image/jpeg', kb: 800, sec: 0 }, { i: 3, mime: 'image/jpeg', kb: 300, sec: 0 }],
       items: [
         { k: 'q', no: 1, ed: 1, q: '20대 시절 엄마의 꿈은 뭐였어?', a: '음, 그때는 선생님이 되고 싶었지. 시골 분교에서 아이들 가르치는 게 꿈이었어. 그런데 너희 외할아버지가 일찍 돌아가시는 바람에 공장에 들어갔단다.', m: '녹음', date: '2026-11-21', audio: 0 },
