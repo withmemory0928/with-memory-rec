@@ -76,7 +76,10 @@ input[type=date].in{line-height:50px}
 .locked{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:var(--soft);font-weight:700}
 .chk{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--soft2);cursor:pointer;font-size:15px}
 .chk input{width:22px;height:22px;flex:none;margin:3px 0 0;accent-color:var(--accent)}
-.policy{white-space:pre-wrap;font-size:13.5px;line-height:1.75;color:#4A413B;background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:14px;max-height:230px;overflow:auto;margin:0 0 10px}
+.policy{white-space:pre-wrap;font-size:13.5px;line-height:1.75;color:#4A413B;background:var(--soft2);border:1px solid var(--line);border-radius:10px;padding:12px 14px 18px;max-height:104px;overflow:auto;margin:0 0 10px;-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
+#informedText{display:block;max-height:calc(1.7em * 3);overflow:auto;padding-bottom:.6em;-webkit-mask-image:linear-gradient(#000 75%,transparent);mask-image:linear-gradient(#000 75%,transparent)}
+#informedText.short{max-height:none;padding-bottom:0;-webkit-mask-image:none;mask-image:none}
+.scrollhint{font-size:12.5px;color:#8A7D73;margin:-4px 2px 10px}
 .note{font-size:14px;color:var(--sub);background:var(--soft);border-radius:10px;padding:12px 14px;margin:12px 0 0}
 .fe{display:none;color:var(--warn);font-size:13.5px;font-weight:700;margin:7px 0 0}
 .bad>.fe,.bad .fe{display:block}
@@ -97,6 +100,23 @@ input[type=date].in{line-height:50px}
 .before .foot{border-top:1px dashed var(--line2);padding-top:12px;font-size:13.5px;color:var(--accent)}
 
 /* 질문 고르기 */
+.wmf-ptabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 14px;padding:4px;border-radius:12px;background:var(--soft)}
+.wmf-ptabs button{min-height:44px;border:0;border-radius:9px;background:none;font-size:14.5px;font-weight:600;color:var(--mute)}
+.wmf-ptabs button.on{background:#fff;color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.wmf-ptabs button.ok:after{content:' ✓';color:var(--accent)}
+.wmf-pwho{margin:0 0 12px;padding:12px 14px;border-radius:10px;background:var(--soft);font-size:14.5px}
+.wmf-pwho b{color:var(--accent)}
+.wmf-copy{display:flex;flex-direction:column;gap:6px;margin:0 0 14px;padding:12px 14px;border:1px dashed var(--accent);border-radius:10px}
+.wmf-copy .wmf-btn-s{align-self:flex-start;border-color:var(--accent);color:var(--accent)}
+.wmf-copy span{font-size:12.5px;color:var(--mute);line-height:1.6}
+.wmf-pnav{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:18px}
+.wmf-pnav .submit{margin:0}
+.wmf-tone{padding:14px 16px;margin:0 0 14px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.wmf-tone-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 8px}
+.wmf-tone-r b{flex:0 0 64px;font-size:14px}
+.wmf-tone-r .wmf-sheet-m button{min-width:64px}
+.wmf-tone-ex{margin:4px 0 0;font-size:13.5px;color:var(--mute);line-height:1.6}
+.wmf-tone-ex span{color:var(--ink)}
 .wmf-pick{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
 .wmf-pick-l{padding:16px;background:var(--soft);border-radius:10px}
 .wmf-topics{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
@@ -235,7 +255,7 @@ input[type=date].in{line-height:50px}
       <!-- 2. 기본 정보 -->
       <section class="card">
         <h2 class="sec-h"><span class="n">2</span>기본 정보</h2>
-        <p class="sec-d" id="basicDesc">신청하신 분과 부모님 정보를 입력해 주세요.</p>
+        <p class="sec-d" id="basicDesc">신청하신 분 정보와 기록일을 입력해 주세요.</p>
 
         <div class="fld" data-k="applicantName" id="fApplicantName">
           <label class="lb" for="applicantName">신청자 성함<i>*</i></label>
@@ -255,32 +275,6 @@ input[type=date].in{line-height:50px}
           <p class="fe"></p>
         </div>
 
-        <div id="gParents">
-          <div class="fld" data-k="p1Name">
-            <label class="lb" for="p1Name" id="p1NameLb">부모님 성함<i>*</i></label>
-            <input class="in" id="p1Name" maxlength="30">
-            <p class="fe"></p>
-          </div>
-          <div class="fld" data-k="p1Phone">
-            <label class="lb" for="p1Phone" id="p1PhoneLb">부모님 연락처<i>*</i></label>
-            <input class="in tel" id="p1Phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
-            <p class="help">기록일에 이 번호로 알림톡이나 문자로 안내를 보내 드려요.</p>
-            <p class="fe"></p>
-          </div>
-          <div id="gP2">
-            <div class="fld" data-k="p2Name">
-              <label class="lb" for="p2Name">두 번째 부모님 성함<i>*</i></label>
-              <input class="in" id="p2Name" maxlength="30">
-              <p class="fe"></p>
-            </div>
-            <div class="fld" data-k="p2Phone">
-              <label class="lb" for="p2Phone">두 번째 부모님 연락처<i>*</i></label>
-              <input class="in tel" id="p2Phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
-              <p class="fe"></p>
-            </div>
-          </div>
-        </div>
-
         <div class="fld" data-k="participants" id="fParticipants">
           <span class="lb">이번 편에 참여하시는 분<i>*</i></span>
           <div class="chips">
@@ -296,7 +290,40 @@ input[type=date].in{line-height:50px}
       <!-- 3. 질문 고르기 -->
       <section class="card" data-k="q" id="secQ">
         <h2 class="sec-h"><span class="n">3</span><span id="qTitle">질문 20개 고르기</span></h2>
+        <div class="wmf-ptabs" id="pTabs" hidden><button type="button" data-pg="1">첫 번째 부모님</button><button type="button" data-pg="2">두 번째 부모님</button></div>
+        <p class="wmf-pwho" id="pWho" hidden></p>
+        <div id="gP1">
+          <div class="fld" data-k="p1Name">
+            <label class="lb" for="p1Name" id="p1NameLb">부모님 성함<i>*</i></label>
+            <input class="in" id="p1Name" maxlength="30">
+            <p class="fe"></p>
+          </div>
+          <div class="fld" data-k="p1Phone">
+            <label class="lb" for="p1Phone" id="p1PhoneLb">부모님 연락처<i>*</i></label>
+            <input class="in tel" id="p1Phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
+            <p class="help">기록일에 이 번호로 알림톡이나 문자로 안내를 보내 드려요.</p>
+            <p class="fe"></p>
+          </div>
+        </div>
+          <div id="gP2">
+            <div class="fld" data-k="p2Name">
+              <label class="lb" for="p2Name">두 번째 부모님 성함<i>*</i></label>
+              <input class="in" id="p2Name" maxlength="30">
+              <p class="fe"></p>
+            </div>
+            <div class="fld" data-k="p2Phone">
+              <label class="lb" for="p2Phone">두 번째 부모님 연락처<i>*</i></label>
+              <input class="in tel" id="p2Phone" type="tel" inputmode="numeric" maxlength="13" placeholder="010-0000-0000">
+              <p class="fe"></p>
+            </div>
+          </div>
+        <div class="wmf-copy" id="pCopyW" hidden><button type="button" class="wmf-btn-s" id="pCopy">첫 번째 부모님과 같은 질문 담기</button><span>질문과 답하는 방법이 그대로 담기고, 부르는 말은 두 번째 부모님에 맞게 바뀌어요.</span></div>
         <p class="sec-d" id="qHelp"></p>
+        <div class="wmf-tone" id="wTone">
+          <div class="wmf-tone-r"><b>말투</b><span class="wmf-sheet-m" id="wToneT"><button type="button" data-tone="존">존댓말</button><button type="button" data-tone="반">반말</button></span></div>
+          <div class="wmf-tone-r"><b>부르는 말</b><span class="wmf-sheet-m" id="wToneW"></span></div>
+          <p class="wmf-tone-ex">평소 부모님께 쓰시는 말로 질문이 바뀌어 책에도 그대로 실려요.<br>예) <span id="wToneEx"></span></p>
+        </div>
         <div class="wmf-pick">
           <div class="wmf-pick-l">
             <div class="wmf-topics" id="wTopics"></div>
@@ -313,10 +340,14 @@ input[type=date].in{line-height:50px}
             <p class="fe"></p>
           </div>
         </div>
+        <div class="wmf-pnav" id="pNav" hidden>
+          <button type="button" class="submit" id="pNext">다음: 두 번째 부모님 질문 고르기</button>
+          <button type="button" class="wmf-btn-t" id="pPrev">← 첫 번째 부모님 질문으로</button>
+        </div>
       </section>
 
       <!-- 4. 진행 정보 -->
-      <section class="card">
+      <section class="card" id="secMore">
         <h2 class="sec-h"><span class="n">4</span>진행 정보</h2>
         <p class="sec-d" id="moreDesc">고르신 방법에 맞춰 필요한 칸만 보여 드려요.</p>
 
@@ -392,13 +423,14 @@ input[type=date].in{line-height:50px}
       </section>
 
       <!-- 5. 확인과 동의 -->
-      <section class="card">
+      <section class="card" id="secAgree">
         <h2 class="sec-h"><span class="n">5</span>확인과 동의</h2>
         <p class="sec-d">마지막으로 두 가지를 확인해 주세요.</p>
 
         <div class="fld" data-k="informed">
           <span class="lb">부모님께 미리 말씀드리셨나요?<i>*</i></span>
           <label class="chk"><input type="checkbox" id="informed"><span id="informedText"></span></label>
+          <p class="scrollhint" id="informedHint" style="margin-top:6px">글을 위로 밀면 전체 내용을 보실 수 있어요.</p>
           <p class="fe"></p>
         </div>
 
@@ -421,6 +453,7 @@ input[type=date].in{line-height:50px}
 
 입력하신 정보는 구글(미국 등)의 서버에 보관됩니다(개인정보처리방침 제7조). 부모님의 정보는 부모님께 알린 뒤 입력해 주세요. 부모님 본인의 동의는 처음 신청하실 때 동의 링크로 따로 받으며, 부모님이 동의하지 않으시면 입력하신 부모님 정보는 지체 없이 삭제합니다.
 자세한 내용은 개인정보처리방침에서 확인하실 수 있습니다.</div>
+          <p class="scrollhint">글을 위로 밀면 전체 내용을 보실 수 있어요.</p>
           <label class="chk"><input type="checkbox" id="privacy"><span>개인정보 수집 및 이용에 동의합니다.</span></label>
           <p class="fe"></p>
         </div>
@@ -448,6 +481,18 @@ input[type=date].in{line-height:50px}
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" async></script>
 <script>
 window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑과 인연","부모가 된 날들","가족과 고향","좋아하는 것","인생의 지혜","지금과 앞으로"],K:{A:"나요?",B:" 무엇인가요?",C:" 가장 ",D:"은 무엇이었",E:"이 있",F:"가장 좋아하는 ",G:"은 ",H:"던 ",I:"는 ",J:" 시절",K:"고 싶",L:"라고 생각하세요?",M:"인가요?",N:"을 ",O:"어릴 때",P:"어떤 ",Q:"게 ",R:"언제였",S:"기억에 남",T:"가 ",U:"으로 ",V:"이 ",W:"무엇이",X:"가장 ",Y:"기억하시",Z:" 중",a:"해 ",b:"나 ",c:"다고 느낀 ",d:"사람",e:"처음 ",f:"한 ",g:"어린",h:"에 ",i:"를 ",j:"어디",k:"시절",l:"좋아했",m:"자주 ",n:"다면 ",o:"부모님",p:"가족",q:"의 ",r:"꼭 ",s:"순간",t:"에서 ",u:"배우자",v:" 기억나",w:"으세요?",x:"학창",y:"고 ",z:"누구"},D:"어릴 적 살H동네IP모습이었A|어릴 적 살H집GP모습이었A|OClH놀이IW었A|gJC친했H친구Iz였A|OClH음식DA|gJ 명절GP풍경이었A|OC갖K었H물건DA|gJ 받G선물ZCSI것은B|O 꿈DA|gJC무서웠H것DA|O 크Q혼났H일EA|gJC행복했H하루IRA|어릴 적 별명DA|gJ 여름G어떻Q보내셨A|gJ 겨울 하면 떠오르I풍경은B|e텔레비전N본 날NYA|O 용돈N받으면 jh쓰셨A|gJ m불렀H동요T있A|O 할머니b할아버지와q추억EA|gJ 형제자매와C많V싸운 이유IW었A|O 집t맡았H심부름DA|gJ 동네t유명했HdE었A|OC멀리 T본 곳Gj였A|gJ SI생일EA|O lH꽃이b나무T있었A|gJ 잠들기 전h무엇N하셨A|OC맛있Q먹었H간식DA|gJ 비 오I날에I무엇N하며 노셨A|O 처음U혼자 해낸 일DA|gJC부러웠H친구T있었A|O 집 근처hP가게들E었A|gJ 나를C예뻐a주신 어른Gz였A|OC크Q다쳤H기억EA|gJ 즐겨 듣H라디오 프로그램E었A|OClH옷GP옷이었A|gJ 동네 잔치b장날 풍경NYA|O 처음U거짓말N했H기억EA|gJ 동네 친구들과 m가H곳Gj였A|OC신기했H물건DA|gJ 처음U돈N벌어 본 경험EA|OC자랑하K었H일DA|gJ e본 바다b산NYA|O lH만화b이야기책E었A|gJC기다려지H날GRA|O 몰래 했H장난ZvI것EA|gJ 살H집에서ClH자리Ij였A|O 들었H말Z 아직도vI말EA|gJ 기억Z 사진U남기KG장면EA|O 커서 되K었H어른q모습G어땠A|gJ로 하루만 돌아간n무엇N하Kw#e학교h가H날NYA|학교까지 어떻Q다니셨A|XlH과목DA|X싫어했H과목DA|SI선생님V계신가요?|xJC친했H친구Iz였A|xJ 친구Z 지금도 연락하IdEA|도시락 반찬ZClH것DA|수학여행Gj로 가셨A|xJ 별명E었A|교복Ne입었N때 기분V어땠A|시험 기간에I어떻Q공부하셨A|학교t받G상Z SI것EA|xJC크Q혼난 일DA|방과 후에I주로 무엇N하셨A|xJ lH가수b배우T있었A|쉬I시간에I친구들과 무엇N하며 노셨A|학교 앞t즐겨 사 먹H것E었A|xJC설렜HsGRA|반장처럼 맡았H역할E었A|xJC열심히 했H일DA|졸업식 날GP기억U남아 있A|xJ 꿈DA|공부 말y잘했H것E었A|xJC억울했H일E었A|친구들과 몰래 했H일ZvI것EA|학교 운동회b체육대회t무엇N하셨A|xJ 즐겨 읽H책E었A|XSI소풍 장소Ij였A|xJC무서웠H선생님GP분이셨A|학교 다니며C힘들었H일DA|xJ 친구들 사이t유행하H것E었A|처음U받G편지b쪽지iYA|xJ 짝꿍GPd이었A|학교 가기 싫었H날에I어떻Q하셨A|xJC큰 고민DA|그J 교실GP모습이었A|xJ 방학G어떻Q보내셨A|xJ로 돌아간nra보KG일EA|그J oG공부h대aP말씀N하셨A|xJC자신 있었HsGRA|처음U진지하Q고민했H진로IW었A|xJC많V웃었H일DA|선생님께 칭찬받았H기억EA|xJ 친구와 크Q다툰 적EA|학교 가I길h늘 보H풍경E었A|xJq나에Q한마디 a준nW라y하시겠어요?|xJ 사진ZC좋아하I사진GP사진M|그JC갖K었H학용품DA|학교i떠날 때C아쉬웠H것DA#스무 살 때ClH노래IW었A|스무 살q나IPd이었A|첫 월급N받H날, 무엇N하셨A|젊GkC즐겨 하H옷차림G어땠A|처음U집N떠b살았H곳Gj였A|젊Gk 친구들과 m모이H곳Gj였A|그J 유행하H말이b노래T있었A|처음U혼자 여행N떠났H곳Gj였A|젊GkC용기 냈H일DA|젊GkC즐겨 보H영화b드라마IW었A|그J 친구들과C많V나눈 이야기IW었A|젊G날C갖K었H물건DA|처음U어른V되었csGRA|젊GkC크Q웃었H일DA|젊GkC크Q실패했H경험DA|젊Gk 돈V없어도 즐거웠H일EA|젊Gk 즐겨 찾H음식점이b가게T있었A|처음U집h전화기i들이H날NYA|젊GkC멋있어 보였HdGz였A|그JC큰 걱정DA|젊G날C자유롭csGRA|젊Gkq나if단어로 표현한다면B|젊GkC열정N쏟았H일DA|그JCm듣H잔소리IW었A|젊G날 친구와 함께한CSI여행Gj였A|젊Gk lH운동이b취미T있었A|그J e배운 기술이b재주T있A|젊Gkh했던C무모f일DA|그JC아끼H물건DA|젊G날 오래 SG편지T있A|젊GkC행복했H계절GRA|젊GkC아름답c풍경Gj였A|젊GkC존경했HdGz였A|그JCT보K었H곳Gj였A|젊G날 친구들 사이t나IP역할이었A|처음U큰돈N모아 본 경험EA|젊GkC떨렸H날GRA|그J 밤N새워 가며 했H일EA|젊Gkq나에Qa주KG말은B|젊Gk 들었H조언Z 지금도vI것EA|그J에I주말N어떻Q보내셨A|젊G날C뿌듯했H일DA|처음Uo께 선물N드렸H날NYA|젊GkC친했H친구와IP추억EA|그J 유행하H머리 모양Na보신 적EA|젊GkC신나Q놀았H날GRA|그J e타 본 교통수단ZvI것EA|젊G날C설렜H첫 경험DA|그J로 하루 돌아간nzi만나Kw|젊Gk 꿈꾸H미래와 지금G얼마b닮았A#e일N시작했N때 P일N하셨A|첫 출근 날NYA|일하면서C보람 있었HsGRA|일하면서C힘들었H시기IRA|일V힘들 때 버틸 수 있Qa준 것DA|함께 일fdZCSIdGzM|일하며 배운 것ZC소중f것은B|X오래 f일DA|일N고i때 무엇을C중요하Q생각하셨A|다시 직업N고i수 있nP일Na보Kw|일하면서 받G칭찬ZCSI말은B|일하며C크Q실수했H일EA|일N마치y돌아오I길h주로 무슨 생각N하셨A|일과 p 사이에서C고민했HsGRA|처음U일t인정받았H날NYA|일하면서C자랑스러웠H결과물은B|X바빴Hkq하루I어떻Q흘러갔A|일하며 사귄 친구Z 지금도 만나I분EA|돈h대해C크Q배운 경험은B|X아끼며 모았H돈Gjh쓰셨A|일N바꾸거b그만두기로 했HsEA|일터에서C즐거웠H시간GRA|XSI일터Ij였A|처음U내 힘U무언가i이루었c때IRA|일하며C많V쓴 물건이b도구IW었A|일하면서 생긴 습관Z 지금도 남아 있I것EA|X오래 일f곳N떠나H날G어땠A|일하I모습Np에Q보여 준 적EA|Pd과 일할 때C즐거웠A|일N잘하I비결EnWL|돈보다 더Z요하다y느꼈HsEA|일하면서C크Q웃었H일DA|e내 집이b내 방N마련했N때 기분V어땠A|살면서C큰 결정DA|중요f결정N내릴 때 z와C많V상의하셨A|이사를C많V다녔HkGRA|X오래 산 동네Ij였A|살아 본 동네ZC정V들었H곳GjM|일N줄이거b쉬Q된다면C하KG일은B|일하며 만난 고마운 분께 전하KG말EA|일과 관련a아직 이루지 못f꿈EA|XSI월급날GRA|살면서C잘f저축이b투자IW었A|살면서C아까웠H지출DA|일하며C무서웠HsGRA|일하느라 놓쳐서 아쉬운 일EA|나q일V누군가에Q도움V되었c적EA|일N하며 스스로C많V성장했c때I언제M|자녀T일N시작할 때 ra주KG말EA|지금까지 a온 일h제목N붙인nW라y하시겠어요?#처음U누군가ilH기억EA|첫사랑GPd이었A|처음U받G연애편지iYA|설렘Ne느꼈HsGRA|젊Gk 이상형GPd이었A|좋아하Id에Q마음N전a본 적EA|사랑GWL|살면서C고마운 인연GzM|우연히 만b오래 이어진 인연EA|X오래된 친구IzM|친구에게C크Q도움받았H일은B|연락V끊겼지만 다시 만나KGdEA|dN볼 때C중요하Q보I점은B|좋G친구란 Pd이L|d과q관계에서C크Q배운 점은B|누군가에Qr사과하KG일EA|누군가에Qr고맙다y말하KG일EA|XSI데이트 장소Ij였A|받았H선물ZC마음V담겼H것DA|누군가i위해C정성껏 준비했H선물DA|짝사랑Na본 적EA|X로맨틱했HsGRA|사랑 노래ZC마음h와닿았H노래는B|오래가I관계q비결GWL|자녀T좋GdN만나려면 무엇N봐야 한다y생각하세요?|*uie만난 날NYA|*uq첫인상G어땠A|*결혼N결심하Q된 sGRA|*프러포즈I어떻Q주고받으셨A|*결혼식 날GP모습이었A|*신혼J 살H집GP곳이었A|*신혼 때C많V다툰 이유IW었A|*u에게C고마웠HsGRA|*u의C좋G점은B|*u와 함께 떠난 여행ZCSI곳GjM|*다툰 뒤 화해하I두 분만q방법E었A|*u에Q아직 하지 못f말EA|*함께 지내며C행복했H시기IRA|*결혼 생활에서C크Q배운 것은B|*결혼기념일h기억나I일EA|*uTa준 음식ZC좋아하I것은B|*두 분V함께 좋아하H노래T있A|*u와 e사진N찍었H날NYA|*연애JC설렜H날GRA|*결혼 전 양To께 인사드리H날G어땠A|*u에Q닮KG점EA|*다시 태어나도 지금qui만나Kw|*함께 이겨 낸C힘든 시기IRA|*u에Q받G편지b선물Z 간직하y있I것EA|*u에Qf문장U마음N전한nW라y하시겠어요?#제T태어나H날, P기분이셨A|저ie품h안았N때 무슨 생각V드셨A|제 이름G어떻Q지으셨A|제Te걸었H날NYA|제Tef말DA|어릴 적 저IP아이였A|제TOC속상하Q했H일DA|제TOC자랑스러웠H일DA|저i키우며C힘들었H시기IRA|저i키우며C행복했HsGRA|제T아팠N때vI일EA|제TOClH음식DA|제TO 즐겨 하H놀이IW었A|제 첫 생일G어떻Q보내셨A|제T입학하H날 P마음이셨A|부모T되y나서C크Q달라진 점은B|부모T된다I것GP의미였A|저에Qa주K었지만 못 a준 것EA|저i키우며C잘했다y생각하I일은B|제T사춘기였N때 P마음이셨A|저와C크Q다퉜H일NYA|제T모르I제 gJ 이야기T있A|제TO m하H말버릇E었A|제Te집N떠나H날 P마음이셨A|저i보며C뿌듯했HsGRA|저에Q미안했H일EA|저에Q고마웠H일EA|제T닮았으면 했H모습E었A|제T닮지 않았으면 했H모습E었A|저i키울 때C많V도와주신 분Gz였A|저에Qm불러 주H자장가T있A|제TO 간 p 여행ZCSI곳GjM|저i키우Hk 우리 집GP모습이었A|제TOC걱정했H것DA|저에Qr가르쳐 주K었H것DA|제TOC웃겼H일DA|제Te받아 온 성적표b상장NYA|제 gJ 사진ZC좋아하I사진GP사진M|제Te번 돈U드린 선물NYA|저i혼낸 뒤 속으로IP마음이셨A|저와 함께했H평범하지만 행복f하루IRA|저만q특별f점GWL|제T어른V되었csGRA|저i키우며 들었H말ZC힘V된 말DA|저에Q들G말ZC기뻤H말DA|제가C많V닮G점은B|제 gJ로 하루만 돌아간n무엇Na주Kw|부모로서 스스로에Q몇 점N주Kw|부모 노릇h대a저에Qra주KG조언EA|저if단어로 표현한다면B#고향GjM|고향N떠올리면C먼저 생각나I풍경은B|o(저q할머니, 할아버지)GP분이셨A|o께C많V들었H말은B|o께C감사했H일은B|oN닮G점E다면B|o께 r하K었H말EA|oVa주시H음식ZC그리운 것은B|형제자매Zh몇째셨A|형제자매와의C즐거운 추억은B|형제자매ZC많V의지했HdGz였A|우리 집안h전a내려오I이야기T있A|집안q가훈이bm쓰H말E었A|명절hpV모이면 r하H일E었A|gJ p과 함께 간 나들V중vI곳EA|저q증조oh대a들G이야기T있A|고향에서C유명했H음식DA|고향 사투리ZC좋아하I말은B|고향h다시 간다면C먼저 T보KG곳GjM|우리 집 명절 음식Z r이어졌으면 하I것EA|pZC재미있IdGz였A|p이C똘똘 뭉쳤H때IRA|p 사진ZC소중f사진GP사진M|pN위a내려놓았H것EA|p이C힘들었HkN어떻Q이겨 내셨A|p끼리만 아I웃긴 이야기T있A|우리 p만q특별f습관이b전통EA|pZC존경하IdGzM|친척Z 특히 가깝Q지낸 분EA|고향 집에서ClH계절GRA|o과 함께한C행복f기억은B|o께C죄송했H일은B|o이C자랑스러워하셨H일DA|o께 배운C소중f가르침은B|형제자매에Q지금 r전하KG말EA|고향N떠나H날NYA|고향 마Nd들GP분들이었A|우리 집안 d들q공통점GWL|pZ 저와C닮G분GzL|우리 p에게CSI사건은B|p에Q받은C큰 사랑DA|pV함께 모여 먹H음식ZC기억나I것은B|gJ 집t기르H동물E었A|p 행사ZC크Q치른 날GRA|우리 집안h대대로 내려오I물건EA|pNf단어로 표현한다면B|손주b다음 세대에Qr전하KGp 이야기T있A|고향t들려오H소리ZvI것EA|pV늘 함께할 수 있I비결GWL|우리 pV앞Ur함께 a보KG일EA#X많V따라 부른 노래는B|F음식은B|X자신 있I요리는B|F계절G언제M|F꽃은B|F색은B|F영화는B|F드라마는B|F가수IzM|F책이b글귀T있A|F장소IjM|F과일은B|F간식은B|F날씨IP날씨M|하루ZC좋아하I시간대I언제M|X즐겨 하I취미는B|새로 배워 보KG취미T있A|F운동은B|F옷이b소품은B|F향기는B|F음료b차는B|F명절 음식은B|기분V좋N때 흥얼거리I노래T있A|마음V힘들 때 찾I음식EA|F방송 프로그램은B|F말이b표현EA|F여행지IjM|다시 T보KG여행지IjM|F동물은B|F숫자b날짜T있A|X아끼I물건은B|요즘 푹 빠져 있I것EA|요즘C즐거운 시간G언제M|m가I단골 가게T있A|좋아하I반찬 세 가지i꼽는다면B|F소리는B|비 오I날 생각나I것EA|눈 오I날 생각나I것EA|F산이b바다T있A|F명언이b속담은B|선물로 받KG것EA|생일에C먹KG음식은B|F놀이b게임EA|집t키우KG식물이b동물EA|F아침 식사는B|혼자 있N때 주로 무엇N하시A|X행복해지IsG언제M|F외식 메뉴는B|우리 pV모이기C좋G장소IjL|좋아하I것 하나i저에Q추천a주신다면B#살면서C잘f일은B|살면서C후회되I일은B|인생에서C중요f것GWL|행복이란 WL|힘든 일V생기면 어떻Q이겨 내시A|F삶q태도는B|돈h대ar알려 주KG것EA|건강N위ar지키I습관EA|dN대할 때C중요하Q생각하I것은B|살면서C크Q배운 교훈은B|누군가에Q받G조언ZC도움V된 것은B|실패했N때C힘V된 말DA|나이T들어서 좋G점은B|젊Gd들에Qra주KG말EA|스스로C자랑스러운 점은B|스스로C고치KG점은B|걱정N덜어 내I나만q방법EA|X용기T필요했HsGRA|인생N다시 산n바꾸KGf가지는B|인생N다시 살아도 r그대로 하KG일은B|X감사f일은B|용서란 WL|닮KG삶N산 dEA|좋G어른이란 Pd이L|살면서 지켜 온 원칙EA|세상이C많V변했c때I언제M|옛날V더 좋았다y느끼I것EA|요즘V더 좋다y느끼I것EA|XSI역사적인 s은B|시간V지나y보니 별것 아니었H걱정EA|인생q전환점이라y생각하IsG언제M|행운이라y느꼈H일은B|X아껴 쓰라y말하KG것은B|지금 알y있I것N스무 살 때 알았n좋았N것은B|가정N꾸리I것h대aa주KG말EA|자녀i키우Id에Qa주KG조언EA|d 사이tr지켜야 할 예의IWL|마음V흔들릴 때 붙잡I말EA|X오래 간직하KG기억은B|살면서C뜻밖이었H일은B|인생N계절로 표현한n지금G어느 계절M|인생N책U쓴n제목G무엇U하Kw|X힘들었H시기i지나y나서 달라진 점은B|b자신에게C고마운 점은B|욕심N내려놓Q된 sEA|남들V뭐라 해도 지켜 온 것EA|X잘 참았다y생각하I일은B|좋G하루란 P하루L|나V드I것h대a어떻Q생각하세요?|저에Qr물려주KG삶q지혜는B#요즘Ca보KG일은B|요즘 하루I어떻Q보내시A|요즘Cm웃Q되I일은B|요즘C걱정되I일은B|요즘Cm떠오르IdGzM|요즘 새로 배우y있I것EA|올ar이루KG일EA|앞UrT보KG곳GjM|앞U도전a보KG일EA|버킷리스트ZC먼저 이루KG것은B|지금C감사fdGzM|지금 곁h있어C든든fdGzM|요즘C고마운 물건은B|요즘 몸과 마음이C편안f때I언제M|10년 뒤 나IP모습이었으면 좋겠A|저와 함께 ra보KG일EA|저와 함께 T보KG곳EA|저에게C바라I것은B|저에Q서운했H일EA|요즘 제Ta드려서 기뻤H일EA|저에Qra주KG말EA|제TPdU살아가길 바라시A|손주b다음 세대에Q남기KG말EA|앞UpV어떻Q지냈으면 좋겠A|요즘Cm하I생각은B|요즘C좋아하I하루 일과는B|지금C편안f장소IjM|요즘C잘 먹I음식은B|요즘 m연락하I친구IzM|지금 사I곳에서C좋G점은B|요즘 새로 알Q된 것Z 신기했H것EA|휴대폰으로Cm하I것은B|지금C아끼I시간G언제M|앞Ur만나KGdEA|요즘 새로 생긴 습관EA|요즘C마음V따뜻했HsG언제M|최근에C뿌듯했H일은B|올해CSI일은B|지금q나에Q점수i준n몇 점M|앞으로C지키KG것은B|지금C바라I것 f가지는B|p에게C듣KG말은B|요즘Cm쓰I말은B|오늘 하루ZC좋았HsGRA|앞Ua보KG봉사b나눔EA|나중h저에Qr물려주KG물건EA|이 책을 펼쳐 볼 저에게 어떤 말을 남기고 싶으세요?|1년 뒤 오늘, P모습이었으면 좋겠A|우리 p에Q지금C필요f것GWL|오늘 V질문h답하며 P마음V드셨A"};
+window.WMQ2={T:"깊은 이야기",D:[
+["20대 시절 {P의} 꿈은 무엇이었나요?","20대 시절 {P의} 꿈은 뭐였어?"],
+["혼자 남겨질 저에게 해 주고 싶은 말이 있나요?","혼자 남겨질 나한테 해 주고 싶은 말 있어?"],
+["손주가 생긴다면 해 주고 싶은 말은 무엇인가요?","손주가 생기면 해 주고 싶은 말은 뭐야?"],
+["자식으로서가 아니라 한 사람으로서, 저의 장점과 단점은 무엇인가요?","자식 말고 한 사람으로서, 내 장점이랑 단점은 뭐야?"],
+["제가 없었다면 {P의} 인생은 어땠을 것 같나요?","내가 없었다면 {P} 인생은 어땠을 것 같아?"],
+["제가 30대가 되기 전에 꼭 해 주고 싶은 말이 있나요?","내가 30대가 되기 전에 꼭 해 주고 싶은 말 있어?"],
+["{P께서} 지금의 제 나이였을 때 가장 큰 고민은 무엇이었나요?","{P이} 지금 내 나이였을 때 제일 큰 고민은 뭐였어?"],
+["저를 키우면서 포기해야 했던 것이 있나요?","나 키우면서 포기해야 했던 거 있어?"],
+["아직 저에게 말하지 못한 이야기가 있나요?","아직 나한테 말 못 한 이야기 있어?"],
+["다시 스무 살로 돌아간다면 가장 먼저 무엇을 하고 싶나요?","다시 스무 살로 돌아가면 제일 먼저 뭐 하고 싶어?"]
+]};
 </script>
 <script>
 (function () {
@@ -507,7 +552,8 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   /* ───────── 상태 ───────── */
   var S = {
     o: '', people: 0, ed: 0, locked: false, range: null, done: [], photoLeft: 0,
-    n: 0, Q: [], M: [], target: -1, topic: -1, order: [], page: 0,
+    n: 0, Q: [], M: [], target: -1, topic: -1, order: [], page: 0, tone: '존', who: 'base',
+    cur: 1, sets: {}, prevTone: {}, pnames: null, namesFor: '',
     nonce: '', sending: false, sent: false, dirty: false, minDate: '', maxDate: ''
   };
 
@@ -566,16 +612,149 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       g.split('|').forEach(function (q) {
         var sp = q.charAt(0) === '*';
         if (sp) q = q.slice(1);
-        BANK.push({ t: ti, q: q.replace(/[A-Za-z]/g, function (c) { return o.K[c] || c; }), s: sp || TOPICS[ti] === '학창 시절' });
+        BANK.push({ t: ti, q: q.replace(/[A-Za-z]/g, function (c) { return o.K[c] || c; }), b: '', s: sp || TOPICS[ti] === '학창 시절' });
       });
     });
+    var o2 = window.WMQ2;   // 새 형식: [존댓말, 반말], {P…} = 부르는 말 자리 (깊은 이야기는 골라 담기만, 자동 채우기 제외)
+    if (o2) { var t2 = TOPICS.length; TOPICS.push(o2.T); o2.D.forEach(function (x) { BANK.push({ t: t2, q: x[0], b: x[1] || '', s: true }); }); }
   })();
+
+  /* ───────── 말투·부르는 말 ───────── */
+  var WHO = { '존': { base: '부모님', f: '아버지', m: '어머니' }, '반': { base: '', f: '아빠', m: '엄마' } };
+  var WHO_LB = { '존': ['기본값', '아버지', '어머니'], '반': ['기본값', '아빠', '엄마'] };
+  var WHO_KEY = ['base', 'f', 'm'];
+  function jong(w) { var c = w.charCodeAt(w.length - 1); return c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 > 0; }
+  var JOSA = { '이': ['이', '가'], '가': ['이', '가'], '은': ['은', '는'], '는': ['은', '는'], '을': ['을', '를'], '를': ['을', '를'], '과': ['과', '와'], '와': ['과', '와'], '으로': ['으로', '로'], '로': ['으로', '로'] };
+  // {P}, {P의}, {P이}, {P께서}, {P한테}… → 고른 부르는 말 + 받침에 맞는 조사. 반말 기본값은 부르는 말과 뒤 공백을 뺌
+  function fill(tpl, tone, who) {
+    var w = WHO[tone][who];
+    return tpl.replace(/\{P([^}]*)\}\s?/g, function (all, j) {
+      var sp = /\s$/.test(all) ? ' ' : '';
+      if (!w) return '';
+      if (JOSA[j]) j = JOSA[j][jong(w) ? 0 : 1];
+      return w + j + sp;
+    }).replace(/\s+/g, ' ').trim();
+  }
+  function txt(bi, tone, who) { var b = BANK[bi], t = tone || S.tone, w = who || S.who; return fill(t === '반' && b.b ? b.b : b.q, t, w); }
+  var REV = null;   // 어떤 말투·부르는 말로 바뀐 문장이든 → 은행 번호
+  function rev() {
+    if (REV) return REV;
+    REV = {};
+    BANK.forEach(function (b, i) { ['존', '반'].forEach(function (t) { WHO_KEY.forEach(function (w) { REV[txt(i, t, w)] = i; }); }); });
+    return REV;
+  }
+  function toneUI() {
+    $$('#wToneT button').forEach(function (b) { var on = b.getAttribute('data-tone') === S.tone; b.className = on ? 'on' : ''; b.setAttribute('aria-pressed', on); });
+    var h = '';
+    WHO_KEY.forEach(function (k, i) { h += '<button type="button" data-who="' + k + '"' + (S.who === k ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + WHO_LB[S.tone][i] + '</button>'; });
+    $('#wToneW').innerHTML = h;
+    var ex = BANK.findIndex ? BANK.findIndex(function (b) { return /\{P/.test(b.q); }) : -1;
+    $('#wToneEx').textContent = ex > -1 ? txt(ex) : '';
+  }
+  function setTone(tone, who) {
+    var map = rev(), changed = 0, kept = 0;
+    S.tone = tone; S.who = who;
+    for (var i = 0; i < S.Q.length; i++) {
+      if (!S.Q[i] || !(S.Q[i] in map)) continue;
+      var nt = txt(map[S.Q[i]]);
+      if (nt !== S.Q[i]) { S.Q[i] = nt; changed++; }
+      else if (tone === '반' && !BANK[map[S.Q[i]]].b) kept++;
+    }
+    var mem = toneMem(); mem[S.cur] = { t: tone, w: who };
+    store('wmf-tone:' + (S.o || '-'), JSON.stringify(mem));
+    toneUI();
+    if (S.n) board();
+    if (kept) toast('반말 문장이 아직 없는 질문 ' + kept + '개는 그대로 둘게요.');
+  }
+  // 이 기기에 남은 선택 { 1: {t, w}, 2: {t, w} }
+  function toneMem() {
+    try { var d = JSON.parse(store('wmf-tone:' + (S.o || '-')) || 'null'); if (d && d.t) d = { 1: d }; return d && typeof d === 'object' ? d : {}; } catch (e) { return {}; }
+  }
+  function okTone(x) { return x && WHO[x.t] && WHO_KEY.indexOf(x.w) > -1; }
+  // 부모님 p의 기본 말투: 이 기기에서 고른 것 → 지난 편에서 고른 것(서버) → 존댓말·기본값
+  function toneFor(p) {
+    var m = toneMem()[p];
+    if (okTone(m)) return m;
+    if (okTone(S.prevTone[p])) return S.prevTone[p];
+    return { t: '존', w: 'base' };
+  }
+  function loadTone() { var x = toneFor(S.cur); S.tone = x.t; S.who = x.w; toneUI(); }
+
+  /* ───────── 부모님별 페이지 (두 분 상품: 첫 번째 부모님 → 두 번째 부모님) ───────── */
+  function blankSet(p) { var x = toneFor(p), q = [], m = []; for (var i = 0; i < S.n; i++) q.push(''); for (var k = 0; k < S.n / 2; k++) m.push(''); return { Q: q, M: m, tone: x.t, who: x.w }; }
+  function syncCur() { S.sets[S.cur] = { Q: S.Q.slice(), M: S.M.slice(), tone: S.tone, who: S.who }; }
+  function loadSet(p) {
+    var x = S.sets[p] || blankSet(p);
+    S.Q = x.Q.slice(0, S.n); S.M = x.M.slice(0, S.n / 2);
+    while (S.Q.length < S.n) S.Q.push('');
+    while (S.M.length < S.n / 2) S.M.push('');
+    S.tone = x.tone; S.who = x.who; S.target = -1;
+  }
+  function setOf(p) { if (p === S.cur) syncCur(); return S.sets[p] || blankSet(p); }
+  function allM() { var a = []; parts().forEach(function (p) { a = a.concat(setOf(p).M); }); return a; }
+  function setDone(x) { return x.Q.filter(Boolean).length === S.n && x.M.every(Boolean); }
+  function goPage(p, scroll) {
+    if (p !== S.cur) { syncCur(); S.cur = p; loadSet(p); }
+    toneUI(); board(); pageUI();
+    if (scroll) $('#secQ').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function pageUI() {
+    if (!S.people || !S.ed) return;
+    var pl = parts(), two = pl.length > 1, first = S.ed === 1, pp = S.people === 2;
+    if (pl.indexOf(S.cur) < 0) { syncCur(); S.cur = pl[0]; loadSet(S.cur); toneUI(); board(); }
+    show('#pTabs', two);
+    $$('#pTabs button').forEach(function (b) {
+      var p = +b.getAttribute('data-pg'), on = p === S.cur;
+      b.className = (on ? 'on' : '') + (!on && setDone(setOf(p)) ? ' ok' : '');
+      b.setAttribute('aria-pressed', on);
+    });
+    show('#gP1', first && S.cur === 1);
+    show('#gP2', first && pp && S.cur === 2);
+    $('#p1NameLb').innerHTML = (pp ? '첫 번째 부모님 성함' : '부모님 성함') + '<i>*</i>';
+    $('#p1PhoneLb').innerHTML = (pp ? '첫 번째 부모님 연락처' : '부모님 연락처') + '<i>*</i>';
+    var nm = S.pnames && S.pnames[S.cur], ord = pp ? (S.cur === 1 ? '첫 번째 부모님' : '두 번째 부모님') : '부모님';
+    show('#pWho', !first);
+    if (!first) $('#pWho').innerHTML = '<b>' + ord + (nm ? ' · ' + esc(nm) + ' 님' : '') + '</b>께 드릴 질문을 골라 주세요.' + (nm ? '' : '<br><small>신청자 연락처를 적으시면 지난번 적어 주신 성함을 보여 드려요.</small>');
+    show('#pCopyW', two && S.cur === 2);
+    $('#qTitle').textContent = pp ? ord + ' 질문 ' + S.n + '개 고르기' : '질문 ' + S.n + '개 고르기';
+    var gate = two && S.cur === pl[0];   // 두 분 모두 하는 편: 첫 페이지에서는 다음 버튼만
+    show('#pNav', two);
+    show('#pNext', gate); show('#pPrev', !gate);
+    show('#secMore', !gate); show('#secAgree', !gate); show('#submitBtn', !gate);
+  }
+  var copyArmed = false;
+  function copyFirst() {
+    var a = setOf(1);
+    if (!a.Q.some(Boolean)) { toast('첫 번째 부모님 질문을 먼저 골라 주세요.'); return; }
+    if (S.Q.some(Boolean) && !copyArmed) {
+      copyArmed = true; $('#pCopy').textContent = '한 번 더 누르면 지금 질문을 바꿔요';
+      setTimeout(function () { copyArmed = false; $('#pCopy').textContent = '첫 번째 부모님과 같은 질문 담기'; }, 4000);
+      return;
+    }
+    copyArmed = false; $('#pCopy').textContent = '첫 번째 부모님과 같은 질문 담기';
+    var map = rev(), who = a.who === 'f' ? 'm' : a.who === 'm' ? 'f' : 'base';   // 어머니·엄마 ↔ 아버지·아빠
+    S.tone = a.tone; S.who = who;
+    S.Q = a.Q.map(function (q) { return q && q in map ? txt(map[q]) : q; });
+    S.M = a.M.slice();
+    var mem = toneMem(); mem[2] = { t: S.tone, w: S.who }; store('wmf-tone:' + (S.o || '-'), JSON.stringify(mem));
+    S.target = -1; S.dirty = true;
+    toneUI(); board(); pageUI();
+    toast('첫 번째 부모님 질문을 담았어요.' + (who !== 'base' ? ' 부르는 말은 ‘' + WHO[S.tone][who] + '’로 바꿨어요.' : ''));
+  }
+  // 2편부터: 신청자 연락처가 맞으면 지난 편 부모님 성함을 받아 와 페이지에 표시
+  function fetchNames() {
+    if (S.ed <= 1 || !S.o) return;
+    var ph = digits(val('applicantPhone'));
+    if (!okPhone(ph) || S.namesFor === S.o + '|' + ph) return;
+    S.namesFor = S.o + '|' + ph;
+    lookup(S.o, ph).then(function (r) { if (r && r.found && r.names) { S.pnames = r.names; pageUI(); } });
+  }
 
   /* ───────── 질문 고르기 ───────── */
   function filled() { return S.Q.filter(Boolean).length; }
   function noMethod() { return S.M.filter(function (m) { return !m; }).length; }
   function pool(topic) { var a = []; BANK.forEach(function (b, i) { if (topic < 0 ? !b.s : b.t === topic) a.push(i); }); return a; }
-  function unused(list) { list = shuffle(list.slice()); for (var i = 0; i < list.length; i++) if (S.Q.indexOf(BANK[list[i]].q) < 0) return BANK[list[i]].q; return ''; }
+  function unused(list) { list = shuffle(list.slice()); for (var i = 0; i < list.length; i++) { var q = txt(list[i]); if (S.Q.indexOf(q) < 0) return q; } return ''; }
 
   function setCount(n) {
     if (S.n === n) return;
@@ -618,7 +797,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     if (!BANK.length) { $('#wList').innerHTML = '<li><span>추천 질문을 불러오지 못했어요. 직접 써 주세요.</span></li>'; return; }
     var h = '', items = S.order.slice(6 * S.page, 6 * S.page + 6);
     items.forEach(function (bi) {
-      var q = BANK[bi].q, on = S.Q.indexOf(q) > -1;
+      var q = txt(bi), on = S.Q.indexOf(q) > -1;
       h += '<li><span>' + esc(q) + '</span><button type="button" data-i="' + bi + '"' + (on ? ' class="on" disabled' : '') + '>' + (on ? '담음' : '담기') + '</button></li>';
     });
     $('#wList').innerHTML = h;
@@ -662,6 +841,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   }
 
   function initWidget() {
+    toneUI();
     if (BANK.length) {
       var h = '<button type="button" class="on" data-t="-1">전체</button>';
       TOPICS.forEach(function (t, i) { h += '<button type="button" data-t="' + i + '">' + esc(t) + '</button>'; });
@@ -674,7 +854,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     });
     $('#wList').addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b || b.disabled) return;
-      addQ(BANK[+b.getAttribute('data-i')].q);
+      addQ(txt(+b.getAttribute('data-i')));
     });
     $('#wMore').addEventListener('click', function () { S.page++; if (6 * S.page >= S.order.length) { shuffle(S.order); S.page = 0; } list(); });
     $('#wBoard').addEventListener('click', function (e) {
@@ -691,6 +871,20 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       for (var s = 0; s < S.n / 2; s++) S.M[s] = b.getAttribute('data-all');
       S.dirty = true; board();
     });
+    $('#pTabs').addEventListener('click', function (e) { var b = e.target.closest('[data-pg]'); if (b) goPage(+b.getAttribute('data-pg'), false); });
+    $('#pNext').addEventListener('click', function () { var pl = parts(); goPage(pl[pl.length - 1], true); });
+    $('#pPrev').addEventListener('click', function () { goPage(parts()[0], true); });
+    $('#pCopy').addEventListener('click', copyFirst);
+    $('#applicantPhone').addEventListener('change', fetchNames);
+    $('#applicantPhone').addEventListener('blur', fetchNames);
+    $('#wToneT').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tone]'); if (!b) return;
+      var t = b.getAttribute('data-tone'); if (t !== S.tone) setTone(t, S.who);   // 아버지 ↔ 아빠처럼 같은 자리로 바뀜
+    });
+    $('#wToneW').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-who]'); if (!b) return;
+      setTone(S.tone, b.getAttribute('data-who'));
+    });
     $('#wFillAll').addEventListener('click', fillAll);
     $('#wClear').addEventListener('click', clearAll);
     var own = $('#wOwn');
@@ -702,18 +896,33 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
 
   /* 작성 중인 질문만 이 기기에 임시 저장 (성함·연락처는 저장하지 않음) */
   function draftKey() { return 'wmf:' + (S.o || '-') + ':' + S.ed; }
-  function saveDraft() { if (!S.ed || S.sent) return; if (!filled() && !S.M.some(Boolean)) { store(draftKey(), null); return; } store(draftKey(), JSON.stringify({ q: S.Q, m: S.M, at: Date.now() })); }
+  function saveDraft() {
+    if (!S.ed || S.sent) return;
+    syncCur();
+    var out = {}, any = false;
+    Object.keys(S.sets).forEach(function (p) { var x = S.sets[p]; if (x.Q.some(Boolean) || x.M.some(Boolean)) any = true; out[p] = { q: x.Q, m: x.M, t: x.tone, w: x.who }; });
+    if (!any) { store(draftKey(), null); return; }
+    store(draftKey(), JSON.stringify({ sets: out, cur: S.cur, at: Date.now() }));
+  }
   function loadDraft() {
-    if (filled()) return;
+    syncCur();
+    if (Object.keys(S.sets).some(function (p) { return S.sets[p].Q.some(Boolean); })) return;
     var raw = store(draftKey());
     if (!raw) return;
     try {
       var d = JSON.parse(raw);
       if (!d || Date.now() - d.at > 30 * 86400000) return;
-      for (var i = 0; i < S.n; i++) S.Q[i] = d.q[i] || '';
-      for (var s = 0; s < S.n / 2; s++) S.M[s] = METHODS.indexOf(d.m[s]) > -1 ? d.m[s] : '';
-      board();
-      if (filled()) toast('작성하시던 질문을 불러왔어요.');
+      var sets = d.sets || { 1: { q: d.q, m: d.m } };   // 예전 형식(한 묶음)
+      Object.keys(sets).forEach(function (p) {
+        var x = sets[p], b = blankSet(+p);
+        for (var i = 0; i < S.n; i++) b.Q[i] = (x.q && x.q[i]) || '';
+        for (var k = 0; k < S.n / 2; k++) b.M[k] = x.m && METHODS.indexOf(x.m[k]) > -1 ? x.m[k] : '';
+        if (okTone({ t: x.t, w: x.w })) { b.tone = x.t; b.who = x.w; }
+        S.sets[p] = b;
+      });
+      loadSet(S.cur);
+      toneUI(); board();
+      if (Object.keys(S.sets).some(function (p) { return S.sets[p].Q.some(Boolean); })) toast('작성하시던 질문을 불러왔어요.');
     } catch (e) {}
   }
 
@@ -774,7 +983,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
   /* 고른 방법에 따라 필요한 칸만 보이기 */
   function conditional() {
     if (!S.ed || !S.people) return;
-    var first = S.ed === 1, two = S.people === 2, hasCall = S.M.indexOf('전화') > -1, hasHand = S.M.indexOf('손글씨') > -1, p = parts();
+    var first = S.ed === 1, two = S.people === 2, AM = allM(), hasCall = AM.indexOf('전화') > -1, hasHand = AM.indexOf('손글씨') > -1, p = parts();
     show('#fCallTime', hasCall);
     show('#fPhone1New', !first && p.indexOf(1) > -1);
     show('#fPhone2New', !first && two && p.indexOf(2) > -1);
@@ -784,11 +993,12 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     setDateMin(hasHand);
     show('#fPhoto', S.photoLeft > 0);
     if (S.photoLeft > 0) $('#photoLb').innerHTML = '이번 편에 사진을 넣으시겠어요? <small>남은 사진 추가 ' + S.photoLeft + '번</small><i>*</i>';
-    var hN = S.M.filter(function (m) { return m === '손글씨'; }).length, hNeed = Math.ceil(S.M.length / 2);
-    var low = radio('photo') === '손글씨' && hN < hNeed;
+    var hNeed = Math.ceil(S.n / 4), lowP = 0;   // 장 수(질문 수의 절반)의 절반 이상
+    p.forEach(function (pi) { if (!lowP && setOf(pi).M.filter(function (m) { return m === '손글씨'; }).length < hNeed) lowP = pi; });
+    var low = radio('photo') === '손글씨' && !!lowP;
     show('#photoAsk', low);
-    if (low) $('#photoAskT').textContent = '사진 이야기를 손글씨로 남기려면 전체 ' + S.M.length + '장 중 ' + hNeed + '장 이상을 손글씨로 답해 주셔야 해요. 지금은 ' + hN + '장이에요.';
-    $('#askMore').onclick = function () { $('#secQ').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    if (low) { var hN = setOf(lowP).M.filter(function (m) { return m === '손글씨'; }).length; $('#photoAskT').textContent = '사진 이야기를 손글씨로 남기려면 ' + (p.length > 1 ? (lowP === 1 ? '첫 번째' : '두 번째') + ' 부모님도 ' : '') + '전체 ' + (S.n / 2) + '장 중 ' + hNeed + '장 이상을 손글씨로 답해 주셔야 해요. 지금은 ' + hN + '장이에요.'; }
+    $('#askMore').onclick = function () { goPage(lowP || S.cur, true); };
     $('#askRec').onclick = function () { setRadio('photo', '녹음'); conditional(); };
     $('#moreDesc').textContent = hasCall || hasHand || !first ? '고르신 방법에 맞춰 필요한 칸만 보여 드려요.' : '손글씨로 답하는 장이 없어서 더 적으실 칸이 거의 없어요.';
   }
@@ -800,12 +1010,8 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     if (!ready) return;
     var first = S.ed === 1, two = S.people === 2;
     before();
-    $('#basicDesc').textContent = first ? '신청하신 분과 부모님 정보를 입력해 주세요.' : '부모님 정보는 지난번 입력하신 내용을 그대로 씁니다. 바뀐 내용만 4번에 적어 주세요.';
+    $('#basicDesc').textContent = first ? '신청하신 분 정보와 기록일을 입력해 주세요. 부모님 성함과 연락처는 3번에서 부모님마다 적어 주세요.' : '부모님 정보는 지난번 입력하신 내용을 그대로 씁니다. 바뀐 내용만 4번에 적어 주세요.';
     show('#fApplicantName', first);
-    show('#gParents', first);
-    show('#gP2', first && two);
-    $('#p1NameLb').innerHTML = (two ? '첫 번째 부모님 성함' : '부모님 성함') + '<i>*</i>';
-    $('#p1PhoneLb').innerHTML = (two ? '첫 번째 부모님 연락처' : '부모님 연락처') + '<i>*</i>';
     show('#fParticipants', !first && two);
     $('#phone1NewLb').innerHTML = (two ? '첫 번째 부모님 연락처 변경' : '부모님 연락처 변경') + ' <small>바뀐 경우에만</small>';
     // 주소·회수 장소: 1편은 필수, 2편부터는 바뀐 경우에만
@@ -821,16 +1027,23 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       S.lastFirst = first;
     }
     $('#informedText').textContent = first ? INFORMED[two ? 2 : 1] : INFORMED.later;
+    $('#informedText').classList.toggle('short', !first);   // 2편부터는 한 줄이라 스크롤 없음
+    show('#informedHint', first);
     $('#applicantPhoneHelp').textContent = first ? '진행 안내를 이 번호로 보내 드려요. 구매하실 때 적은 번호와 같게 적어 주세요.' : '처음 신청하실 때 적은 번호와 같게 적어 주세요. 이 번호로 지난 편 정보를 찾아요.';
+    S.sets = {}; S.cur = parts()[0]; S.pnames = null; S.namesFor = '';
+    loadTone();
     setCount(20);
+    loadSet(S.cur); toneUI(); board();
     loadDraft();
     conditional();
+    pageUI();
+    fetchNames();
   }
 
   /* ───────── 주문 확인 ───────── */
-  function lookup(o) {
+  function lookup(o, ph) {
     if (!o || !apiReady()) return Promise.resolve(null);
-    return fetchJson(API_URL + '?action=order&o=' + encodeURIComponent(o), { method: 'GET' }, 15000)
+    return fetchJson(API_URL + '?action=order&o=' + encodeURIComponent(o) + (ph ? '&ph=' + encodeURIComponent(ph) : ''), { method: 'GET' }, 15000)
       .then(function (r) { return r && r.ok ? r : null; })
       .catch(function () { return null; });
   }
@@ -841,11 +1054,12 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       S.range = [Math.max(1, from), Math.min(5, to)];
       S.done = (r.done || []).map(Number);
       S.photoLeft = Number(r.photoLeft) || 0;
+      S.prevTone = r.tone || {};   // 지난 편 말투·부르는 말 → 다음 편 기본값
       S.until = r.until || ''; S.maxDate = S.until && S.until < S.max365 ? S.until : S.max365; $('#recordDate').max = S.maxDate;
       S.ed = 0;
       for (var e = S.range[0]; e <= S.range[1]; e++) if (S.done.indexOf(e) < 0) { S.ed = e; break; }
     } else {
-      S.locked = false; S.range = null; S.done = []; S.photoLeft = 0; S.until = ''; S.maxDate = S.max365; $('#recordDate').max = S.maxDate;
+      S.locked = false; S.range = null; S.done = []; S.photoLeft = 0; S.prevTone = {}; S.until = ''; S.maxDate = S.max365; $('#recordDate').max = S.maxDate;
     }
     renderPeople(); renderEd(); applyMode();
   }
@@ -897,7 +1111,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     if (first && !d.applicantName) E.push(['applicantName', '신청자 성함을 입력해 주세요.']);
     d.applicantPhone = digits(val('applicantPhone'));
     if (!okPhone(d.applicantPhone)) E.push(['applicantPhone', '휴대폰 번호 10~11자리를 확인해 주세요.']);
-    setDateMin(S.M.indexOf('손글씨') > -1);   // 접수 시각 기준으로 다시 계산
+    setDateMin(allM().indexOf('손글씨') > -1);   // 접수 시각 기준으로 다시 계산
     d.recordDate = val('recordDate');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(d.recordDate)) E.push(['recordDate', '기록일을 골라 주세요.']);
     else if (d.recordDate < S.minDate) E.push(['recordDate', kday(S.minDate) + ' 이후 날짜로 골라 주세요.']);
@@ -905,24 +1119,31 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
 
     if (first) {
       d.p1Name = val('p1Name'); d.p1Phone = digits(val('p1Phone'));
-      if (!d.p1Name) E.push(['p1Name', '성함을 입력해 주세요.']);
-      if (!okPhone(d.p1Phone)) E.push(['p1Phone', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+      if (!d.p1Name) E.push(['p1Name', '성함을 입력해 주세요.', 1]);
+      if (!okPhone(d.p1Phone)) E.push(['p1Phone', '휴대폰 번호 10~11자리를 확인해 주세요.', 1]);
       if (two) {
         d.p2Name = val('p2Name'); d.p2Phone = digits(val('p2Phone'));
-        if (!d.p2Name) E.push(['p2Name', '성함을 입력해 주세요.']);
-        if (!okPhone(d.p2Phone)) E.push(['p2Phone', '휴대폰 번호 10~11자리를 확인해 주세요.']);
+        if (!d.p2Name) E.push(['p2Name', '성함을 입력해 주세요.', 2]);
+        if (!okPhone(d.p2Phone)) E.push(['p2Phone', '휴대폰 번호 10~11자리를 확인해 주세요.', 2]);
       }
     } else if (two) {
       d.participants = radio('participants');
       if (!d.participants) E.push(['participants', '이번 편에 참여하시는 분을 골라 주세요.']);
     }
 
-    var f = filled(), nm = noMethod();
-    if (f < S.n || nm) E.push(['q', (f < S.n ? '질문 ' + (S.n - f) + '개를 더 담아 주세요. ' : '') + (nm ? '방법을 고르지 않은 장이 ' + nm + '개 있어요.' : '')]);
-    d.questions = [];
-    for (var s = 0; s < S.n / 2; s++) d.questions.push({ m: S.M[s], f: S.Q[2 * s], b: S.Q[2 * s + 1] });
+    var p = parts();
+    d.questions = []; d.questions2 = [];
+    p.forEach(function (pi) {
+      var x = setOf(pi), f = x.Q.filter(Boolean).length, nm = x.M.filter(function (m) { return !m; }).length;
+      var who = p.length > 1 ? (pi === 1 ? '첫 번째 부모님: ' : '두 번째 부모님: ') : '';
+      if (f < S.n || nm) E.push(['q', who + (f < S.n ? '질문 ' + (S.n - f) + '개를 더 담아 주세요. ' : '') + (nm ? '방법을 고르지 않은 장이 ' + nm + '개 있어요.' : ''), pi]);
+      var list = [];
+      for (var s = 0; s < S.n / 2; s++) list.push({ m: x.M[s], f: x.Q[2 * s], b: x.Q[2 * s + 1] });
+      if (pi === 1) { d.questions = list; d.tone = x.tone; d.who = x.who; }   // 말투·부르는 말 (다음 편 기본값용)
+      else { d.questions2 = list; d.tone2 = x.tone; d.who2 = x.who; }
+    });
 
-    var hasCall = S.M.indexOf('전화') > -1, hasHand = S.M.indexOf('손글씨') > -1, p = parts();
+    var AM = allM(), hasCall = AM.indexOf('전화') > -1, hasHand = AM.indexOf('손글씨') > -1;
     var ct = radio('callTime');
     d.callTime = hasCall && ct !== 'same' ? ct : '';
     if (first && hasCall && !d.callTime) d.callTime = '상관없음';
@@ -946,7 +1167,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     if (!pm) E.push(['photo', '이번 편에 사진을 넣으실지 골라 주세요.']);
     d.usePhoto = pm === '녹음' || pm === '손글씨';
     d.photoMethod = d.usePhoto ? pm : '';
-    if (d.photoMethod === '손글씨' && S.M.filter(function (m) { return m === '손글씨'; }).length * 2 < S.M.length) E.push(['photo', '사진 이야기를 손글씨로 남기려면 손글씨 장을 ' + Math.ceil(S.M.length / 2) + '장 이상으로 골라 주세요.']);
+    if (d.photoMethod === '손글씨' && p.some(function (pi) { var M = setOf(pi).M; return M.filter(function (m) { return m === '손글씨'; }).length * 2 < M.length; })) E.push(['photo', '사진 이야기를 손글씨로 남기려면 ' + (p.length > 1 ? '부모님마다 ' : '') + '손글씨 장을 ' + Math.ceil(S.n / 4) + '장 이상으로 골라 주세요.']);
     d.informed = $('#informed').checked;
     if (!d.informed) E.push(['informed', '확인 칸에 체크해 주세요.']);
     d.privacy = $('#privacy').checked;
@@ -961,9 +1182,12 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     show('#err', false);
     var r = collect();
     if (r.E.length) {
-      S.showNeed = true; board();
+      S.showNeed = true;
+      var pg = 0; r.E.forEach(function (x) { if (!pg && x[2]) pg = x[2]; });
+      var curBad = r.E.some(function (x) { return x[2] === S.cur; });
+      if (pg && !curBad) goPage(pg, false); else { board(); pageUI(); }
       var firstEl = null;
-      r.E.forEach(function (x) { var el = setBad(x[0], x[1]); if (!firstEl && el) firstEl = el; });
+      r.E.forEach(function (x) { if (x[2] && x[2] !== S.cur) return; var el = setBad(x[0], x[1]); if (!firstEl && el && el.offsetParent) firstEl = el; });
       $('#err').textContent = '확인이 필요한 칸이 ' + r.E.length + '곳 있어요.';
       show('#err', true);
       if (firstEl) firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -997,7 +1221,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
     S.sent = true;
     store(draftKey(), null);
     var c = { '전화': 0, '녹음': 0, '손글씨': 0 };
-    d.questions.forEach(function (q) { c[q.m]++; });
+    d.questions.concat(d.questions2 || []).forEach(function (q) { c[q.m]++; });
     var how = METHODS.filter(function (m) { return c[m]; }).map(function (m) { return m + ' ' + c[m] + '장'; }).join(' · ');
     $('#doneSum').innerHTML =
       '<div><b>주문번호</b><span>' + esc(d.orderNo) + '</span></div>' +
@@ -1043,7 +1267,7 @@ window.WMQ={T:["어린 시절","학창 시절","젊은 날","일과 삶","사랑
       var k = e.target.closest('[data-k]'); if (k && k.id !== 'secQ') k.classList.remove('bad');
       if (e.target.name === 'people') { S.people = Number(e.target.value); applyMode(); }
       else if (e.target.name === 'ed') { saveDraft(); S.ed = Number(e.target.value); applyMode(); }
-      else if (e.target.name === 'participants' || e.target.name === 'photo') conditional();
+      else if (e.target.name === 'participants' || e.target.name === 'photo') { conditional(); if (e.target.name === 'participants') pageUI(); }
     });
     $$('[data-post]').forEach(function (b) { b.addEventListener('click', function () { postcode(b.getAttribute('data-post')); }); });
     $('#f').addEventListener('submit', submit);
