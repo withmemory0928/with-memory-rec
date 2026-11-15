@@ -94,6 +94,17 @@ audio{width:100%;margin:10px 0 0}
   function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
   function dl(ms) { var d = new Date(ms + 9 * 3600 * 1000); return (d.getUTCMonth() + 1) + '월 ' + d.getUTCDate() + '일 ' + ('0' + d.getUTCHours()).slice(-2) + ':' + ('0' + d.getUTCMinutes()).slice(-2); }
 
+  // 마이크 오류 안내 — 기기에 맞는 방법 한 줄만 보여 줌
+  function micHelp(e) {
+    var nm = e && e.name, ua = navigator.userAgent, ios = /iPhone|iPad|iPod/i.test(ua), kakao = /KAKAOTALK/i.test(ua);
+    if (nm === 'NotAllowedError' || nm === 'PermissionDeniedError')
+      return '마이크 사용이 막혀 있습니다. 휴대폰 설정 → 앱 목록에서 ' + (kakao ? '카카오톡' : '사용하시는 인터넷 앱') + ' → 마이크를 켠 뒤 이 페이지를 다시 열어 주세요.';
+    if (nm === 'NotFoundError') return '마이크를 찾지 못했습니다. 이어폰을 빼고 다시 눌러 주세요.';
+    if (nm === 'NotReadableError') return '다른 앱이 마이크를 쓰고 있습니다. 통화나 다른 녹음을 끝낸 뒤 눌러 주세요.';
+    return '녹음을 시작하지 못했습니다. ' + (kakao
+      ? (ios ? "화면 아래 공유 버튼 → 'Safari로 열기'를 눌러 다시 열어 주세요." : "오른쪽 위 ⋮ → '다른 브라우저로 열기'를 눌러 다시 열어 주세요.")
+      : '페이지를 새로고침한 뒤 다시 눌러 주세요. 계속 안 되면 카카오톡 채널로 알려 주세요.');
+  }
   function call(body) {
     body.t = token;
     return fetch(EXEC_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
@@ -116,6 +127,7 @@ audio{width:100%;margin:10px 0 0}
     if (!token && ptok) return location.replace('photo.html?t=' + encodeURIComponent(ptok));   // 녹음 장이 없는 편: 사진 칸만 있는 페이지
     if (!token) return simple('주소를 확인해 주세요', '받으신 링크를 다시 눌러 주세요.');
     call({ action: 'info' }).then(function (r) {
+      if (!r.ok && r.code === 'server') return simple('잠시 문제가 생겼습니다', '잠시 문제가 생겼습니다. 1~2분 뒤 새로고침해 주세요. 계속 안 되면 카카오톡 채널로 알려 주세요.');
       if (!r.ok) return simple('열 수 없는 주소입니다', '받으신 링크가 맞는지 확인해 주세요. 계속 열리지 않으면 신청하신 분께 문의해 주세요.');
       info = r; info.saved = info.saved || {};
       if (r.state === 'submitted') return simple('제출이 완료되었습니다', '녹음이 모두 전달되었습니다. 감사합니다.');
@@ -271,7 +283,7 @@ audio{width:100%;margin:10px 0 0}
 
   function startRec(n) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
-      return setState(n, '이 브라우저에서는 녹음할 수 없습니다. 다른 브라우저로 열어 주세요', 'err');
+      return setState(n, micHelp(null), 'err');
     }
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (s) {
       stream = s; chunks = [];
@@ -303,12 +315,7 @@ audio{width:100%;margin:10px 0 0}
         if (s2 >= MAX_SECS) { capped = true; stop(); }
       }, 250);
     }).catch(function (e) {
-      var nm = e && e.name;
-      setState(n, (nm === 'NotAllowedError' || nm === 'PermissionDeniedError')
-        ? '마이크 사용이 허용되지 않았습니다. 설정에서 마이크를 허용한 뒤 다시 열어 주세요'
-        : nm === 'NotFoundError' ? '마이크를 찾지 못했습니다'
-        : nm === 'NotReadableError' ? '다른 앱이 마이크를 쓰고 있습니다. 통화나 다른 녹음을 끝낸 뒤 눌러 주세요'
-        : '녹음을 시작하지 못했습니다', 'err');
+      setState(n, micHelp(e), 'err');
     });
   }
 
