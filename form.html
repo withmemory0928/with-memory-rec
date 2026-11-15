@@ -187,6 +187,30 @@ input[type=date].in{line-height:50px}
   .wmf-pick{grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px}
   .wmf-pick-l{position:sticky;top:16px;padding:20px}
 }
+/* 번호별로 한 화면씩 넘기기 (녹음 페이지와 같은 모양) */
+:root{--accent:#A0482C;--accent-h:#8A3D24;--ink:#2B2622;--accent-soft:#FBF5EE}
+body{background:#FFFFFF}
+.wrap{max-width:640px}
+#f > section.card,#main > section.card{border:0;border-radius:0;padding:24px 0 8px;background:transparent;margin:0}
+.stepoff{display:none!important}
+.st-top{position:sticky;top:0;z-index:20;background:#FFFFFF;margin:0 -16px 8px;padding:env(safe-area-inset-top) 0 0}
+.st-bar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 8px}
+.st-back{width:48px;height:48px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.st-back:disabled{opacity:.3}
+.st-cnt{font-size:15px;font-weight:600;color:var(--sub)}
+.st-prog{height:4px;background:#FBF5EE;margin:0 24px;border-radius:2px;overflow:hidden}
+.st-prog i{display:block;height:100%;width:20%;background:var(--accent);border-radius:2px;transition:width .3s}
+.st-foot{position:sticky;bottom:0;z-index:20;background:#FFFFFF;margin:16px -16px 0;padding:12px 16px calc(16px + env(safe-area-inset-bottom))}
+.st-msg{white-space:pre-line;font-size:15px;line-height:1.6;font-weight:600;color:var(--accent);background:#FBF5EE;border-radius:8px;padding:12px 16px;margin:0 0 12px}
+.st-row{display:flex;gap:8px}
+.st-btn{flex:1;height:56px;border-radius:8px;border:1px solid var(--accent);background:#FFFFFF;color:var(--accent);font-size:17px;font-weight:600}
+.st-btn.main{background:var(--accent);color:#FFFFFF}
+.st-btn.main:active{background:var(--accent-h)}
+.st-btn:disabled{opacity:.4}
+.st-btn.prev{flex:0 0 96px}
+#submitBtn{display:none}
+.st-in{animation:stIn .25s ease-out}
+@keyframes stIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -1359,7 +1383,7 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     $('#bLead').textContent = b.lead;
     $('#bList').innerHTML = b.list.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
     $('#bFoot').textContent = b.foot;
-    $('#before').open = S.ed === 1;
+    $('#before').open = false;   // 한 화면씩 넘기는 방식이라 접어 둠 (같은 내용은 5번 확인 칸에도 있음)
   }
 
   function parts() {
@@ -1644,6 +1668,7 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     $('#mypage').href = MYPAGE_URL;
 
     initWidget();
+    initSteps();
     S.n = 0; setCount(20);
 
     // 연락처 칸: 숫자만 받아 하이픈 표시
@@ -1691,6 +1716,77 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
       if (!r || !r.found) $('#edHelp').textContent = '주문 정보를 아직 확인하지 못했어요. 구매하신 상품에 맞게 직접 골라 주세요.';
     });
   }
+  /* ───────── 번호별로 한 화면씩: 1 상품 확인 → 2 기본 정보 → 3 질문 → 4 진행 정보 → 5 확인과 동의 ───────── */
+  var ST = { cur: 0, steps: [], names: ['상품 확인', '기본 정보', '질문 고르기', '진행 정보', '확인과 동의'] };
+  function initSteps() {
+    var f = $('#f'), secs = Array.prototype.filter.call(f.querySelectorAll('section.card'), function () { return true; });
+    var s1 = secs[0], s2 = $('#basicDesc').closest('section');
+    ST.steps = [
+      [f.querySelector('.hero'), $('#bot1'), $('#bot6'), s1],
+      [$('#before'), s2],
+      [$('#secQ')],
+      [$('#secMore')],
+      [$('#secAgree'), $('#err'), f.querySelector('.foot-c')]
+    ];
+    var top = document.createElement('div'); top.className = 'st-top';
+    top.innerHTML = '<div class="st-bar"><button type="button" class="st-back" aria-label="이전"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2B2622" stroke-width="2" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="st-cnt"></span><span style="width:48px"></span></div><div class="st-prog"><i></i></div>';
+    f.insertBefore(top, f.firstChild);
+    var foot = document.createElement('div'); foot.className = 'st-foot';
+    foot.innerHTML = '<p class="st-msg" hidden></p><div class="st-row"><button type="button" class="st-btn prev">이전</button><button type="button" class="st-btn main">다음</button></div>';
+    f.appendChild(foot);
+    ST.top = top; ST.foot = foot;
+    ST.back = top.querySelector('.st-back'); ST.cnt = top.querySelector('.st-cnt'); ST.bar = top.querySelector('.st-prog i');
+    ST.msg = foot.querySelector('.st-msg'); ST.prev = foot.querySelector('.prev'); ST.next = foot.querySelector('.main');
+    ST.back.addEventListener('click', function () { if (ST.cur > 0) stepGo(ST.cur - 1); });
+    ST.prev.addEventListener('click', function () { if (ST.cur > 0) stepGo(ST.cur - 1); });
+    ST.next.addEventListener('click', stepNext);
+    stepGo(0);
+  }
+  function stepOfEl(el) {
+    for (var i = 0; i < ST.steps.length; i++) if (ST.steps[i].some(function (x) { return x && x.contains(el); })) return i;
+    return -1;
+  }
+  function stepOfKey(k) { var el = $('[data-k="' + k + '"]'); return el ? stepOfEl(el) : -1; }
+  function stepGo(i) {
+    ST.cur = i;
+    ST.steps.forEach(function (list, k) { list.forEach(function (x) { if (x) { x.classList.toggle('stepoff', k !== i); x.classList.toggle('st-in', k === i); } }); });
+    ST.cnt.textContent = (i + 1) + ' / 5 · ' + ST.names[i];
+    ST.bar.style.width = ((i + 1) / 5 * 100) + '%';
+    ST.back.disabled = i === 0;
+    ST.prev.hidden = i === 0;
+    ST.next.textContent = i === 4 ? '제출하기' : '다음';
+    ST.msg.hidden = true;
+    window.scrollTo(0, 0);
+  }
+  // 다음: 지금 화면의 칸만 확인하고, 고칠 게 있으면 그 이유를 바로 보여 줌
+  function stepNext() {
+    if (ST.cur === 4) {
+      $('#submitBtn').click();
+      setTimeout(function () {   // 다른 화면에 고칠 칸이 있으면 그 화면으로
+        var bad = $('.bad'), at = bad ? stepOfEl(bad) : -1;
+        if (at >= 0 && at !== 4) { var t = $('#err').textContent; stepGo(at); ST.msg.textContent = t; ST.msg.hidden = false; }
+      }, 0);
+      return;
+    }
+    if (ST.cur === 0 && !(S.people && S.ed)) {
+      ST.msg.textContent = !S.people ? '부모님 인원을 골라 주세요.' : '작성하는 편을 골라 주세요.'; ST.msg.hidden = false; return;
+    }
+    $$('.bad').forEach(function (el) { if (stepOfEl(el) === ST.cur) el.classList.remove('bad'); });
+    var E = collect().E.filter(function (x) { return stepOfKey(x[0]) === ST.cur; });
+    if (E.length) {
+      var pg = 0; E.forEach(function (x) { if (!pg && x[2]) pg = x[2]; });
+      if (pg && ST.cur === 2 && pg !== S.cur) goPage(pg, false);
+      var first = null;
+      E.forEach(function (x) { if (x[2] && x[2] !== S.cur) return; var el = setBad(x[0], x[1]); if (!first && el && el.offsetParent) first = el; });
+      var seen = {}, msgs = E.map(function (x) { return x[1]; }).filter(function (m) { return !seen[m] && (seen[m] = 1); });
+      ST.msg.textContent = msgs.length === 1 ? msgs[0] : msgs.slice(0, 3).map(function (m) { return '· ' + m; }).join('\n');
+      ST.msg.hidden = false;
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    stepGo(ST.cur + 1);
+  }
+
   init();
 })();
 </script>
