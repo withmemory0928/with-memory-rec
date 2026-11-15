@@ -67,6 +67,9 @@ audio{width:100%;margin:10px 0 0}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
 .modal{background:#fff;border-radius:18px;padding:24px 20px;max-width:420px;width:100%}
 .modal h2{font-size:22px;margin:0 0 8px}
+body.embed{background:transparent}
+body.embed .wrap{padding:0}
+body.embed .brand{display:none}
 </style>
 </head>
 <body>
@@ -93,6 +96,8 @@ audio{width:100%;margin:10px 0 0}
   var pp = {};           // 사진 올리기 진행 상태 (칸별)
   var ps = {};           // 이야기 올리기 진행 상태 (칸별)
   var prog = null;
+  var EMBED = /[?&#]embed=1/.test(location.href);   // 녹음 페이지 맨 아래에 들어간 사진 칸 (확인·제출은 녹음 페이지가 함께 함)
+  if (EMBED) document.body.classList.add('embed');
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
@@ -130,6 +135,7 @@ audio{width:100%;margin:10px 0 0}
     call({ action: 'info' }).then(function (r) {
       if (!r.ok) return simple('열 수 없는 주소입니다', '받으신 링크가 맞는지 확인해 주세요. 계속 열리지 않으면 신청하신 분께 문의해 주세요.');
       info = r; info.saved = info.saved || {}; MAX_SECS = r.storySecs || 60;
+      if (EMBED && r.state !== 'open') { info = r; window.wmPhoto = { done: true }; return simple(r.state === 'submitted' ? '사진은 제출되었습니다' : '사진을 올리는 기간이 끝났습니다', ''); }
       if (r.state === 'submitted') return simple('제출이 완료되었습니다', '사진이 전달되었습니다. 감사합니다.');
       if (r.state !== 'open') return simple('사진을 올리는 기간이 끝났습니다', '올리신 사진과 이야기는 책을 만드는 데 사용됩니다. 문의가 필요하시면 신청하신 분께 말씀해 주세요.');
       render();
@@ -139,8 +145,8 @@ audio{width:100%;margin:10px 0 0}
   function render() {
     app.textContent = '';
     var head = el('div', 'card');
-    if (info.who) head.appendChild(el('p', 'who', info.who + ' 사진 링크'));
-    head.appendChild(el('h1', '', (info.name ? info.name + '님이 ' : '') + '신청하신 사진'));
+    if (info.who && !EMBED) head.appendChild(el('p', 'who', info.who + ' 사진 링크'));
+    head.appendChild(el('h1', '', EMBED ? '사진 올리기' : (info.name ? info.name + '님이 ' : '') + '신청하신 사진'));
     head.appendChild(el('p', 'note', isRec()
       ? '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진마다 그 사진에 얽힌 이야기를 ' + (MAX_SECS / 60) + '분 안으로 들려주시면, 사진 아래에 그 이야기가 글로 담깁니다.'
       : '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진에 얽힌 이야기는 함께 받으신 기록지의 사진 이야기 칸에 적어 주시면, 사진 아래에 그 글씨 그대로 담깁니다.'));
@@ -151,9 +157,9 @@ audio{width:100%;margin:10px 0 0}
     head.appendChild(tips);
     var dbox = el('div', 'deadline', dl(info.deadline) + '까지 올려 주세요');
     dbox.appendChild(el('small', '', '제출하기 전까지는 다른 사진으로 다시 올려 바꿀 수 있습니다. 올리신 사진과 이야기는 이 화면에서 다시 볼 수 없습니다.'));
-    head.appendChild(dbox);
+    if (!EMBED) head.appendChild(dbox);
     var ua = navigator.userAgent;
-    if (/KAKAOTALK/i.test(ua) && isRec()) {
+    if (/KAKAOTALK/i.test(ua) && isRec() && !EMBED) {
       head.appendChild(el('p', 'msg info', /iPhone|iPad|iPod/i.test(ua)
         ? '녹음이 되지 않으면 화면 아래 공유 버튼에서 "Safari로 열기"를 선택해 주세요.'
         : '녹음이 되지 않으면 오른쪽 위 ⋮ 버튼에서 "다른 브라우저로 열기"를 선택해 주세요.'));
@@ -169,7 +175,7 @@ audio{width:100%;margin:10px 0 0}
     var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'confirm';
     lb.appendChild(cb); lb.appendChild(el('span', '', CONFIRM_TEXT));
     gate.appendChild(lb);
-    app.appendChild(gate);
+    if (!EMBED) app.appendChild(gate);
 
     var list = el('div', 'locked'); list.id = 'slots';
     for (var n = 1; n <= info.max; n++) list.appendChild(buildSlot(n));
@@ -181,7 +187,7 @@ audio{width:100%;margin:10px 0 0}
     var bSub = el('button', 'btn main', '제출'); bSub.type = 'button';
     foot.appendChild(fm); foot.appendChild(bSub);
     bSub.addEventListener('click', function () { askSubmit(fm); });
-    app.appendChild(foot);
+    if (!EMBED) app.appendChild(foot);
 
     function open() { list.classList.remove('locked'); foot.classList.remove('locked'); }
     if (info.confirmed) { cb.checked = true; cb.disabled = true; open(); }
@@ -193,18 +199,34 @@ audio{width:100%;margin:10px 0 0}
       }).catch(function () { cb.checked = false; cb.disabled = false; alert('인터넷 연결을 확인한 뒤 다시 눌러 주세요.'); });
     });
     syncAll();
+    if (EMBED) window.wmPhoto = {
+      check: photoCheck,
+      confirm: function () {
+        if (info.confirmed) { open(); return Promise.resolve(true); }
+        return call({ action: 'confirm' }).then(function (r) { if (r.ok) { info.confirmed = true; open(); } return !!r.ok; });
+      },
+      submit: function () { return call({ action: 'submit', withRec: true }); }
+    };
+  }
+
+  // 제출 전 확인: 진행 중·실패한 것이 있는지, 올린 사진 수, 이야기가 빠진 사진 번호
+  function photoCheck() {
+    var c = { busy: active !== null, failed: false, ph: 0, noStory: [] };
+    for (var n = 1; n <= info.max; n++) {
+      if (busyP(n) || busyS(n)) c.busy = true;
+      if ((pp[n] && pp[n].status === 'failed') || (ps[n] && ps[n].status === 'failed')) c.failed = true;
+      var s = info.saved[n] || {};
+      if (s.photo) { c.ph++; if (isRec() && !s.story) c.noStory.push(n); }
+    }
+    return c;
   }
 
   function say(fm, text) { fm.textContent = text; fm.className = 'msg err'; }
   function askSubmit(fm) {
-    var ph = 0, noStory = [];
-    for (var n = 1; n <= info.max; n++) {
-      if (active !== null || busyP(n) || busyS(n)) return say(fm, '녹음 또는 올리기가 진행 중입니다. 끝난 뒤에 눌러 주세요.');
-      if ((pp[n] && pp[n].status === 'failed') || (ps[n] && ps[n].status === 'failed')) return say(fm, '올라가지 않은 사진이나 이야기가 있습니다. 위에서 다시 올려 주세요.');
-      var s = info.saved[n] || {};
-      if (s.photo) { ph++; if (isRec() && !s.story) noStory.push(n); }
-    }
-    if (!ph) return say(fm, '사진을 한 장 이상 올린 뒤 제출해 주세요.');
+    var c = photoCheck(), noStory = c.noStory;
+    if (c.busy) return say(fm, '녹음 또는 올리기가 진행 중입니다. 끝난 뒤에 눌러 주세요.');
+    if (c.failed) return say(fm, '올라가지 않은 사진이나 이야기가 있습니다. 위에서 다시 올려 주세요.');
+    if (!c.ph) return say(fm, '사진을 한 장 이상 올린 뒤 제출해 주세요.');
     fm.className = 'msg hide';
     var ov = el('div', 'ov'); var m = el('div', 'modal');
     m.appendChild(el('h2', '', '제출하시겠습니까?'));

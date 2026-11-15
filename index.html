@@ -81,6 +81,10 @@ audio{width:100%;margin:10px 0 0}
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var app = $('#app');
   var token = (new URLSearchParams(location.hash.slice(1))).get('t') || (new URLSearchParams(location.search)).get('t') || '';
+  var ptok = (new URLSearchParams(location.hash.slice(1))).get('p') || (new URLSearchParams(location.search)).get('p') || '';   // 사진 추가 편이면 사진키 (맨 아래 사진 칸)
+  var pframe = null;
+  function pw() { try { return pframe && pframe.contentWindow && pframe.contentWindow.wmPhoto; } catch (e) { return null; } }
+  function photoConfirm() { if (!pframe) return; var w = pw(); if (w && w.confirm) w.confirm(); else if (!w || !w.done) setTimeout(photoConfirm, 500); }
   var info = null, active = null;
   var pending = {};
   var ctl = {};
@@ -109,6 +113,7 @@ audio{width:100%;margin:10px 0 0}
   }
 
   function start() {
+    if (!token && ptok) return location.replace('photo.html?t=' + encodeURIComponent(ptok));   // 녹음 장이 없는 편: 사진 칸만 있는 페이지
     if (!token) return simple('주소를 확인해 주세요', '받으신 링크를 다시 눌러 주세요.');
     call({ action: 'info' }).then(function (r) {
       if (!r.ok) return simple('열 수 없는 주소입니다', '받으신 링크가 맞는지 확인해 주세요. 계속 열리지 않으면 신청하신 분께 문의해 주세요.');
@@ -153,6 +158,14 @@ audio{width:100%;margin:10px 0 0}
 
     var list = el('div', 'locked'); list.id = 'qs';
     info.questions.forEach(function (text, i) { list.appendChild(buildQ(i + 1, text)); });
+    if (ptok) {   // 사진 칸: 사진 페이지를 그대로 넣음(같은 주소라 바로 연결됨). 높이는 내용에 맞춤
+      pframe = document.createElement('iframe');
+      pframe.src = 'photo.html?embed=1&t=' + encodeURIComponent(ptok);
+      pframe.title = '사진 올리기'; pframe.setAttribute('allow', 'microphone');
+      pframe.style.cssText = 'width:100%;border:0;display:block;height:600px';
+      list.appendChild(pframe);
+      setInterval(function () { try { var h = pframe.contentDocument.body.scrollHeight; /* documentElement는 iframe 높이 아래로 안 줄어서 body로 잼 */ if (h && Math.abs(h - pframe.offsetHeight) > 4) pframe.style.height = h + 'px'; } catch (e) {} }, 500);
+    }
     app.appendChild(list);
 
     var foot = el('div', 'card locked'); foot.id = 'foot';
@@ -166,12 +179,12 @@ audio{width:100%;margin:10px 0 0}
     app.appendChild(foot);
 
     function open() { list.classList.remove('locked'); foot.classList.remove('locked'); }
-    if (info.confirmed) { cb.checked = true; cb.disabled = true; open(); }
+    if (info.confirmed) { cb.checked = true; cb.disabled = true; open(); photoConfirm(); }
     cb.addEventListener('change', function () {
       if (!cb.checked) { return; }
       cb.disabled = true;
       call({ action: 'confirm' }).then(function (r) {
-        if (r.ok) open(); else { cb.checked = false; cb.disabled = false; alert('확인을 저장하지 못했습니다. 다시 눌러 주세요.'); }
+        if (r.ok) { open(); photoConfirm(); } else { cb.checked = false; cb.disabled = false; alert('확인을 저장하지 못했습니다. 다시 눌러 주세요.'); }
       }).catch(function () { cb.checked = false; cb.disabled = false; alert('인터넷 연결을 확인한 뒤 다시 눌러 주세요.'); });
     });
 
@@ -381,11 +394,20 @@ audio{width:100%;margin:10px 0 0}
     if (busy()) return say(fm, '녹음 또는 저장이 진행 중입니다. 끝난 뒤에 눌러 주세요.', false);
     if (failedAny().length) return say(fm, '저장되지 않은 녹음이 있습니다. 위에서 "다시 저장하기"를 눌러 주세요.', false);
     if (answered() === 0) return say(fm, '녹음된 질문이 없습니다. 한 개 이상 녹음한 뒤 제출해 주세요.', false);
+    var w = pw(), pc = null;
+    if (pframe && !w) return say(fm, '사진 칸을 불러오지 못했습니다. 화면을 새로고침한 뒤 다시 눌러 주세요.', false);
+    if (w && w.check) {
+      pc = w.check();
+      if (pc.busy) return say(fm, '사진 올리기 또는 이야기 녹음이 진행 중입니다. 끝난 뒤에 눌러 주세요.', false);
+      if (pc.failed) return say(fm, '올라가지 않은 사진이나 이야기가 있습니다. 사진 칸에서 다시 올려 주세요.', false);
+    }
     var left = info.questions.length - answered();
     var ov = el('div', 'ov'); var m = el('div', 'modal');
     m.appendChild(el('h2', '', '제출하시겠습니까?'));
-    m.appendChild(el('p', '', '제출하시면 녹음 수정이 불가합니다.'));
+    m.appendChild(el('p', '', pc ? '제출하시면 녹음과 사진을 고칠 수 없습니다.' : '제출하시면 녹음 수정이 불가합니다.'));
     if (left > 0) m.appendChild(el('p', 'msg err', '아직 녹음하지 않은 질문이 ' + left + '개 있습니다.'));
+    if (pc && !pc.ph) m.appendChild(el('p', 'msg err', '사진을 올리지 않으셨습니다. 이대로 제출하시면 사진 속지는 만들지 않고 사진 추가 금액은 환불됩니다.'));
+    if (pc && pc.noStory.length) m.appendChild(el('p', 'msg err', '사진 ' + pc.noStory.join(', ') + '의 이야기가 아직 없습니다.'));
     var row = el('div', 'row');
     var no = el('button', 'btn', '돌아가기'); no.type = 'button';
     var yes = el('button', 'btn main', '제출'); yes.type = 'button';
@@ -394,9 +416,13 @@ audio{width:100%;margin:10px 0 0}
     no.addEventListener('click', function () { ov.remove(); });
     yes.addEventListener('click', function () {
       yes.disabled = true; no.disabled = true; yes.textContent = '제출하는 중…';
-      call({ action: 'submit' }).then(function (r) {
+      // 사진을 먼저 제출(실패하면 아무것도 잠기지 않음), 그다음 녹음. 다시 눌러도 이미 제출된 사진은 넘어감
+      (pc ? w.submit() : Promise.resolve({ ok: true })).then(function (pr) {
+        if (!(pr.ok || pr.code === 'submitted')) throw pr;
+        return call({ action: 'submit' });
+      }).then(function (r) {
         ov.remove();
-        if (r.ok || r.code === 'submitted') simple('제출이 완료되었습니다', '녹음이 전달되었습니다. 감사합니다.');
+        if (r.ok || r.code === 'submitted') simple('제출이 완료되었습니다', (pc ? '녹음과 사진이' : '녹음이') + ' 전달되었습니다. 감사합니다.');
         else if (r.code === 'closed') location.reload();
         else say(fm, '제출하지 못했습니다. 잠시 후 다시 눌러 주세요.', false);
       }).catch(function () { ov.remove(); say(fm, '제출하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 눌러 주세요.', false); });
