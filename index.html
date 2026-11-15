@@ -70,7 +70,8 @@ button{font-family:inherit;cursor:pointer}
 .track i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--brown)}
 .tm{font-size:14px;color:var(--sub);font-variant-numeric:tabular-nums}
 .ok{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--brown);margin-top:24px}
-.redo{margin-top:16px;border:0;background:transparent;padding:8px 0;font-size:16px;color:var(--sub);text-decoration:underline;text-underline-offset:3px}
+.redo{margin-top:24px;height:48px;padding:0 20px;border-radius:8px;border:1px solid var(--brown);background:var(--white);color:var(--brown);font-size:16px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.redo svg{width:20px;height:20px}
 .retry{margin-top:16px;height:48px;padding:0 24px;border-radius:8px;border:1px solid var(--brown);background:var(--white);color:var(--brown);font-size:16px;font-weight:600}
 /* 사진 */
 .pframe{width:100%;border:0;display:block;height:520px;margin-top:24px}
@@ -243,7 +244,7 @@ button{font-family:inherit;cursor:pointer}
     var box = el('span', 'box'); box.innerHTML = CHECK_SVG;
     lb.appendChild(cb); lb.appendChild(box); lb.appendChild(el('span', '', CONFIRM_TEXT));
     s.appendChild(lb);
-    if (info.confirmed) { cb.checked = true; cb.disabled = true; }
+    if (info.confirmed) cb.checked = true;
     cb.addEventListener('change', function () { paintFoot(); });
     var ua = navigator.userAgent;
     if (/KAKAOTALK/i.test(ua)) s.appendChild(el('p', 'hint', /iPhone|iPad|iPod/i.test(ua)
@@ -274,7 +275,7 @@ button{font-family:inherit;cursor:pointer}
     player.appendChild(play); player.appendChild(track); player.appendChild(tm);
     var ok = el('p', 'ok'); ok.innerHTML = OK_SVG; var okt = el('span', '', '저장되었어요'); ok.appendChild(okt);
     var okd = el('p', 'd'); okd.style.marginTop = '8px';
-    var redo = el('button', 'redo', '다시 녹음하기'); redo.type = 'button';
+    var redo = el('button', 'redo'); redo.type = 'button'; redo.innerHTML = MIC_SVG; redo.appendChild(el('span', '', '다시 녹음하기'));
     saved.appendChild(player); saved.appendChild(ok); saved.appendChild(okd); saved.appendChild(redo);
     s.appendChild(saved);
     var state = el('p', 'state');
@@ -325,11 +326,11 @@ button{font-family:inherit;cursor:pointer}
   function onNext() {
     if (cur === 0) {
       var cb = ui.screens[0].cb;
-      if (info.confirmed) return go(firstOpen());
       if (!cb.checked) return;
+      if (info.confirmed) return go(firstOpen());
       ui.next.disabled = true;
       call({ action: 'confirm' }).then(function (r) {
-        if (r.ok) { info.confirmed = true; cb.disabled = true; photoConfirm(); go(firstOpen()); }
+        if (r.ok) { info.confirmed = true; photoConfirm(); go(firstOpen()); }
         else if (r.code === 'closed' || r.code === 'submitted') location.reload();
         else { paintFoot(); say('확인을 저장하지 못했습니다. 다시 눌러 주세요.'); }
       }).catch(function () { paintFoot(); say('인터넷 연결을 확인한 뒤 다시 눌러 주세요.'); });
@@ -354,7 +355,7 @@ button{font-family:inherit;cursor:pointer}
     sk.classList.add('hide'); b.disabled = false;
     if (n === 0) {
       b.textContent = info.confirmed ? (Object.keys(info.saved).length ? '이어서 하기' : '시작하기') : '시작하기';
-      b.disabled = !info.confirmed && !ui.screens[0].cb.checked;
+      b.disabled = !ui.screens[0].cb.checked;
       return;
     }
     var isLast = n === last();
@@ -389,7 +390,7 @@ button{font-family:inherit;cursor:pointer}
       var hasAudio = !!c.audio.getAttribute('src');
       c.player.classList.toggle('hide', !hasAudio);
       c.tm.textContent = fmt(info.saved[n].secs || 0);
-      c.okd.textContent = hasAudio ? '재생 버튼으로 목소리가 잘 들어갔는지 한 번 들어 보세요.' : '녹음 ' + fmt(info.saved[n].secs || 0) + '이 저장되어 있어요. 다시 하시려면 아래를 눌러 주세요.';
+      c.okd.textContent = hasAudio ? '재생 버튼으로 목소리가 잘 들어갔는지\n한 번 들어 보세요.' : '녹음 ' + fmt(info.saved[n].secs || 0) + '이 저장되어 있어요. 다시 하시려면 아래를 눌러 주세요.';
     }
     if (n === cur) paintFoot();
   }
@@ -439,7 +440,8 @@ button{font-family:inherit;cursor:pointer}
       var buf = new Uint8Array(an.frequencyBinCount), bars = ctl[n].wave.children;
       var loop = function () {
         an.getByteFrequencyData(buf);
-        for (var i = 0; i < bars.length; i++) { var v = buf[(i % buf.length)] / 255; bars[i].style.height = Math.max(6, Math.round(v * 60)) + 'px'; }
+        var mid = (bars.length - 1) / 2;
+        for (var i = 0; i < bars.length; i++) { var d = Math.round(Math.abs(i - mid)); var v = buf[1 + Math.min(Math.floor(d / 2), 11)] / 255; bars[i].style.height = Math.max(6, Math.round(v * (1 - d / (mid + 8)) * 64)) + 'px'; }
         raf = requestAnimationFrame(loop);
       };
       loop();
