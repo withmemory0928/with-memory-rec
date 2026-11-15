@@ -1579,7 +1579,10 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
       if (pg && !curBad) goPage(pg, false); else { board(); pageUI(); }
       var firstEl = null;
       r.E.forEach(function (x) { if (x[2] && x[2] !== S.cur) return; var el = setBad(x[0], x[1]); if (!firstEl && el && el.offsetParent) firstEl = el; });
-      $('#err').textContent = '확인이 필요한 칸이 ' + r.E.length + '곳 있어요.';
+      // 무엇을 고쳐야 하는지 아래 안내에도 그대로 보여 줌 (위쪽 칸이 화면에 안 보여도 알 수 있게)
+      var seen = {}, msgs = r.E.map(function (x) { return x[1]; }).filter(function (m) { return !seen[m] && (seen[m] = 1); });
+      $('#err').style.whiteSpace = 'pre-line';
+      $('#err').textContent = r.E.length === 1 ? msgs[0] : '확인이 필요한 칸이 ' + r.E.length + '곳 있어요.\n' + msgs.slice(0, 3).map(function (m) { return '· ' + m; }).join('\n');
       show('#err', true);
       if (firstEl) firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
