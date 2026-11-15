@@ -184,7 +184,7 @@ audio{width:100%;margin:10px 0 0}
       if (!cb.checked) { return; }
       cb.disabled = true;
       call({ action: 'confirm' }).then(function (r) {
-        if (r.ok) { open(); photoConfirm(); } else { cb.checked = false; cb.disabled = false; alert('확인을 저장하지 못했습니다. 다시 눌러 주세요.'); }
+        if (r.ok) { open(); photoConfirm(); } else if (r.code === 'closed' || r.code === 'submitted') location.reload(); else { cb.checked = false; cb.disabled = false; alert('확인을 저장하지 못했습니다. 다시 눌러 주세요.'); }
       }).catch(function () { cb.checked = false; cb.disabled = false; alert('인터넷 연결을 확인한 뒤 다시 눌러 주세요.'); });
     });
 
@@ -344,6 +344,11 @@ audio{width:100%;margin:10px 0 0}
           setMic(n, false); syncMics(); updateProg();
         } else if (res.code === 'closed' || res.code === 'submitted') {
           location.reload();
+        } else if (res.code === 'too_big' || res.code === 'not_confirmed') {   // 다시 눌러도 안 되는 경우는 이유를 그대로 알림
+          p.status = 'failed';
+          setState(n, res.code === 'too_big' ? '녹음이 길어서 저장하지 못했습니다. 질문 하나에 최대 ' + MAX_LABEL + '까지 녹음할 수 있어요. 다시 녹음해 주세요.' : '위의 확인 칸에 체크한 뒤 다시 저장해 주세요.', 'err');
+          ctl[n].retry.classList.toggle('hide', res.code === 'too_big');
+          syncMics(); updateProg();
         } else { fail(n, p); }
       }).catch(function () { fail(n, p); });
     };
@@ -390,6 +395,11 @@ audio{width:100%;margin:10px 0 0}
     say(fm, '임시저장되었습니다. 지금까지 ' + info.questions.length + '개 중 ' + answered() + '개를 녹음하셨습니다. ' + dl(info.deadline) + '까지 이어서 하실 수 있습니다.', true);
   }
 
+  function submitErr(code) {   // 서버가 알려 준 이유 → 안내 문구
+    if (code === 'empty') return "저장된 녹음이 없습니다. 질문마다 '저장되었습니다'가 보이는지 확인한 뒤 제출해 주세요.";
+    if (code === 'not_confirmed') return '위의 확인 칸에 체크한 뒤 제출해 주세요.';
+    return '제출하지 못했습니다. 잠시 후 다시 눌러 주세요.';
+  }
   function askSubmit(fm) {
     if (busy()) return say(fm, '녹음 또는 저장이 진행 중입니다. 끝난 뒤에 눌러 주세요.', false);
     if (failedAny().length) return say(fm, '저장되지 않은 녹음이 있습니다. 위에서 "다시 저장하기"를 눌러 주세요.', false);
@@ -418,14 +428,18 @@ audio{width:100%;margin:10px 0 0}
       yes.disabled = true; no.disabled = true; yes.textContent = '제출하는 중…';
       // 사진을 먼저 제출(실패하면 아무것도 잠기지 않음), 그다음 녹음. 다시 눌러도 이미 제출된 사진은 넘어감
       (pc ? w.submit() : Promise.resolve({ ok: true })).then(function (pr) {
-        if (!(pr.ok || pr.code === 'submitted')) throw pr;
+        if (!(pr.ok || pr.code === 'submitted')) { pr.photo = true; throw pr; }
         return call({ action: 'submit' });
       }).then(function (r) {
         ov.remove();
         if (r.ok || r.code === 'submitted') simple('제출이 완료되었습니다', (pc ? '녹음과 사진이' : '녹음이') + ' 전달되었습니다. 감사합니다.');
         else if (r.code === 'closed') location.reload();
-        else say(fm, '제출하지 못했습니다. 잠시 후 다시 눌러 주세요.', false);
-      }).catch(function () { ov.remove(); say(fm, '제출하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 눌러 주세요.', false); });
+        else say(fm, submitErr(r.code), false);
+      }).catch(function (e) {
+        ov.remove();
+        if (e && e.code === 'closed') return location.reload();
+        say(fm, e && e.code ? submitErr(e.code) : '제출하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 눌러 주세요.', false);
+      });
     });
   }
   // 화면이 다시 보일 때: 저장 중이던 녹음이 서버에 올라갔는지 확인해서 화면 상태를 맞춘다

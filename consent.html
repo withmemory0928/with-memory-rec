@@ -361,6 +361,7 @@ input[type=text]:focus,input[type=tel]:focus{outline:none;border-color:var(--acc
       })
       .catch(function (e) {
         var t = (e && e.fromServer && e.message) ? e.message.replace(/^(Error|Exception):\s*/, '') : '';
+        if (t && !/[가-힣]/.test(t)) t = '저장하지 못했습니다. 잠시 후 다시 눌러 주십시오. 계속 안 되면 카카오톡 채널로 알려 주십시오.';   // 구글 쪽 시스템 오류(영어)는 안내 문구로
         showErr(t || '저장하지 못했습니다. 잠시 후 다시 눌러 주십시오.');
         btn.disabled = false;
         btn.textContent = '동의하고 시작하기';
