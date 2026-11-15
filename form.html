@@ -308,7 +308,7 @@ body{background:#FFFFFF}
             <label class="chip"><input type="radio" name="participants" value="첫 번째 분만"><span>첫 번째 분만</span></label>
             <label class="chip"><input type="radio" name="participants" value="두 번째 분만"><span>두 번째 분만</span></label>
           </div>
-          <p class="help">처음 신청하실 때 첫 번째로 적으신 분이 '첫 번째 분'이에요.</p>
+          <p class="help" id="partHelp">처음 신청하실 때 첫 번째로 적으신 분이 '첫 번째 분'이에요. 신청자 연락처를 적으시면 성함으로 보여 드려요.</p>
           <p class="fe"></p>
         </div>
       </section>
@@ -1160,7 +1160,14 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     var ph = digits(val('applicantPhone'));
     if (!okPhone(ph) || S.namesFor === S.o + '|' + ph) return;
     S.namesFor = S.o + '|' + ph;
-    lookup(S.o, ph).then(function (r) { if (r && r.found && r.names) { S.pnames = r.names; pageUI(); } });
+    lookup(S.o, ph).then(function (r) { if (r && r.found && r.names) { S.pnames = r.names; pageUI(); partLabels(); } });
+  }
+  // 이번 편에 참여하시는 분: 1편에 적은 성함으로 보여 줌 (보내는 값은 그대로 '첫 번째 분만' 등)
+  function partLabels() {
+    var n = S.pnames || {}, a = n[1], b = n[2];
+    var lab = { '첫 번째 분만': a ? a + '님만' : '첫 번째 분만', '두 번째 분만': b ? b + '님만' : '두 번째 분만', '두 분 모두': '두 분 모두' };
+    $$('#fParticipants .chip input').forEach(function (i) { i.nextElementSibling.textContent = lab[i.value] || i.value; });
+    $('#partHelp').textContent = a && b ? '처음 신청하실 때 적으신 성함이에요.' : "처음 신청하실 때 첫 번째로 적으신 분이 '첫 번째 분'이에요. 신청자 연락처를 적으시면 성함으로 보여 드려요.";
   }
 
   /* ───────── 질문 고르기 ───────── */
@@ -1443,7 +1450,7 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     $('#informedText').classList.toggle('short', !first);   // 2편부터는 한 줄이라 스크롤 없음
     show('#informedHint', first);
     $('#applicantPhoneHelp').textContent = first ? '진행 안내를 이 번호로 보내 드려요. 구매하실 때 적은 번호와 같게 적어 주세요.' : '처음 신청하실 때 적은 번호와 같게 적어 주세요. 이 번호로 지난 편 정보를 찾아요.';
-    S.sets = {}; S.cur = parts()[0]; S.pnames = null; S.namesFor = '';
+    S.sets = {}; S.cur = parts()[0]; S.pnames = null; S.namesFor = ''; partLabels();
     loadTone();
     setCount(20);
     loadSet(S.cur); toneUI(); board();
