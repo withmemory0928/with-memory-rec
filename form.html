@@ -1619,17 +1619,19 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     S.sending = true;
     var btn = $('#submitBtn');
     btn.disabled = true; btn.textContent = '보내는 중…';
+    stepBusy(true);
     fetchJson(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) }, 40000)
       .then(function (res) {
-        S.sending = false; btn.disabled = false; btn.textContent = '제출하기';
+        S.sending = false; btn.disabled = false; btn.textContent = '제출하기'; stepBusy(false);
         if (res && res.ok) return finish(d, res);
         $('#err').textContent = (res && res.error) || '접수하지 못했어요. 잠시 후 다시 눌러 주세요.';
         show('#err', true);
+        stepToReason($('#err').textContent);
         $('#err').scrollIntoView({ behavior: 'smooth', block: 'center' });
       })
       .catch(function () {
         if (attempt < 1) { setTimeout(function () { send(d, attempt + 1); }, 1500); return; }
-        S.sending = false; btn.disabled = false; btn.textContent = '제출하기';
+        S.sending = false; btn.disabled = false; btn.textContent = '제출하기'; stepBusy(false);
         $('#err').textContent = '보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요. 계속 안 되면 카카오톡 채널로 알려 주세요.';
         show('#err', true);
       });
@@ -1741,6 +1743,18 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     ST.prev.addEventListener('click', function () { if (ST.cur > 0) stepGo(ST.cur - 1); });
     ST.next.addEventListener('click', stepNext);
     stepGo(0);
+  }
+  // 보내는 동안 아래 버튼에 표시 (숨긴 원래 제출 버튼 대신)
+  function stepBusy(on) {
+    if (!ST.next) return;
+    ST.next.disabled = on; ST.prev.disabled = on;
+    ST.next.textContent = on ? '보내는 중…' : (ST.cur === 4 ? '제출하기' : '다음');
+  }
+  // 서버가 막은 이유가 앞 화면의 칸이면 그 화면으로 가서 보여 줌
+  function stepToReason(t) {
+    var at = /인원|작성하실 수 있는 편|편을 다시/.test(t) ? 0 : /기록일|이용 기간/.test(t) ? 1 : /사진 추가|사진을 넣|사진 이야기/.test(t) ? 3 : /손글씨|질문/.test(t) ? 2 : 4;
+    if (at === ST.cur) return;
+    stepGo(at); ST.msg.textContent = t; ST.msg.hidden = false;
   }
   function stepOfEl(el) {
     for (var i = 0; i < ST.steps.length; i++) if (ST.steps[i].some(function (x) { return x && x.contains(el); })) return i;
