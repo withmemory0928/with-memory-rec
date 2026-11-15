@@ -437,11 +437,19 @@ button{font-family:inherit;cursor:pointer}
       actx = new AC();
       var an = actx.createAnalyser(); an.fftSize = 64;
       actx.createMediaStreamSource(s).connect(an);
-      var buf = new Uint8Array(an.frequencyBinCount), bars = ctl[n].wave.children;
+      var buf = new Uint8Array(an.frequencyBinCount), bars = ctl[n].wave.children, noise = null;
       var loop = function () {
         an.getByteFrequencyData(buf);
+        // 방 안 잡음은 빼고 말소리만: 조용할 때의 소리 크기를 기억해 두고 그보다 커질 때만 막대가 움직임
+        var lv = 0; for (var k = 1; k <= 8; k++) lv += buf[k]; lv /= 8;
+        noise = noise === null ? lv : (lv < noise ? lv : noise * 0.995 + lv * 0.005);
+        var gate = Math.min(200, noise + 24);
         var mid = (bars.length - 1) / 2;
-        for (var i = 0; i < bars.length; i++) { var d = Math.round(Math.abs(i - mid)); var v = buf[1 + Math.min(Math.floor(d / 2), 11)] / 255; bars[i].style.height = Math.max(6, Math.round(v * (1 - d / (mid + 8)) * 64)) + 'px'; }
+        for (var i = 0; i < bars.length; i++) {
+          var d = Math.round(Math.abs(i - mid));
+          var v = Math.max(0, buf[1 + Math.min(Math.floor(d / 2), 11)] - gate) / (255 - gate);
+          bars[i].style.height = Math.max(6, Math.round(Math.min(1, v * 1.6) * (1 - d / (mid + 8)) * 64)) + 'px';
+        }
         raf = requestAnimationFrame(loop);
       };
       loop();
