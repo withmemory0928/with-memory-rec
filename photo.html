@@ -59,6 +59,14 @@ audio{width:100%;margin:10px 0 0}
 .hide{display:none}
 .msg{font-weight:600;border-radius:12px;padding:14px;margin:14px 0 0;font-size:17px}
 .msg.info{background:var(--soft);color:var(--sub);border:1px solid var(--line);font-weight:500}
+.msg.err{background:#FDECEC;color:var(--rec)}
+.btn{flex:1;width:100%;font-size:20px;font-weight:700;padding:16px 10px;border-radius:999px;border:2px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer;font-family:inherit;margin-top:14px}
+.btn.main{background:var(--accent);color:#fff}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:10px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal{background:#fff;border-radius:18px;padding:24px 20px;max-width:420px;width:100%}
+.modal h2{font-size:22px;margin:0 0 8px}
 </style>
 </head>
 <body>
@@ -122,6 +130,7 @@ audio{width:100%;margin:10px 0 0}
     call({ action: 'info' }).then(function (r) {
       if (!r.ok) return simple('열 수 없는 주소입니다', '받으신 링크가 맞는지 확인해 주세요. 계속 열리지 않으면 신청하신 분께 문의해 주세요.');
       info = r; info.saved = info.saved || {}; MAX_SECS = r.storySecs || 60;
+      if (r.state === 'submitted') return simple('제출이 완료되었습니다', '사진이 전달되었습니다. 감사합니다.');
       if (r.state !== 'open') return simple('사진을 올리는 기간이 끝났습니다', '올리신 사진과 이야기는 책을 만드는 데 사용됩니다. 문의가 필요하시면 신청하신 분께 말씀해 주세요.');
       render();
     }).catch(function () { simple('불러오지 못했습니다', '인터넷 연결을 확인한 뒤 새로고침해 주세요.'); });
@@ -141,7 +150,7 @@ audio{width:100%;margin:10px 0 0}
     tips.appendChild(el('li', '', '종이 사진은 밝은 곳에서 그림자가 지지 않게, 사진이 화면에 꽉 차도록 반듯하게 찍어 올려 주세요.'));
     head.appendChild(tips);
     var dbox = el('div', 'deadline', dl(info.deadline) + '까지 올려 주세요');
-    dbox.appendChild(el('small', '', '기간 안에는 다른 사진으로 다시 올려 바꿀 수 있습니다. 올리신 사진과 이야기는 이 화면에서 다시 볼 수 없습니다.'));
+    dbox.appendChild(el('small', '', '제출하기 전까지는 다른 사진으로 다시 올려 바꿀 수 있습니다. 올리신 사진과 이야기는 이 화면에서 다시 볼 수 없습니다.'));
     head.appendChild(dbox);
     var ua = navigator.userAgent;
     if (/KAKAOTALK/i.test(ua) && isRec()) {
@@ -167,7 +176,11 @@ audio{width:100%;margin:10px 0 0}
     app.appendChild(list);
 
     var foot = el('div', 'card locked'); foot.id = 'foot';
-    foot.appendChild(el('p', 'note', '따로 제출하실 필요는 없습니다. ' + dl(info.deadline) + '까지 마지막으로 올리신 사진' + (isRec() ? '과 이야기' : '') + '로 책을 만듭니다.'));
+    foot.appendChild(el('p', 'note', "다 올리셨으면 아래 '제출'을 눌러 주세요. 제출하시면 사진을 바꿀 수 없습니다. 제출을 누르지 않으셔도 " + dl(info.deadline) + '에 마지막으로 올리신 사진' + (isRec() ? '과 이야기' : '') + '로 책을 만듭니다.'));
+    var fm = el('p', 'msg hide');
+    var bSub = el('button', 'btn main', '제출'); bSub.type = 'button';
+    foot.appendChild(fm); foot.appendChild(bSub);
+    bSub.addEventListener('click', function () { askSubmit(fm); });
     app.appendChild(foot);
 
     function open() { list.classList.remove('locked'); foot.classList.remove('locked'); }
@@ -180,6 +193,39 @@ audio{width:100%;margin:10px 0 0}
       }).catch(function () { cb.checked = false; cb.disabled = false; alert('인터넷 연결을 확인한 뒤 다시 눌러 주세요.'); });
     });
     syncAll();
+  }
+
+  function say(fm, text) { fm.textContent = text; fm.className = 'msg err'; }
+  function askSubmit(fm) {
+    var ph = 0, noStory = [];
+    for (var n = 1; n <= info.max; n++) {
+      if (active !== null || busyP(n) || busyS(n)) return say(fm, '녹음 또는 올리기가 진행 중입니다. 끝난 뒤에 눌러 주세요.');
+      if ((pp[n] && pp[n].status === 'failed') || (ps[n] && ps[n].status === 'failed')) return say(fm, '올라가지 않은 사진이나 이야기가 있습니다. 위에서 다시 올려 주세요.');
+      var s = info.saved[n] || {};
+      if (s.photo) { ph++; if (isRec() && !s.story) noStory.push(n); }
+    }
+    if (!ph) return say(fm, '사진을 한 장 이상 올린 뒤 제출해 주세요.');
+    fm.className = 'msg hide';
+    var ov = el('div', 'ov'); var m = el('div', 'modal');
+    m.appendChild(el('h2', '', '제출하시겠습니까?'));
+    m.appendChild(el('p', '', '제출하시면 사진을 바꿀 수 없습니다.'));
+    if (noStory.length) m.appendChild(el('p', 'msg err', '사진 ' + noStory.join(', ') + '의 이야기가 아직 없습니다.'));
+    var row = el('div', 'row');
+    var no = el('button', 'btn', '돌아가기'); no.type = 'button';
+    var yes = el('button', 'btn main', '제출'); yes.type = 'button';
+    row.appendChild(no); row.appendChild(yes); m.appendChild(row);
+    ov.appendChild(m); document.body.appendChild(ov);
+    no.addEventListener('click', function () { ov.remove(); });
+    yes.addEventListener('click', function () {
+      yes.disabled = true; no.disabled = true; yes.textContent = '제출하는 중…';
+      call({ action: 'submit' }).then(function (r) {
+        ov.remove();
+        if (r.ok || r.code === 'submitted') simple('제출이 완료되었습니다', '사진이 전달되었습니다. 감사합니다.');
+        else if (r.code === 'closed') location.reload();
+        else if (r.code === 'no_photo') say(fm, '사진을 한 장 이상 올린 뒤 제출해 주세요.');
+        else say(fm, '제출하지 못했습니다. 잠시 후 다시 눌러 주세요.');
+      }).catch(function () { ov.remove(); say(fm, '제출하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 눌러 주세요.'); });
+    });
   }
 
   function updateProg() {
