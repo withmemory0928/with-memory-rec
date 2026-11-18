@@ -472,12 +472,12 @@ body{background:#FFFFFF}
 (각 페이지에서 입력하는 항목만 수집합니다)
 
 3. 보유·이용 기간
-질문 등 신청 정보는 다섯 번째 편 결과물을 발송한 날(이용 기간 안에 다섯 편을 마치지 못하면 이용 기간이 끝난 날)부터 3개월이 지난 뒤 처음 도래하는 1일에 파기합니다. 연락처·주소는 마지막 회차 결과물을 발송한 날부터 2년 동안 보관한 뒤 파기하며, 웹책을 받으신 경우 신청자 성함·연락처는 만료 안내를 위해 웹책 보관 기간이 끝날 때까지 보관합니다.
+질문 등 신청 정보는 다섯 번째 편 결과물을 발송한 날(이용 기간 안에 다섯 편을 마치지 못하면 이용 기간이 끝난 날)부터 3개월이 지난 뒤 처음 도래하는 1일에 파기합니다. 이용 기간이 끝나 남은 편을 환불한 경우에는 환불한 뒤 바로 파기합니다. 연락처·주소는 마지막 회차 결과물을 발송한 날부터 1년 동안 보관한 뒤 파기하며(이용 기간이 끝나 남은 편을 환불한 경우에는 환불한 뒤 바로 파기), 웹책을 받으신 경우 신청자 성함·연락처는 만료 안내를 위해 웹책 보관 기간이 끝날 때까지 보관합니다.
 
 4. 동의를 거부할 권리
 동의를 거부하실 수 있으며, 거부하시면 기록물 제작을 진행할 수 없습니다.
 
-입력하신 정보는 구글(미국 등)의 서버에 보관됩니다(개인정보처리방침 제7조). 부모님의 정보는 부모님께 알린 뒤 입력해 주세요. 부모님 본인의 동의는 처음 신청하실 때 동의 링크로 따로 받으며, 부모님이 동의하지 않으시면 입력하신 부모님 정보는 지체 없이 삭제합니다.
+입력하신 정보는 구글(미국 등)의 서버에 보관됩니다(개인정보처리방침 제7조). 부모님 본인의 동의는 정보를 입력하시기 전에 동의 페이지에서 먼저 받습니다. 부모님 성함과 연락처는 동의 때 적어 주신 내용이 채워지며, 부모님이 동의를 철회하시면 부모님 정보는 지체 없이 삭제합니다.
 자세한 내용은 개인정보처리방침에서 확인하실 수 있습니다.</div>
           <p class="scrollhint">글을 위로 밀면 전체 내용을 보실 수 있어요.</p>
           <label class="chk"><input type="checkbox" id="privacy"><span>개인정보 수집 및 이용에 동의합니다.</span></label>
@@ -1162,6 +1162,36 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     S.namesFor = S.o + '|' + ph;
     lookup(S.o, ph).then(function (r) { if (r && r.found && r.names) { S.pnames = r.names; pageUI(); partLabels(); } });
   }
+  // 1편: 신청자 연락처가 주문과 맞으면 동의 페이지에 적은 신청자 성함·부모님 성함·번호를 빈 칸에 채움 (다시 적지 않게)
+  function fetchConsent() {
+    if (S.ed !== 1 || !S.o) return;
+    var ph = digits(val('applicantPhone'));
+    if (!okPhone(ph) || S.cpFor === S.o + '|' + ph) return;
+    S.cpFor = S.o + '|' + ph;
+    lookup(S.o, ph).then(function (r) {
+      var c = r && r.found && r.cp; if (!c) return;
+      var put = function (id, v) { var el = $('#' + id); if (!el || !v || el.value.trim()) return; el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+      put('applicantName', c.applicant);
+      var p = c.parents || [];
+      if (p[0]) { put('p1Name', p[0].name); put('p1Phone', p[0].phone); }
+      if (p[1]) { put('p2Name', p[1].name); put('p2Phone', p[1].phone); }
+      if (p.length) toast('동의 때 적어 주신 성함과 번호를 채웠어요.');
+    });
+  }
+  // 첫 상품 1편인데 부모님 동의가 아직이면 입력 대신 안내만 (이용약관 제6조 제1항)
+  function consentGate(r) {
+    var wait = !!(r && r.found && r.consent === false);
+    var el = $('#consentWait');
+    if (wait && !el) {
+      el = document.createElement('section'); el.id = 'consentWait'; el.className = 'card';
+      el.innerHTML = '<h2 style="margin:0 0 12px;font-size:20px">부모님 동의를 먼저 받아 주세요</h2>' +
+        '<p style="margin:0 0 8px;line-height:1.7">정보를 입력하시기 전에 부모님의 동의가 먼저 필요해요. 결제 후 알림톡으로 받으신 <b>[부모님 동의하기]</b> 버튼에서 동의를 마쳐 주세요.</p>' +
+        '<p style="margin:0;line-height:1.7;color:var(--sub)">동의가 확인되면 알림톡으로 정보 입력 페이지를 다시 보내 드려요. 문의: 카카오톡 채널 ‘위드메모리’</p>';
+      $('#f').parentNode.insertBefore(el, $('#f'));
+    }
+    if (el) show(el, wait);
+    show('#f', !wait);
+  }
   // 이번 편에 참여하시는 분: 1편에 적은 성함으로 보여 줌 (보내는 값은 그대로 '첫 번째 분만' 등)
   function partLabels() {
     var n = S.pnames || {}, a = n[1], b = n[2];
@@ -1297,6 +1327,8 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     $('#pCopy').addEventListener('click', copyFirst);
     $('#applicantPhone').addEventListener('change', fetchNames);
     $('#applicantPhone').addEventListener('blur', fetchNames);
+    $('#applicantPhone').addEventListener('change', fetchConsent);
+    $('#applicantPhone').addEventListener('blur', fetchConsent);
     $('#wToneT').addEventListener('click', function (e) {
       var b = e.target.closest('[data-tone]'); if (!b) return;
       var t = b.getAttribute('data-tone'); if (t !== S.tone) setTone(t, S.who);   // 아버지 ↔ 아빠처럼 같은 자리로 바뀜
@@ -1708,7 +1740,7 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
         $('#oCheck').disabled = false; $('#oCheck').textContent = '확인';
         if (r && r.found) { S.oFixed = true; showOrder(); toast('주문을 확인했어요.'); }
         else toast('주문을 확인하지 못했어요. 상품에 맞게 직접 골라 주세요.');
-        applyOrder(r);
+        applyOrder(r); consentGate(r);
       });
     });
     $('#oInput').addEventListener('input', function () { S.o = val('oInput').replace(/[^0-9A-Za-z_-]/g, ''); });
@@ -1721,7 +1753,7 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     if (!o) { show('#loading', false); show('#f', true); if (apiReady()) fetch(API_URL + '?ping=1').catch(function () {}); return; }
     lookup(o).then(function (r) {
       show('#loading', false); show('#f', true);
-      applyOrder(r);
+      applyOrder(r); consentGate(r);
       if (!r || !r.found) $('#edHelp').textContent = '주문 정보를 아직 확인하지 못했어요. 구매하신 상품에 맞게 직접 골라 주세요.';
     });
   }

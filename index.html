@@ -84,6 +84,7 @@ button{font-family:inherit;cursor:pointer}
 .btn.main:active{background:var(--brown-dk)}
 .btn:disabled{opacity:.4}
 .btn.ghost{flex:0 0 auto;border-color:transparent;color:var(--sub);padding:0 16px}
+.btn.prev{flex:0 0 auto;padding:0 16px;font-size:16px}
 /* 제출 확인 · 완료 */
 .dim{position:fixed;inset:0;background:rgba(43,38,34,.48);z-index:20;display:flex;align-items:flex-end;justify-content:center}
 .sheet{width:100%;max-width:560px;background:var(--white);border-radius:24px 24px 0 0;padding:8px 24px calc(24px + env(safe-area-inset-bottom))}
@@ -212,14 +213,16 @@ button{font-family:inherit;cursor:pointer}
     var foot = el('div', 'foot');
     var fm = el('p', 'msg hide');
     var row = el('div', 'row');
+    var prev = el('button', 'btn prev hide', '이전 질문'); prev.type = 'button';   // 왼쪽 위 화살표를 모르실 수 있어 아래에도 (2026-11-18)
     var skip = el('button', 'btn ghost', '건너뛰기'); skip.type = 'button';
     var next = el('button', 'btn main', '다음'); next.type = 'button';
-    row.appendChild(skip); row.appendChild(next);
+    row.appendChild(prev); row.appendChild(skip); row.appendChild(next);
     foot.appendChild(fm); foot.appendChild(row);
     app.appendChild(foot);
 
-    ui = { top: top, back: back, cnt: cnt, pi: pi, screens: screens, fm: fm, skip: skip, next: next };
+    ui = { top: top, back: back, cnt: cnt, pi: pi, screens: screens, fm: fm, prev: prev, skip: skip, next: next };
     back.addEventListener('click', function () { if (active === null && cur > 0) go(cur - 1); });
+    prev.addEventListener('click', function () { if (active === null && cur > 1) go(cur - 1); });
     skip.addEventListener('click', function () { if (active === null) go(cur + 1); });
     next.addEventListener('click', onNext);
     if (info.confirmed) photoConfirm();
@@ -353,6 +356,7 @@ button{font-family:inherit;cursor:pointer}
     if (!ui) return;
     var b = ui.next, sk = ui.skip, n = cur;
     sk.classList.add('hide'); b.disabled = false;
+    ui.prev.classList.toggle('hide', n <= 1); ui.prev.disabled = active !== null || busy();
     if (n === 0) {
       b.textContent = info.confirmed ? (Object.keys(info.saved).length ? '이어서 하기' : '시작하기') : '시작하기';
       b.disabled = !ui.screens[0].cb.checked;
