@@ -85,11 +85,18 @@ input[type=text]:focus,input[type=tel]:focus{outline:none;border-color:var(--acc
 #done h1{font-size:22px}
 #done p{font-size:14.5px;color:#4A3F38;margin:8px 0}
 #done .note{font-size:12.5px;color:var(--sub)}
+.mainbtn{display:block;width:100%;height:56px;margin-top:22px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer}
+.mainbtn:disabled{opacity:.6}
+.btnrow{display:flex;gap:12px;margin-top:22px}
+.btnrow #btn{margin-top:0;flex:1}
+.subbtn{flex:0 0 96px;height:56px;border:1px solid var(--accent);border-radius:999px;background:#fff;color:var(--accent);font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.who{font-size:20px;margin:8px 0 12px;color:var(--accent)}
+[hidden]{display:none!important}
 .chk2{display:flex;align-items:flex-start;gap:10px;font-size:15.5px;line-height:1.5;margin:10px 0;cursor:pointer}
 .chk2 input{width:20px;height:20px;margin:2px 0 0;flex:0 0 20px;accent-color:var(--accent)}
 .relay{margin-top:24px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff}
-.relay.miss,#p2box.miss{border-color:var(--warn)}
-body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .sec span,body.view .post,body.view .steps,body.view .time{display:none}
+.relay.miss{border-color:var(--warn)}
+body.view #stepA,body.view .who,body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .sec span,body.view .post,body.view .steps,body.view .time{display:none}
 .allbtn{display:block;width:100%;margin:0 0 6px;padding:14px 10px;font-size:17px;font-weight:700;font-family:inherit;border-radius:12px;border:2px solid var(--accent);background:var(--accent-soft);color:var(--accent);cursor:pointer} .allbtn.on{background:var(--accent);color:#fff} .allnote{font-size:12px;color:var(--sub);margin:0 2px 10px} 
 </style>
 </head>
@@ -99,13 +106,7 @@ body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .s
 
 <div class="top">
   <p class="brand">WITH MEMORY · 위드메모리</p>
-  <div class="steps" aria-hidden="true">
-    <div class="step cur" id="st1"><div class="dot">1</div><span>동의</span></div>
-    <div class="bar"></div>
-    <div class="step" id="st2"><div class="dot">2</div><span>정보</span></div>
-    <div class="bar"></div>
-    <div class="step" id="st3"><div class="dot">3</div><span>완료</span></div>
-  </div>
+  <div class="steps" id="steps" aria-hidden="true"></div>
 </div>
 
 <div id="form">
@@ -121,6 +122,18 @@ body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .s
     <p>위드메모리는 이 정보를 책 제작과 전달 목적으로만 사용합니다. 동의 이후에도 언제든 중단을 요청하실 수 있습니다.</p>
   </div>
 
+  <div id="stepA">
+  <div class="sec" style="margin-top:8px"><b>신청하신 분</b></div>
+  <label class="fl" for="aName">신청하신 분 성함</label>
+  <input type="text" id="aName" autocomplete="name" maxlength="30">
+  <label class="fl" for="aPhone">신청하신 분 휴대폰 번호</label>
+  <input type="tel" id="aPhone" class="tel" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678">
+  <p class="note">주문하실 때 적은 성함·휴대폰 번호와 같게 적어 주십시오. 주문하신 분과 동의하시는 부모님이 맞는지 이 번호로 확인합니다.</p>
+  <button id="aNext" type="button" class="mainbtn">다음</button>
+  </div>
+
+  <div id="stepP" hidden>
+  <h2 class="who" id="whoTitle">부모님의 동의</h2>
   <p class="rule"><b>1번부터 4번까지는 필수</b>이며, 하나라도 동의하지 않으시면 서비스를 진행할 수 없고 결제 금액은 모두 환불해 드립니다. <b>5번은 선택</b>이며, 동의하지 않으셔도 서비스는 그대로 진행합니다. 아래 "전체 동의하기"로 한 번에 체크하셔도 되고, 항목마다 따로 체크하셔도 됩니다.</p>
 
   <div class="sec"><b>필수 동의</b><span><em id="reqCount">0</em> / 4 · 모두 필요</span></div> <button type="button" class="allbtn" id="allBtn">전체 동의하기</button> <p class="allnote">5번은 선택이라 동의하지 않으셔도 서비스는 그대로 진행됩니다. 원하지 않으시면 5번만 체크를 풀어 주세요. 각 항목은 눌러서 내용을 확인하실 수 있고, 하나씩 해제도 됩니다.</p>
@@ -229,41 +242,19 @@ body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .s
   </div>
 
   <div class="post">
-  <div class="sec" style="margin-top:24px"><b>신청하신 분</b></div>
-  <label class="fl" for="aName">신청하신 분 성함</label>
-  <input type="text" id="aName" autocomplete="name" maxlength="30">
-  <label class="fl" for="aPhone">신청하신 분 휴대폰 번호</label>
-  <input type="tel" id="aPhone" class="tel" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678">
-  <p class="note">주문하실 때 적은 성함·휴대폰 번호와 같게 적어 주십시오. 주문 정보와 같아야 정보 입력 페이지를 보내 드립니다.</p>
-
-  <div class="sec" style="margin-top:24px"><b>부모님 정보</b></div>
-  <label class="fl" for="name">부모님 성함</label>
+  <div class="sec" style="margin-top:24px"><b id="pInfoTitle">부모님 정보</b></div>
+  <label class="fl" for="name" id="nameLb">부모님 성함</label>
   <input type="text" id="name" maxlength="30">
-  <label class="fl" for="phone">부모님 휴대폰 번호</label>
+  <label class="fl" for="phone" id="phoneLb">부모님 휴대폰 번호</label>
   <input type="tel" id="phone" class="tel" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678">
   <p class="note">위 1~5번 체크는 이 부모님의 동의입니다. 동의 내역 확인, 동의 접수 안내, 기록일과 진행 안내 연락, 이어서 신청하실 때 동의를 다시 받지 않기 위한 용도로만 사용합니다.</p>
 
-  <div class="sec" style="margin-top:24px"><b>두 번째 부모님</b><span>두 분 상품만</span></div>
-  <p class="note" style="margin-top:0">부모님 두 분 상품이면 두 번째 부모님도 함께 적고 동의해 주십시오. 한 분 상품이면 비워 두시면 됩니다.</p>
-  <label class="fl" for="name2">두 번째 부모님 성함</label>
-  <input type="text" id="name2" maxlength="30">
-  <label class="fl" for="phone2">두 번째 부모님 휴대폰 번호</label>
-  <input type="tel" id="phone2" class="tel" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678">
-  <div id="p2box" class="box" style="margin-top:12px">
-    <h2>두 번째 부모님의 동의</h2>
-    <p>위 1~5번과 같은 내용입니다. 두 번째 부모님의 뜻에 따라 체크해 주십시오. 1~4번은 필수, 5번은 선택입니다.</p>
-    <label class="chk2"><input type="checkbox" id="d1"> 1. 녹음·책 제작·보관 (필수)</label>
-    <label class="chk2"><input type="checkbox" id="d2"> 2. 책·파일을 신청하신 분께 전달 (필수)</label>
-    <label class="chk2"><input type="checkbox" id="d3"> 3. 해외 보관·처리 (필수)</label>
-    <label class="chk2"><input type="checkbox" id="d4"> 4. 건강 등 민감정보 처리 (필수)</label>
-    <label class="chk2"><input type="checkbox" id="d5"> 5. 녹음 파일 전달·웹책에 담기 (선택)</label>
+  <label class="chk2 relay" id="relayBox" hidden><input type="checkbox" id="relay"> <span><b>(필수)</b> 부모님께 이 동의 내용을 전달했고, 부모님 뜻에 따라 체크했습니다.</span></label>
+
+  <div class="btnrow"><button id="pBack" type="button" class="subbtn">이전</button><button id="btn" type="button">동의하기</button></div>
   </div>
-
-  <label class="chk2 relay" id="relayBox"><input type="checkbox" id="relay"> <span><b>(필수)</b> 부모님께 이 동의 내용을 전달했고, 부모님 뜻에 따라 체크했습니다.</span></label>
-
-  <button id="btn" type="button">동의하기</button>
+  </div>
   <p class="err" id="err"></p>
-  </div>
   <p class="note viewnote" id="viewNote" style="display:none">이 내용은 동의하신 항목의 안내입니다. 동의를 철회하시려면 070-5236-0786 또는 카카오톡 채널 '위드메모리'로 연락해 주십시오.</p>
   <p class="foot">문의 070-5236-0786 · 카카오톡 채널 '위드메모리'</p>
 </div>
@@ -303,7 +294,7 @@ body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .s
   var q = new URLSearchParams(location.search);
   $('orderNo').value = (q.get('o') || '').slice(0, 40);
   var VIEW = q.get('view') === '1';
-  if (VIEW) { document.body.classList.add('view'); document.querySelector('#form h1').innerHTML = '위드메모리<br>동의 내용 안내'; $('viewNote').style.display = 'block'; }
+  if (VIEW) { $('stepP').hidden = false; document.body.classList.add('view'); document.querySelector('#form h1').innerHTML = '위드메모리<br>동의 내용 안내'; $('viewNote').style.display = 'block'; }
   else if (!$('orderNo').value) showErr('주소가 잘려 주문을 확인할 수 없습니다. 알림톡으로 받으신 동의 링크를 다시 눌러 주십시오.');
   try { fetch(API_URL + '?ping=1', { mode: 'no-cors' }); } catch (e) {}
 
@@ -335,9 +326,6 @@ body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .s
       if (on && i < 4) n++;
     });
     $('reqCount').textContent = n;
-    var all = n === 4;
-    $('st1').className = 'step ' + (all ? 'done' : 'cur');
-    $('st2').className = 'step' + (all ? ' cur' : '');
   }
   ['c1', 'c2', 'c3', 'c4', 'c5'].forEach(function (id) { $(id).addEventListener('change', refresh); });
   refresh();
@@ -350,47 +338,99 @@ body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .s
     (target || el).scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   var okPh = function (v) { return /^01\d{8,9}$/.test(String(v).replace(/\D/g, '')); };
-  function check(d) {
+  var dig = function (v) { return String(v || '').replace(/\D/g, ''); };
+  // 주문 확인은 정보 입력 페이지와 같은 웹앱(인원, 신청자 번호가 주문 번호와 같은지만 돌려받음)
+  var ORDER_API = 'https://script.google.com/macros/s/AKfycbwsCtsBRr9BASIk1J3XYXgb4OngI7u6iQOUrkQBfBgxXDs6aGOJ-A42PVWRIVJjOZYP/exec';
+  var P = { people: 1, idx: 0, saved: [] };   // saved[i] = 그 부모님의 성함·번호·체크
+
+  // 진행 표시: 한 분 = 신청자·부모님·완료 / 두 분 = 신청자·첫 번째·두 번째·완료
+  function paintSteps(cur) {
+    var names = ['신청자'].concat(P.people === 2 ? ['첫 번째', '두 번째'] : ['부모님'], ['완료']);
+    $('steps').innerHTML = names.map(function (t, i) {
+      return (i ? '<div class="bar"></div>' : '') + '<div class="step' + (i < cur ? ' done' : i === cur ? ' cur' : '') + '"><div class="dot">' + (i + 1) + '</div><span>' + t + '</span></div>';
+    }).join('');
+  }
+  paintSteps(0);
+
+  function hideErr() { $('err').style.display = 'none'; }
+  function curParent() {
+    return { name: $('name').value.trim(), phone: $('phone').value.trim(),
+      c1: $('c1').checked, c2: $('c2').checked, c3: $('c3').checked, c4: $('c4').checked, c5: $('c5').checked };
+  }
+  function goParent(i) {
+    P.idx = i;
+    var x = P.saved[i] || {}, two = P.people === 2, lastOne = i === P.people - 1;
+    ['c1', 'c2', 'c3', 'c4', 'c5'].forEach(function (id) { $(id).checked = !!x[id]; $('card' + id.slice(1)).classList.remove('miss'); });
+    $('name').value = x.name || ''; $('phone').value = x.phone || '';
+    var who = two ? (i ? '두 번째 부모님' : '첫 번째 부모님') : '부모님';
+    $('whoTitle').textContent = who + '의 동의';
+    $('pInfoTitle').textContent = who + ' 정보';
+    $('nameLb').textContent = who + ' 성함';
+    $('phoneLb').textContent = who + ' 휴대폰 번호';
+    $('relayBox').hidden = !lastOne; $('relayBox').classList.remove('miss');
+    $('btn').textContent = lastOne ? '동의하기' : '다음 (두 번째 부모님)';
+    $('stepA').hidden = true; $('stepP').hidden = false;
+    hideErr(); refresh(); paintSteps(1 + i); window.scrollTo(0, 0);
+  }
+
+  // 1단계: 신청하신 분 → 주문과 대조(번호가 다르면 막음) → 인원에 맞게 부모님 단계
+  $('aNext').addEventListener('click', function () {
+    var aName = $('aName').value.trim(), aPhone = dig($('aPhone').value);
+    if (!$('orderNo').value) return showErr('주소가 잘려 주문을 확인할 수 없습니다. 알림톡으로 받으신 동의 링크를 다시 눌러 주십시오.');
+    if (!aName) return showErr('신청하신 분 성함을 입력해 주십시오.', $('aName'));
+    if (!okPh(aPhone)) return showErr('신청하신 분 휴대폰 번호를 정확히 입력해 주십시오.', $('aPhone'));
+    var b = $('aNext'); b.disabled = true; b.textContent = '주문을 확인하는 중입니다…';
+    var done = function () { b.disabled = false; b.textContent = '다음'; };
+    fetch(ORDER_API + '?action=order&o=' + encodeURIComponent($('orderNo').value) + '&ph=' + aPhone)
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        done();
+        if (!r || !r.found) return showErr('주문을 확인하지 못했습니다. 결제하신 지 얼마 안 되었다면 5분쯤 뒤에 다시 눌러 주십시오. 계속 안 되면 카카오톡 채널로 알려 주십시오.');
+        if (r.phoneOk === false) return showErr('주문하실 때 적은 휴대폰 번호와 다릅니다. 주문하신 분의 번호를 적어 주십시오. 다른 번호로 주문하셨다면 카카오톡 채널로 알려 주십시오.', $('aPhone'));
+        var n = r.people === 2 ? 2 : 1;
+        if (P.people !== n) P.saved = [];
+        P.people = n;
+        goParent(0);
+      })
+      .catch(function () { done(); showErr('주문을 확인하지 못했습니다. 잠시 후 다시 눌러 주십시오.'); });
+  });
+
+  $('pBack').addEventListener('click', function () {
+    P.saved[P.idx] = curParent();
+    if (P.idx > 0) return goParent(P.idx - 1);
+    $('stepP').hidden = true; $('stepA').hidden = false; hideErr(); paintSteps(0); window.scrollTo(0, 0);
+  });
+
+  function checkParent(d) {
     var miss = REQ.filter(function (id) { return !d[id]; });
     if (miss.length) {
       miss.forEach(function (id) { $('card' + id.slice(1)).classList.add('miss'); });
       return { msg: '필수 항목(1번~4번)에 모두 체크하셔야 진행할 수 있습니다.', el: $('card' + miss[0].slice(1)) };
     }
-    if (!d.aName) return { msg: '신청하신 분 성함을 입력해 주십시오.', el: $('aName') };
-    if (!okPh(d.aPhone)) return { msg: '신청하신 분 휴대폰 번호를 정확히 입력해 주십시오.', el: $('aPhone') };
-    if (!d.name) return { msg: '부모님 성함을 입력해 주십시오.', el: $('name') };
-    if (!okPh(d.phone)) return { msg: '부모님 휴대폰 번호를 정확히 입력해 주십시오.', el: $('phone') };
-    if (d.p2) {
-      if (!d.p2.name) return { msg: '두 번째 부모님 성함을 입력해 주십시오.', el: $('name2') };
-      if (!okPh(d.p2.phone)) return { msg: '두 번째 부모님 휴대폰 번호를 정확히 입력해 주십시오.', el: $('phone2') };
-      if (d.p2.phone.replace(/\D/g, '') === d.phone.replace(/\D/g, '')) return { msg: '두 부모님의 휴대폰 번호가 같습니다. 각자의 번호를 적어 주십시오.', el: $('phone2') };
-      if (!(d.p2.c1 && d.p2.c2 && d.p2.c3 && d.p2.c4)) { $('p2box').classList.add('miss'); return { msg: '두 번째 부모님의 필수 항목(1번~4번)에 모두 체크해 주십시오.', el: $('p2box') }; }
-    }
-    if (!d.relay) { $('relayBox').classList.add('miss'); return { msg: '부모님께 동의 내용을 전달하셨는지 확인 칸에 체크해 주십시오.', el: $('relayBox') }; }
+    if (!d.name) return { msg: '성함을 입력해 주십시오.', el: $('name') };
+    if (!okPh(d.phone)) return { msg: '휴대폰 번호를 정확히 입력해 주십시오.', el: $('phone') };
+    var other = P.saved[P.idx ? 0 : 1];
+    if (P.people === 2 && other && dig(other.phone) === dig(d.phone)) return { msg: '두 부모님의 휴대폰 번호가 같습니다. 각자의 번호를 적어 주십시오.', el: $('phone') };
     return null;
   }
 
   var btn = $('btn');
   btn.addEventListener('click', function () {
-    var d = {
-      orderNo: $('orderNo').value,
-      aName: $('aName').value.trim(),
-      aPhone: $('aPhone').value.trim(),
-      name: $('name').value.trim(),
-      phone: $('phone').value.trim(),
-      c1: $('c1').checked, c2: $('c2').checked, c3: $('c3').checked,
-      c4: $('c4').checked, c5: $('c5').checked,
-      relay: $('relay').checked
-    };
-    // 두 번째 부모님: 성함·번호·체크 중 하나라도 있으면 함께 받음
-    var p2any = $('name2').value.trim() || $('phone2').value.trim() || ['d1','d2','d3','d4','d5'].some(function (id) { return $(id).checked; });
-    if (p2any) d.p2 = { name: $('name2').value.trim(), phone: $('phone2').value.trim(), c1: $('d1').checked, c2: $('d2').checked, c3: $('d3').checked, c4: $('d4').checked, c5: $('d5').checked };
-    $('p2box').classList.remove('miss'); $('relayBox').classList.remove('miss');
-
-    var bad = check(d);
+    var cur = curParent();
+    var bad = checkParent(cur);
     if (bad) { showErr(bad.msg, bad.el); return; }
-    $('err').style.display = 'none';
-    btn.disabled = true;
+    P.saved[P.idx] = cur;
+    if (P.idx < P.people - 1) return goParent(P.idx + 1);
+    if (!$('relay').checked) { $('relayBox').classList.add('miss'); return showErr('부모님께 동의 내용을 전달하셨는지 확인 칸에 체크해 주십시오.', $('relayBox')); }
+
+    var p1 = P.saved[0];
+    var d = {
+      orderNo: $('orderNo').value, aName: $('aName').value.trim(), aPhone: $('aPhone').value.trim(),
+      name: p1.name, phone: p1.phone, c1: p1.c1, c2: p1.c2, c3: p1.c3, c4: p1.c4, c5: p1.c5, relay: true
+    };
+    if (P.people === 2) d.p2 = P.saved[1];
+    hideErr();
+    btn.disabled = true; $('pBack').disabled = true;
     btn.textContent = '저장하는 중입니다…';
 
     fetch(API_URL, {
@@ -405,19 +445,17 @@ body.view .chk,body.view #allBtn,body.view .allnote,body.view .rule,body.view .s
           er.fromServer = true;
           throw er;
         }
-        $('doneMsg').textContent = '동의가 접수되었습니다. 주문 정보와 확인되면 신청하신 분께 정보 입력 페이지를 보내 드리고, 부모님께도 동의 접수 사실을 알려 드립니다.';
+        $('doneMsg').textContent = '동의가 접수되었습니다. 신청하신 분께 정보 입력 페이지를 보내 드리고, 부모님께도 동의 접수 사실을 알려 드립니다.';
         $('form').style.display = 'none';
         $('done').style.display = 'block';
-        $('st1').className = 'step done';
-        $('st2').className = 'step done';
-        $('st3').className = 'step cur';
+        paintSteps(P.people + 1);
         window.scrollTo(0, 0);
       })
       .catch(function (e) {
         var t = (e && e.fromServer && e.message) ? e.message.replace(/^(Error|Exception):\s*/, '') : '';
         if (t && !/[가-힣]/.test(t)) t = '저장하지 못했습니다. 잠시 후 다시 눌러 주십시오. 계속 안 되면 카카오톡 채널로 알려 주십시오.';   // 구글 쪽 시스템 오류(영어)는 안내 문구로
         showErr(t || '저장하지 못했습니다. 잠시 후 다시 눌러 주십시오.');
-        btn.disabled = false;
+        btn.disabled = false; $('pBack').disabled = false;
         btn.textContent = '동의하기';
       });
   });
