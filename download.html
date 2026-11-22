@@ -60,7 +60,7 @@ h2{font-size:17px;margin-bottom:8px}
 
   <section id="all" class="card hide">
     <button id="zip" class="primary" type="button">전체 한 번에 다운로드</button>
-    <p class="hint">모든 파일을 압축 파일(ZIP) 하나로 내려받습니다. 컴퓨터에서 받기 좋고, 휴대폰에서는 아래에서 하나씩 다운로드하셔도 됩니다.</p>
+    <p class="hint">모든 파일을 압축 파일(ZIP) 하나로 한 번에 다운로드합니다. 휴대폰과 컴퓨터 모두 됩니다. 원하는 파일만 받으시려면 아래에서 하나씩 받으셔도 됩니다.</p>
     <p id="zipProg" class="prog hide"></p>
   </section>
 
@@ -125,7 +125,7 @@ h2{font-size:17px;margin-bottom:8px}
       var list = files.filter(function (f) { return f.group === g; });
       if (!list.length) return;
       h += '<section class="card group"><h2>' + esc(g) + '<small>' + list.length + '개</small></h2>';
-      list.forEach(function (f) { h += itemHtml(f, '', f.label, '다운로드'); });
+      list.forEach(function (f) { h += itemHtml(f, '', f.label, '받기'); });
       h += '</section>';
     });
     // 사진: 사진 바로 아래에 그 사진의 이야기
@@ -137,11 +137,11 @@ h2{font-size:17px;margin-bottom:8px}
            (stories.length ? ' · 이야기 ' + stories.length + '개' : '') + '</small></h2>';
       photos.forEach(function (p) {
         var s = stories.filter(function (x) { return !used[x.i] && String(x.label).replace(/\s*이야기$/, '') === p.label; })[0];
-        h += '<div class="pair"><div class="ttl">' + esc(p.label) + '</div>' + itemHtml(p, 'photo', '', '사진 다운로드');
-        if (s) { used[s.i] = 1; h += itemHtml(s, 'story', '이 사진에 담긴 이야기', '이야기 다운로드'); }
+        h += '<div class="pair"><div class="ttl">' + esc(p.label) + '</div>' + itemHtml(p, 'photo', '', '사진 받기');
+        if (s) { used[s.i] = 1; h += itemHtml(s, 'story', '이 사진에 담긴 이야기', '이야기 받기'); }
         h += '</div>';
       });
-      stories.forEach(function (s) { if (!used[s.i]) h += '<div class="pair">' + itemHtml(s, 'story', s.label, '이야기 다운로드') + '</div>'; });
+      stories.forEach(function (s) { if (!used[s.i]) h += '<div class="pair">' + itemHtml(s, 'story', s.label, '이야기 받기') + '</div>'; });
       h += '</section>';
     }
     $('#list').innerHTML = h;
@@ -218,7 +218,7 @@ h2{font-size:17px;margin-bottom:8px}
     b.disabled = true; st.className = 'st'; st.textContent = '불러오는 중…';
     fileBlob(i).then(function (blob) {
       b.disabled = false; st.textContent = '';
-      if (act === 'save') { save(blob, f.name); st.className = 'st ok'; st.textContent = '다운로드를 눌렀습니다. 저장 위치를 확인해 주세요.'; }
+      if (act === 'save') { save(blob, f.name); st.className = 'st ok'; st.textContent = '받기를 눌렀습니다. 저장 위치를 확인해 주세요.'; }
       else if (act === 'play') {
         var au = $('audio', item);
         if (!au) { au = document.createElement('audio'); au.controls = true; item.appendChild(au); }
@@ -243,7 +243,7 @@ h2{font-size:17px;margin-bottom:8px}
         pg.textContent = '압축하는 중…';
         return zip.generateAsync({ type: 'blob', compression: 'STORE' }).then(function (z) {
           save(z, (data.edition ? data.edition + '편_' : '') + '위드메모리.zip');
-          pg.textContent = '다운로드를 눌렀습니다. 저장 위치를 확인해 주세요.';
+          pg.textContent = '받기를 눌렀습니다. 저장 위치를 확인해 주세요.';
         });
       }
       pg.textContent = '파일 받는 중… ' + (idx + 1) + ' / ' + files.length;
