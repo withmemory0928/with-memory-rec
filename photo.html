@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer">
 <title>위드메모리 · 사진 올리기</title>
 <meta property="og:title" content="위드메모리 · 사진 올리기">
-<meta property="og:description" content="사진 2장과 그 사진에 얽힌 이야기를 남겨 주세요.">
+<meta property="og:description" content="사진 2장과 그 사진에 대한 이야기를 남겨 주세요.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://script.google.com" crossorigin>
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -232,8 +232,8 @@ body.embed #app > .card:first-child .tips{margin-top:0}
     if (info.who && !EMBED) head.appendChild(el('p', 'who', info.who + ' 사진 링크'));
     head.appendChild(el('h1', '', EMBED ? '사진 올리기' : (info.name ? info.name + '님이 ' : '') + '신청하신 사진'));
     head.appendChild(el('p', 'note', isRec()
-      ? '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진마다 그 사진에 얽힌 이야기를 ' + (MAX_SECS / 60) + '분 안으로 들려주시면, 사진 아래에 그 이야기가 글로 담깁니다.'
-      : '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진에 얽힌 이야기는 함께 받으신 기록지의 사진 이야기 칸에 적어 주시면, 사진 아래에 그 글씨 그대로 담깁니다.'));
+      ? '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진마다 그 사진에 대한 이야기를 ' + (MAX_SECS / 60) + '분 안으로 들려주시면, 사진 아래에 그 이야기가 글로 담깁니다.'
+      : '간직해 오신 사진을 ' + info.max + '장까지 올려 주세요.\n사진에 대한 이야기는 함께 받으신 기록지의 사진 이야기 칸에 적어 주시면, 사진 아래에 그 글씨 그대로 담깁니다.'));
     var tips = el('ul', 'tips');
     tips.appendChild(el('li', '', '사진은 가로로 찍은 사진을 권장합니다. 인화 크기(3 × 5)가 가로로 긴 모양이라 가로 사진이 가장 시원하게 담깁니다. 세로 사진도 올릴 수 있지만 높이에 맞춰 인화되어 폭이 좁아지고 양옆이 비어 보일 수 있습니다.'));
     tips.appendChild(el('li', '', '휴대폰 사진첩에 있는 원본 사진을 골라 주세요. 카카오톡으로 받아 저장한 사진은 화질이 낮아 선명하게 인화되지 않을 수 있습니다.'));
@@ -312,8 +312,8 @@ body.embed #app > .card:first-child .tips{margin-top:0}
     if (info.who) intro.appendChild(el('span', 's-who', info.who + '께'));
     intro.appendChild(el('p', 's-h', (info.name ? info.name + '님이 신청하신\n' : '') + '사진 ' + info.max + '장을 받아요'));
     intro.appendChild(el('p', 's-d', isRec()
-      ? '간직해 온 사진을 ' + info.max + '장까지 올려 주세요. 사진마다 얽힌 이야기를 ' + (MAX_SECS / 60) + '분 안으로 들려주시면 사진 아래에 글로 담겨요.'
-      : '간직해 온 사진을 ' + info.max + '장까지 올려 주세요. 사진에 얽힌 이야기는 함께 받으신 기록지의 사진 이야기 칸에 적어 주세요.'));
+      ? '간직해 온 사진을 ' + info.max + '장까지 올려 주세요. 사진마다 그 사진에 대한 이야기를 ' + (MAX_SECS / 60) + '분 안으로 들려주시면 사진 아래에 글로 담겨요.'
+      : '간직해 온 사진을 ' + info.max + '장까지 올려 주세요. 사진에 대한 이야기는 함께 받으신 기록지의 사진 이야기 칸에 적어 주세요.'));
     var facts = el('div', 's-facts');
     var fact = function (k, v) { var f = el('div', 's-fact'); f.appendChild(el('span', '', k)); f.appendChild(el('b', '', v)); facts.appendChild(f); };
     fact('사진', info.max + '장');
