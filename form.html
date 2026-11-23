@@ -1662,7 +1662,10 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
     fetchJson(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(d) }, 40000)
       .then(function (res) {
         S.sending = false; btn.disabled = false; btn.textContent = '제출하기'; stepBusy(false);
-        if (res && res.ok) return finish(d, res);
+        if (res && res.ok) {
+          try { fetch(API_URL + '?kick=1', { mode: 'no-cors' }); } catch (e) {}   // 알림톡을 5분 기다리지 않고 바로 보내도록 자동 실행을 깨움
+          return finish(d, res);
+        }
         $('#err').textContent = (res && res.error) || '접수하지 못했어요. 잠시 후 다시 눌러 주세요.';
         show('#err', true);
         stepToReason($('#err').textContent);
