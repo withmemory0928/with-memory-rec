@@ -278,7 +278,7 @@ button{font:inherit;color:inherit}
   function build(d) {
     D = d;
     var call = d.call || '';
-    var title = (call || '부모님') + '의 이야기';
+    var title = d.name ? d.name + '님의 이야기' : (call || '부모님') + '의 이야기';
     var sign = call ? '— ' + call + '가' : '';
     var qItems = d.items.filter(function (it) { return it.k === 'q'; });
     var photoN = d.items.filter(function (it) { return it.k === 'p'; }).length;
