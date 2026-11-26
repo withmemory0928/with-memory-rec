@@ -497,7 +497,6 @@ body{background:#FFFFFF}
     <p>정성껏 준비하겠습니다. 감사합니다.</p>
     <div class="sum" id="doneSum"></div>
     <ul class="nexts" id="doneNext"></ul>
-    <a class="btn-line" id="doneConsent" href="#" hidden>부모님 동의 페이지 열기</a>
     <p class="foot-c">문의 070-5236-0786 · 카카오톡 채널 위드메모리</p>
   </div>
 </div>
@@ -896,7 +895,6 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
 
   /* ▼ 설정: 운영 시트 Apps Script 웹 앱 주소 (배포 후 받은 /exec 주소로 바꾸세요) */
   var API_URL = 'https://script.google.com/macros/s/AKfycbwsCtsBRr9BASIk1J3XYXgb4OngI7u6iQOUrkQBfBgxXDs6aGOJ-A42PVWRIVJjOZYP/exec';
-  var CONSENT_URL = 'https://app.with-memory.com/consent.html';
   var MYPAGE_URL = 'https://with-memory.com/shop_mypage';
 
   var NUM = ['첫', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열'];
@@ -1696,12 +1694,8 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
       (d.usePhoto ? '<div><b>사진</b><span>이번 편에 넣음 (이야기 ' + esc(d.photoMethod) + ')</span></div>' : '') +
       '<div><b>접수번호</b><span>' + esc(res.id || '-') + '</span></div>';
     var nx = ['접수 확인 안내를 카카오톡으로 보내 드려요. 밤늦게 접수하시면 다음 날 아침에 보내 드려요.'];
-    if (d.edition === 1) nx.push('부모님 동의가 확인되어야 기록을 시작해요. 아직이라면 아래 버튼으로 동의 페이지를 열어 부모님께 보내 드리거나 함께 진행해 주세요.' + (d.people === 2 ? ' 두 분이 각각 따로 동의하셔야 해요.' : ''));
     nx.push('기록일은 기록일 3일 전 23시 59분까지 카카오톡 채널 메뉴 [기록일 변경]에서 직접 바꾸실 수 있어요.');
     $('#doneNext').innerHTML = nx.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
-    var cb = $('#doneConsent');
-    cb.href = CONSENT_URL + '?o=' + encodeURIComponent(d.orderNo);
-    show(cb, d.edition === 1);
     show('#f', false); show('#done', true);
     window.scrollTo(0, 0);
   }
