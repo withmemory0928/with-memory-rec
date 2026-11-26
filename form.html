@@ -1388,13 +1388,16 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
   }
   function renderEd() {
     var from = S.range ? S.range[0] : 1, to = S.range ? S.range[1] : 5, h = '';
+    // 주문이 확인되면 편은 차례대로만: 아직 접수 안 된 편 중 가장 앞 편 하나만 고를 수 있음 (2026-11-26)
+    var next = 0;
+    if (S.locked) for (var n = from; n <= to; n++) if (S.done.indexOf(n) < 0) { next = n; break; }
     for (var e = from; e <= to; e++) {
-      var dn = S.done.indexOf(e) > -1;
-      h += '<label class="chip"><input type="radio" name="ed" value="' + e + '"' + (S.ed === e ? ' checked' : '') + (dn ? ' disabled' : '') + '><span>' + EDN[e] + (e === 5 ? ' (마지막)' : '') + (dn ? '<em>접수됨</em>' : '') + '</span></label>';
+      var dn = S.done.indexOf(e) > -1, later = S.locked && !dn && e !== next;
+      h += '<label class="chip"><input type="radio" name="ed" value="' + e + '"' + (S.ed === e ? ' checked' : '') + (dn || later ? ' disabled' : '') + '><span>' + EDN[e] + (e === 5 ? ' (마지막)' : '') + (dn ? '<em>접수됨</em>' : later ? '<em>차례 전</em>' : '') + '</span></label>';
     }
     $('#edChips').innerHTML = h;
     var help = '';
-    if (S.locked && S.done.length) help = '이미 접수된 편은 고를 수 없어요. 고칠 내용이 있으면 카카오톡 채널로 알려 주세요.';
+    if (S.locked && next) help = '편은 차례대로 작성해요. 이번에 작성하실 편은 ' + EDN[next] + '이에요.';
     else if (!S.locked) help = '처음 작성하시면 첫 번째 편, 이어서 신청하셨다면 이번에 작성하실 편을 골라 주세요.';
     $('#edHelp').textContent = help;
     if (S.locked) {
