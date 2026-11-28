@@ -1743,8 +1743,8 @@ window.WMQ={T:["어린 시절", "학창 시절", "젊은 날", "일과 삶", "�
       (d.usePhoto ? '<div><b>사진</b><span>이번 편에 넣음 (이야기 ' + esc(d.photoMethod) + ')</span></div>' : '') +
       '<div><b>접수번호</b><span>' + esc(res.id || '-') + '</span></div>';
     var nx = ['접수 확인 안내를 카카오톡으로 보내 드려요. 밤늦게 접수하시면 다음 날 아침에 보내 드려요.'];
-    nx.push('기록일은 기록일 3일 전 23시 59분까지 카카오톡 채널 메뉴 [기록일 변경]에서 직접 바꾸실 수 있어요.');
-    $('#doneNext').innerHTML = nx.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
+    nx.push({ html: '기록일은 기록일 3일 전 23시 59분까지 <a href="change.html" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline">기록일 변경 페이지</a>에서 직접 바꾸실 수 있어요.' });   // 바로 가는 링크 (2026-11-28)
+    $('#doneNext').innerHTML = nx.map(function (t) { return '<li>' + (t && t.html ? t.html : esc(t)) + '</li>'; }).join('');
     show('#f', false); show('#done', true);
     window.scrollTo(0, 0);
   }
