@@ -102,9 +102,10 @@ button{font-family:inherit;cursor:pointer}
 .end .card b{font-weight:600}
 .loading{padding:96px 24px;text-align:center;color:var(--sub);font-size:16px}
 </style>
+<link rel="stylesheet" href="ux.css">
 </head>
 <body>
-<div id="app"><p class="loading">불러오는 중이에요.<br>처음 여는 데는 몇 초 걸릴 수 있어요.</p></div>
+<div id="app"><div class="ux-skw" role="status" aria-label="불러오는 중"><span class="ux-sk h"></span><span class="ux-sk l"></span><span class="ux-sk s"></span><span class="ux-sk b"></span><span class="ux-sk btn"></span><p>불러오는 중이에요. 처음 여는 데는 몇 초 걸릴 수 있어요.</p></div></div>
 
 <script>
 (function () {
@@ -669,5 +670,6 @@ button{font-family:inherit;cursor:pointer}
   start();
 })();
 </script>
+<script src="ux.js"></script>
 </body>
 </html>

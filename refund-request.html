@@ -60,6 +60,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
 .steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .alert{display:none;font-size:13.5px;color:#4A3F38;background:#fff;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:12px}
 </style>
+<link rel="stylesheet" href="ux.css">
 </head>
 <body>
 <div class="wrap">
@@ -83,7 +84,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
     <h2>신청하신 분</h2>
     <p class="hint">결제하실 때 쓰신 성함과 휴대폰 번호를 넣어 주세요.</p>
     <label class="fl" for="name">성함</label>
-    <input type="text" id="name" autocomplete="name" maxlength="30">
+    <input type="text" id="name" autocomplete="name" maxlength="30" placeholder="예: 김민지">
     <label class="fl" for="phone">휴대폰 번호</label>
     <input type="tel" id="phone" inputmode="numeric" maxlength="13" placeholder="예: 010-1234-5678" autocomplete="tel">
   </div>
@@ -94,7 +95,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
     <label class="opt"><input type="radio" name="scope" value="one"><span>두 분 상품에서 한 분만 해지<small>다른 한 분은 그대로 진행합니다</small></span></label>
     <div class="sub" id="whoBox">
       <label class="fl" for="who" style="margin-top:4px">해지하실 분의 성함</label>
-      <input type="text" id="who" maxlength="30">
+      <input type="text" id="who" maxlength="30" placeholder="예: 김순자">
     </div>
     <label class="opt"><input type="radio" name="scope" value="photo"><span>사진 추가 옵션만 환불<small>기록은 그대로 진행합니다</small></span></label>
     <label class="opt"><input type="radio" name="scope" value="ask"><span>잘 모르겠어요<small>상담하고 정할게요. 진행은 멈추지 않습니다</small></span></label>
@@ -226,5 +227,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
   });
 })();
 </script>
+<script src="ux.js"></script>
 </body>
 </html>

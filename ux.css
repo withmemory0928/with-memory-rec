@@ -1,0 +1,41 @@
+/* 위드메모리 공통 움직임 (2026-11-28) — 모든 GitHub 페이지가 불러 씀. 아임웹은 홈/웹폰트_헤더코드.txt에 같은 내용
+   ① 누르는 것은 마우스를 올리면 바로 티가 나게 (ux.js가 버튼 모양을 보고 ux-fill / ux-line / ux-text를 붙임)
+   ② 중요한 버튼만 살짝 떠오름(ux-lift)
+   ③ 내려가면 하나씩 나타남(ux-rv) — 움직임 줄이기를 켠 사람에게는 바로 보임
+   ④ 불러오는 동안 회색 뼈대(ux-sk) */
+:root{--ux-brown:#A0482C;--ux-brown-dk:#8A3D24;--ux-cream:#FBF5EE}
+.ux-fill,.ux-line,.ux-text,.ux-lift{transition:background-color .18s,color .18s,border-color .18s,box-shadow .18s,transform .18s}
+@media (hover:hover){
+  .ux-fill:not(:disabled):hover{background-color:var(--ux-brown-dk)!important;border-color:var(--ux-brown-dk)!important;color:#fff!important}
+  .ux-line:not(:disabled):hover{background-color:var(--ux-brown)!important;border-color:var(--ux-brown)!important;color:#fff!important}
+  .ux-line:not(:disabled):hover *{color:inherit!important}
+  .ux-text:not(:disabled):hover{color:var(--ux-brown)!important;text-decoration:underline;text-underline-offset:3px}
+  .ux-lift:not(:disabled):hover{transform:translateY(-3px);box-shadow:0 10px 20px -8px rgba(43,38,34,.35)}
+}
+.ux-fill:not(:disabled):active,.ux-line:not(:disabled):active{transform:scale(.98)}
+.ux-fill:focus-visible,.ux-line:focus-visible,.ux-text:focus-visible{outline:2px solid var(--ux-brown);outline-offset:2px}
+
+html.ux-on .ux-rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+html.ux-on .ux-rv.ux-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){html.ux-on .ux-rv{opacity:1;transform:none;transition:none}}
+
+.ux-sk{display:block;border-radius:8px;background:linear-gradient(90deg,#F1EBE4 0%,#F8F4EF 40%,#F1EBE4 80%);background-size:300% 100%;animation:uxSk 1.4s ease-in-out infinite}
+.ux-sk+.ux-sk{margin-top:12px}
+.ux-skw{padding:8px 0}
+.ux-skw .ux-sk.h{height:28px;width:60%;margin:0 auto 20px}
+.ux-skw .ux-sk.l{height:14px}
+.ux-skw .ux-sk.s{height:14px;width:70%}
+.ux-skw .ux-sk.b{height:120px;border-radius:12px;margin-top:20px}
+.ux-skw .ux-sk.btn{height:56px;border-radius:8px;margin-top:20px}
+.ux-skw p{font-size:13px;color:#8A8079;text-align:center;margin:16px 0 0}
+@keyframes uxSk{0%{background-position:100% 0}100%{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.ux-sk{animation:none}}
+
+/* 펼쳐 보기(아코디언) — 긴 안내는 접어 두고 보고 싶은 사람만 */
+details.ux-acc{border:1px solid #ECE5DD;border-radius:10px;background:#fff;margin:12px 0 0}
+details.ux-acc>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:10px 14px;font-weight:700;font-size:15px;color:#2B2622}
+details.ux-acc>summary::-webkit-details-marker{display:none}
+details.ux-acc>summary:after{content:"펼쳐 보기";flex:none;font-size:13px;color:var(--ux-brown);font-weight:700}
+details.ux-acc[open]>summary:after{content:"접기"}
+@media (hover:hover){details.ux-acc>summary:hover{background:var(--ux-cream)}}
+details.ux-acc>.ux-acc-b{padding:0 14px 14px}

@@ -49,12 +49,14 @@ h2{font-size:17px;margin-bottom:8px}
 .info ul{padding-left:18px;font-size:14px;color:var(--fg)}
 .info li{margin:4px 0;word-break:keep-all}
 </style>
+<link rel="stylesheet" href="ux.css">
 </head>
 <body>
 <main class="wrap">
   <div class="brand">WITH MEMORY</div>
   <h1>녹음과 사진 다운로드</h1>
-  <p id="sub" class="sub">불러오는 중입니다. 처음 여는 데는 몇 초 걸릴 수 있으니 잠시만 기다려 주세요.</p>
+  <p id="sub" class="sub">불러오는 중이에요. 처음 여는 데는 몇 초 걸릴 수 있어요.</p>
+  <div class="ux-skw" id="dlSk" role="status" aria-label="불러오는 중"><span class="ux-sk b"></span><span class="ux-sk l"></span><span class="ux-sk s"></span><span class="ux-sk btn"></span></div>
 
   <div id="kakao" class="note hide">카카오톡 안에서는 파일이 저장되지 않을 수 있습니다. 오른쪽 위 메뉴(⋮ 또는 ···)에서 <b>다른 브라우저로 열기</b>를 눌러 주세요.</div>
 
@@ -97,7 +99,7 @@ h2{font-size:17px;margin-bottom:8px}
     var u = API + '?' + Object.keys(q).map(function (x) { return x + '=' + encodeURIComponent(q[x]); }).join('&');
     return fetch(u, { cache: 'no-store' }).then(function (r) { return r.json(); });
   }
-  function fail(msg) { var s = $('#sub'); s.textContent = msg; s.classList.add('err'); }
+  function fail(msg) { var s = $('#sub'); s.textContent = msg; s.classList.add('err'); $('#dlSk').classList.add('hide'); }
 
   if (!k) { fail('주소가 올바르지 않습니다. 안내지의 QR 코드를 다시 찍어 주세요.'); return; }
 
@@ -114,6 +116,7 @@ h2{font-size:17px;margin-bottom:8px}
 
   function render() {
     var files = data.files || [];
+    $('#dlSk').classList.add('hide');
     $('#sub').textContent = (data.edition ? data.edition + '편 · ' : '') + '파일 ' + files.length + '개' +
       (data.until ? '\n' + data.until + ' 23:59까지 받을 수 있습니다.' : '\n택배를 받으신 날부터 7일째 되는 날 23:59까지 받을 수 있습니다.');
     $('#info').classList.remove('hide');
@@ -254,5 +257,6 @@ h2{font-size:17px;margin-bottom:8px}
   });
 })();
 </script>
+<script src="ux.js"></script>
 </body>
 </html>

@@ -134,11 +134,12 @@ body.embed #app > .card:first-child h1,body.embed #app > .card:first-child > .no
 body.embed #app > .card:first-child{border:0;padding:0;margin:0 0 16px}
 body.embed #app > .card:first-child .tips{margin-top:0}
 </style>
+<link rel="stylesheet" href="ux.css">
 </head>
 <body>
 <div class="wrap">
   <p class="brand">WITH MEMORY · 위드메모리</p>
-  <div id="app"><div class="card"><p>불러오는 중입니다. 처음 여는 데는 몇 초 걸릴 수 있으니 잠시만 기다려 주세요.</p></div></div>
+  <div id="app"><div class="ux-skw" role="status" aria-label="불러오는 중"><span class="ux-sk h"></span><span class="ux-sk l"></span><span class="ux-sk s"></span><span class="ux-sk b"></span><span class="ux-sk btn"></span><p>불러오는 중이에요. 처음 여는 데는 몇 초 걸릴 수 있어요.</p></div></div>
 </div>
 
 <script>
@@ -752,5 +753,6 @@ body.embed #app > .card:first-child .tips{margin-top:0}
   start();
 })();
 </script>
+<script src="ux.js"></script>
 </body>
 </html>
